@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import HeroImageFlat from "../assets/gradientBg.svg";
+import AnimatedHero from "./AnimatedHero";
 
 const HeroWrapper = styled.div`
   display: flex;
@@ -88,25 +88,25 @@ const Button = styled.button`
 `;
 
 const PortfolioBtn = styled(Button)`
-  background: var(--gradient-primary);
+  background: var(--button-bg);
   border: none;
-  color: var(--text-primary);
-  box-shadow: 0 4px 15px rgba(239, 87, 119, 0.3);
+  color: var(--button-text);
+  box-shadow: var(--button-glow);
 
   &:hover {
     transform: translateY(-2px);
-    background: var(--gradient-hover);
-    box-shadow: 0 6px 20px rgba(239, 87, 119, 0.4);
+    background: var(--button-hover-bg);
+    box-shadow: var(--button-hover-glow);
   }
 `;
 
 const ContactBtn = styled(Button)`
   background: transparent;
-  border: 2px solid var(--primary-color);
-  color: var(--text-primary);
+  border: 1px solid var(--button-border);
+  color: var(--button-text);
 
   &:hover {
-    background: rgba(239, 87, 119, 0.1);
+    background: var(--button-hover-bg);
     transform: translateY(-2px);
   }
 `;
@@ -120,46 +120,9 @@ const ImageWrapper = styled.div`
   max-width: 600px;
 `;
 
-const HeroImg = styled.img`
-  max-width: 100%;
-  height: auto;
-  animation: float 6s ease-in-out infinite;
-  filter: drop-shadow(0 0 20px rgba(239, 87, 119, 0.2));
-
-  @keyframes float {
-    0% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-20px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-  }
-
-  @media (max-width: 768px) {
-    width: 85%;
-    margin-top: 40px;
-  }
-`;
-
 const HeroImage = () => {
-  const scrollToContact = () => {
-    const element = document.getElementById("contact");
-    if (element) {
-      const navbarHeight = 80;
-      const elementPosition =
-        element.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({
-        top: elementPosition - navbarHeight,
-        behavior: "smooth",
-      });
-    }
-  };
-
   return (
-    <HeroWrapper id="home">
+    <HeroWrapper>
       <ContentWrapper>
         <HeroText>
           Crafting Digital
@@ -174,27 +137,12 @@ const HeroImage = () => {
           our expert team.
         </HeroDescription>
         <ButtonSection>
-          <PortfolioBtn
-            onClick={() => {
-              const element = document.getElementById("projects");
-              if (element) {
-                const navbarHeight = 80;
-                const elementPosition =
-                  element.getBoundingClientRect().top + window.pageYOffset;
-                window.scrollTo({
-                  top: elementPosition - navbarHeight,
-                  behavior: "smooth",
-                });
-              }
-            }}
-          >
-            View Portfolio
-          </PortfolioBtn>
-          <ContactBtn onClick={scrollToContact}>Contact Us</ContactBtn>
+          <PortfolioBtn>View Portfolio</PortfolioBtn>
+          <ContactBtn>Contact Us</ContactBtn>
         </ButtonSection>
       </ContentWrapper>
       <ImageWrapper>
-        <HeroImg src={HeroImageFlat} alt="Hero" />
+        <AnimatedHero />
       </ImageWrapper>
     </HeroWrapper>
   );

@@ -9,9 +9,10 @@ const NavbarWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   color: var(--text-primary);
-  background: ${(props) =>
-    props.scrolled ? "rgba(8, 11, 20, 0.95)" : "transparent"};
+  background: ${(props) => (props.scrolled ? "var(--card-bg)" : "transparent")};
   backdrop-filter: ${(props) => (props.scrolled ? "blur(10px)" : "none")};
+  -webkit-backdrop-filter: ${(props) =>
+    props.scrolled ? "blur(10px)" : "none"};
   height: 80px;
   margin: 0;
   padding: 0 8%;
@@ -20,10 +21,8 @@ const NavbarWrapper = styled.div`
   top: 0;
   z-index: 1000;
   border-bottom: ${(props) =>
-    props.scrolled ? "1px solid rgba(74, 95, 230, 0.1)" : "none"};
+    props.scrolled ? "1px solid var(--border-color)" : "none"};
   box-sizing: border-box;
-  box-shadow: ${(props) =>
-    props.scrolled ? "0 4px 30px rgba(0, 0, 0, 0.3)" : "none"};
   transition: all 0.3s ease;
 `;
 
@@ -60,12 +59,13 @@ const NavMenu = styled.ul`
     right: ${(props) => (props.isOpen ? "0" : "-100%")};
     width: 70%;
     height: 100vh;
-    background: rgba(8, 11, 20, 0.98);
+    background: var(--card-bg);
     backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     padding: 100px 40px;
     transition: 0.3s ease-in-out;
     gap: 40px;
-    border-left: 1px solid rgba(74, 95, 230, 0.1);
+    border-left: 1px solid var(--border-color);
   }
 `;
 
@@ -86,7 +86,7 @@ const NavLinks = styled.a`
     height: 2px;
     bottom: -2px;
     left: 0;
-    background: var(--gradient-primary);
+    background: var(--text-primary);
     transition: width 0.3s ease;
     border-radius: 2px;
   }
@@ -104,23 +104,22 @@ const NavButton = styled.button`
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  background: var(--gradient-primary);
-  color: var(--text-primary);
+  background: var(--button-bg);
+  color: var(--button-text);
   font-weight: 600;
   font-size: 0.95rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(74, 95, 230, 0.2);
+  box-shadow: var(--button-glow);
   margin-left: 20px;
 
   &:hover {
     transform: translateY(-2px);
-    background: var(--gradient-hover);
-    box-shadow: 0 6px 20px rgba(74, 95, 230, 0.3);
+    background: var(--button-hover-bg);
+    box-shadow: var(--button-hover-glow);
   }
 
   @media (max-width: 768px) {
     margin-left: 0;
-    width: 100%;
   }
 `;
 

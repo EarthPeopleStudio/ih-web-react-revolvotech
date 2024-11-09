@@ -134,18 +134,19 @@ const BackButton = styled.button`
   bottom: 40px;
   right: 40px;
   padding: 15px 30px;
-  background: var(--gradient-primary);
+  background: var(--button-bg);
   border: none;
   border-radius: 8px;
-  color: var(--text-primary);
+  color: var(--button-text);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px var(--shadow-color);
+  box-shadow: var(--button-glow);
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px var(--shadow-color);
+    background: var(--button-hover-bg);
+    box-shadow: var(--button-hover-glow);
   }
 
   @media (max-width: 768px) {

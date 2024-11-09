@@ -2,21 +2,9 @@ import React from "react";
 import styled from "styled-components";
 
 const ContactBannerWrapper = styled.div`
-  color: var(--text-primary);
   padding: 120px 8% 80px;
   position: relative;
   overflow: hidden;
-
-  @media (max-width: 768px) {
-    padding: 80px 5% 60px;
-  }
-`;
-
-const ContentWrapper = styled.div`
-  max-width: 1400px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
 `;
 
 const Title = styled.h1`
@@ -24,9 +12,7 @@ const Title = styled.h1`
   font-weight: 800;
   text-align: center;
   margin-bottom: 20px;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--text-primary);
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
@@ -34,13 +20,11 @@ const Title = styled.h1`
 `;
 
 const Description = styled.p`
-  font-size: 1.2rem;
-  margin-bottom: 60px;
   text-align: center;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
   color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 60px;
+  font-size: 1.2rem;
   line-height: 1.6;
 
   @media (max-width: 768px) {
@@ -53,13 +37,19 @@ const Description = styled.p`
 const FormWrapper = styled.div`
   background: var(--card-bg);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 50px;
   border-radius: 20px;
-  border: 1px solid rgba(74, 95, 230, 0.1);
+  border: 1px solid var(--border-color);
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--border-color);
+    box-shadow: var(--button-glow);
+  }
 
   @media (max-width: 768px) {
     padding: 30px 20px;
@@ -90,22 +80,22 @@ const InputGroup = styled.div`
 const inputStyles = `
   width: 100%;
   padding: 15px;
-  border: 1px solid rgba(239, 87, 119, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
-  background: rgba(8, 11, 20, 0.6);
+  background: var(--button-bg);
   color: var(--text-primary);
   transition: all 0.3s ease;
   box-sizing: border-box;
 
   &:focus {
     outline: none;
-    border-color: var(--primary-color);
-    background: rgba(239, 87, 119, 0.05);
+    border-color: var(--text-primary);
+    background: var(--button-hover-bg);
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-secondary);
   }
 `;
 
@@ -118,13 +108,13 @@ const Select = styled.select`
   cursor: pointer;
   appearance: none;
   padding-right: 30px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.4)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgba(255, 255, 255, 0.7)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 16px;
 
   option {
-    background: var(--dark-bg);
+    background: var(--button-bg);
     color: var(--text-primary);
     padding: 10px;
   }
@@ -140,21 +130,19 @@ const TextArea = styled.textarea`
 const SubmitButton = styled.button`
   grid-column: 1 / -1;
   padding: 16px;
-  background: var(--gradient-primary);
+  background: var(--button-bg);
   color: var(--text-primary);
   font-size: 1.1rem;
   font-weight: 600;
-  border: none;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(239, 87, 119, 0.2);
   margin-top: 10px;
 
   &:hover {
     transform: translateY(-2px);
-    background: var(--gradient-hover);
-    box-shadow: 0 6px 20px rgba(239, 87, 119, 0.3);
+    background: var(--button-hover-bg);
   }
 
   @media (max-width: 768px) {
@@ -170,6 +158,7 @@ const PrivacyNotice = styled.p`
   margin-top: 5px;
   margin-bottom: 15px;
   line-height: 1.5;
+  text-align: center;
 
   @media (max-width: 768px) {
     font-size: 0.8rem;
@@ -179,53 +168,51 @@ const PrivacyNotice = styled.p`
 const ContactBanner = () => {
   return (
     <ContactBannerWrapper id="contact">
-      <ContentWrapper>
-        <Title>Let's Build Something Amazing</Title>
-        <Description>
-          Share your project vision with us, and we'll help bring it to life
-          with our expertise in digital innovation and development.
-        </Description>
+      <Title>Let's Build Something Amazing</Title>
+      <Description>
+        Share your project vision with us, and we'll help bring it to life with
+        our expertise in digital innovation and development.
+      </Description>
 
-        <FormWrapper>
-          <Form>
-            <InputGroup>
-              <Input type="text" placeholder="First Name" />
-            </InputGroup>
-            <InputGroup>
-              <Input type="text" placeholder="Last Name" />
-            </InputGroup>
-            <InputGroup>
-              <Input type="email" placeholder="Email Address" />
-            </InputGroup>
-            <InputGroup>
-              <Select defaultValue="">
-                <option value="" disabled>
-                  Select Service
-                </option>
-                <option value="web-dev">Web Development</option>
-                <option value="game-dev">Game Development</option>
-                <option value="app-dev">App Development</option>
-                <option value="other">Other Services</option>
-              </Select>
-            </InputGroup>
-            <InputGroup>
-              <Input type="number" placeholder="Budget (USD)" />
-            </InputGroup>
-            <InputGroup>
-              <Input type="tel" placeholder="Phone Number" />
-            </InputGroup>
-            <InputGroup className="full-width">
-              <TextArea placeholder="Tell us about your project..." />
-            </InputGroup>
-            <PrivacyNotice>
-              By submitting this form, you agree to our Privacy Policy and
-              consent to being contacted regarding your inquiry. We respect your
-              privacy and will never share your information.
-            </PrivacyNotice>
-            <SubmitButton type="submit">Get Your Free Quote →</SubmitButton>
-          </Form>
-        </FormWrapper>
-      </ContentWrapper>
+      <FormWrapper>
+        <Form>
+          <InputGroup>
+            <Input type="text" placeholder="First Name" />
+          </InputGroup>
+          <InputGroup>
+            <Input type="text" placeholder="Last Name" />
+          </InputGroup>
+          <InputGroup>
+            <Input type="email" placeholder="Email Address" />
+          </InputGroup>
+          <InputGroup>
+            <Select defaultValue="">
+              <option value="" disabled>
+                Select Service
+              </option>
+              <option value="web-dev">Web Development</option>
+              <option value="game-dev">Game Development</option>
+              <option value="app-dev">App Development</option>
+              <option value="other">Other Services</option>
+            </Select>
+          </InputGroup>
+          <InputGroup>
+            <Input type="number" placeholder="Budget (USD)" />
+          </InputGroup>
+          <InputGroup>
+            <Input type="tel" placeholder="Phone Number" />
+          </InputGroup>
+          <InputGroup className="full-width">
+            <TextArea placeholder="Tell us about your project..." />
+          </InputGroup>
+          <PrivacyNotice>
+            By submitting this form, you agree to our Privacy Policy and consent
+            to being contacted regarding your inquiry. We respect your privacy
+            and will never share your information.
+          </PrivacyNotice>
+          <SubmitButton type="submit">Get Your Free Quote →</SubmitButton>
+        </Form>
+      </FormWrapper>
     </ContactBannerWrapper>
   );
 };

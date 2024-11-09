@@ -11,14 +11,26 @@ const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 800;
   text-align: center;
-  margin-bottom: 60px;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  margin-bottom: 20px;
+  color: var(--text-primary);
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
+  }
+`;
+
+const Description = styled.p`
+  text-align: center;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 60px;
+  font-size: 1.2rem;
+  line-height: 1.6;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
     margin-bottom: 40px;
+    padding: 0 20px;
   }
 `;
 
@@ -28,26 +40,26 @@ const ProjectsGrid = styled.div`
   gap: 30px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 20px 0;
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 25px;
+    gap: 20px;
   }
 `;
 
 const ProjectCard = styled.div`
-  background: rgba(62, 61, 86, 0.3);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 20px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  text-align: center;
+  border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-10px);
-    box-shadow: 0 8px 32px rgba(239, 87, 119, 0.15);
-    border-color: rgba(239, 87, 119, 0.3);
+    border-color: var(--border-color);
+    box-shadow: var(--button-glow);
   }
 `;
 
@@ -55,11 +67,8 @@ const ProjectImage = styled.img`
   width: 100%;
   height: 200px;
   object-fit: cover;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-`;
-
-const ProjectContent = styled.div`
-  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 20px;
 `;
 
 const ProjectTitle = styled.h3`
@@ -69,7 +78,7 @@ const ProjectTitle = styled.h3`
 `;
 
 const ProjectDescription = styled.p`
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 20px;
@@ -79,11 +88,12 @@ const TagsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  justify-content: center;
 `;
 
 const Tag = styled.span`
-  background: rgba(74, 95, 230, 0.1);
-  color: var(--primary-color);
+  background: var(--button-bg);
+  color: var(--text-primary);
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -98,17 +108,17 @@ const MoreProjectsSection = styled.div`
 
 const MoreProjectsButton = styled.button`
   padding: 15px 35px;
-  border: 2px solid var(--primary-color);
+  border: 1px solid var(--button-border);
   border-radius: 8px;
-  background: transparent;
-  color: var(--text-primary);
+  background: var(--button-bg);
+  color: var(--button-text);
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: rgba(239, 87, 119, 0.1);
+    background: var(--button-hover-bg);
     transform: translateY(-2px);
   }
 
@@ -153,19 +163,20 @@ const Portfolio = () => {
   return (
     <PortfolioWrapper id="projects">
       <Title>Featured Projects</Title>
+      <Description>
+        Check out some of the projects I've worked on recently.
+      </Description>
       <ProjectsGrid>
         {projects.map((project) => (
           <ProjectCard key={project.id}>
             <ProjectImage src={project.image} alt={project.title} />
-            <ProjectContent>
-              <ProjectTitle>{project.title}</ProjectTitle>
-              <ProjectDescription>{project.description}</ProjectDescription>
-              <TagsContainer>
-                {project.tags.map((tag, index) => (
-                  <Tag key={index}>{tag}</Tag>
-                ))}
-              </TagsContainer>
-            </ProjectContent>
+            <ProjectTitle>{project.title}</ProjectTitle>
+            <ProjectDescription>{project.description}</ProjectDescription>
+            <TagsContainer>
+              {project.tags.map((tag, index) => (
+                <Tag key={index}>{tag}</Tag>
+              ))}
+            </TagsContainer>
           </ProjectCard>
         ))}
       </ProjectsGrid>

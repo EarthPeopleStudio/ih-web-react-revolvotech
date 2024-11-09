@@ -5,12 +5,13 @@ import logoImg from "../assets/Revolvo.png";
 import { FaGithub, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
 
 const FooterContainer = styled.footer`
-  color: white;
+  color: var(--text-primary);
   padding: 80px 8% 40px;
   position: relative;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--card-bg);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   &:before {
     content: "";
@@ -19,12 +20,7 @@ const FooterContainer = styled.footer`
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(239, 87, 119, 0.3),
-      transparent
-    );
+    background: var(--border-color);
   }
 `;
 
@@ -64,7 +60,7 @@ const Logo = styled.img`
 `;
 
 const CompanyDescription = styled.p`
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   line-height: 1.6;
   margin-bottom: 25px;
   max-width: 400px;
@@ -77,13 +73,13 @@ const SocialLinks = styled.div`
 `;
 
 const SocialIcon = styled.a`
-  color: white;
+  color: var(--text-primary);
   font-size: 20px;
   transition: all 0.3s ease;
 
   &:hover {
-    color: #ef5777;
     transform: translateY(-3px);
+    color: var(--text-secondary);
   }
 `;
 
@@ -91,23 +87,24 @@ const FooterTitle = styled.h3`
   font-size: 1.2rem;
   margin-bottom: 25px;
   font-weight: 600;
+  color: var(--text-primary);
 `;
 
 const FooterLink = styled.a`
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   text-decoration: none;
   margin-bottom: 12px;
   transition: all 0.3s ease;
   cursor: pointer;
 
   &:hover {
-    color: #ef5777;
+    color: var(--text-primary);
     transform: translateX(5px);
   }
 `;
 
 const ContactInfo = styled.div`
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   margin-bottom: 12px;
   line-height: 1.6;
 `;
@@ -115,7 +112,7 @@ const ContactInfo = styled.div`
 const BottomBar = styled.div`
   margin-top: 60px;
   padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -128,7 +125,7 @@ const BottomBar = styled.div`
 `;
 
 const Copyright = styled.p`
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-size: 0.9rem;
 `;
 
@@ -138,14 +135,14 @@ const BottomLinks = styled.div`
 `;
 
 const BottomLink = styled.a`
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.3s ease;
   cursor: pointer;
 
   &:hover {
-    color: #ef5777;
+    color: var(--text-primary);
   }
 `;
 
