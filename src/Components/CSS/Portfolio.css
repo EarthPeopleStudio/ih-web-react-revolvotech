@@ -1,0 +1,16 @@
+.App {
+  background-color: #13161d;
+  color: white;
+}
+
+.App h1 {
+  text-align: center;
+  padding-top: 50px;
+  padding-bottom: 15px;
+  margin-bottom: 50px;
+  font-size: 2.25rem;
+}
+
+.App content {
+  height: 5vh;
+}
