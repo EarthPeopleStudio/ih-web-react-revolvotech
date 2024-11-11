@@ -13,8 +13,7 @@ const HeroContainer = styled.div`
 const Canvas = styled.canvas`
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
+  background: transparent;
 `;
 
 const AnimatedHero = () => {
@@ -27,7 +26,13 @@ const AnimatedHero = () => {
     let particles = [];
     let connections = [];
     let mousePosition = { x: 0, y: 0 };
-    let hue = 0;
+
+    // Enhanced color palette with better saturation and lightness
+    const colors = [
+      { h: 0, s: 80, l: 60 }, // Brighter red
+      { h: 120, s: 70, l: 55 }, // Richer green
+      { h: 210, s: 85, l: 65 }, // Vibrant blue
+    ];
 
     const setCanvasSize = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -40,29 +45,37 @@ const AnimatedHero = () => {
 
     const initParticles = () => {
       const particleCount = Math.min(
-        Math.floor((canvas.width * canvas.height) / 12000),
-        150
+        Math.floor((canvas.width * canvas.height) / 15000),
+        120
       );
       particles = [];
       for (let i = 0; i < particleCount; i++) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 2 + 1.5,
-          vx: (Math.random() - 0.5) * 0.8,
-          vy: (Math.random() - 0.5) * 0.8,
-          baseColor: Math.random() * 360,
+          radius: Math.random() * 2 + 1, // Slightly larger particles
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          color: color,
           pulsePhase: Math.random() * Math.PI * 2,
+          baseRadius: Math.random() * 2 + 1, // Store base radius for pulsing
         });
       }
     };
 
     const updateParticles = () => {
-      hue = (hue + 0.1) % 360;
-
       particles.forEach((particle) => {
         particle.x += particle.vx;
         particle.y += particle.vy;
+
+        // Add slight randomness to movement
+        particle.vx += (Math.random() - 0.5) * 0.05;
+        particle.vy += (Math.random() - 0.5) * 0.05;
+
+        // Limit velocity
+        particle.vx = Math.max(Math.min(particle.vx, 0.8), -0.8);
+        particle.vy = Math.max(Math.min(particle.vy, 0.8), -0.8);
 
         if (particle.x <= 0 || particle.x >= canvas.width) {
           particle.vx *= -1;
@@ -73,13 +86,13 @@ const AnimatedHero = () => {
           particle.y = Math.max(0, Math.min(canvas.height, particle.y));
         }
 
-        particle.pulsePhase = (particle.pulsePhase + 0.05) % (Math.PI * 2);
+        particle.pulsePhase = (particle.pulsePhase + 0.03) % (Math.PI * 2);
       });
     };
 
     const updateConnections = () => {
       connections = [];
-      const connectionDistance = Math.min(canvas.width, canvas.height) * 0.25;
+      const connectionDistance = Math.min(canvas.width, canvas.height) * 0.2;
 
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
@@ -91,8 +104,10 @@ const AnimatedHero = () => {
             connections.push({
               start: particles[i],
               end: particles[j],
-              opacity: Math.pow(1 - distance / connectionDistance, 2),
-              hue: (particles[i].baseColor + particles[j].baseColor) / 2,
+              opacity: Math.pow(1 - distance / connectionDistance, 1.5),
+              startColor: particles[i].color,
+              endColor: particles[j].color,
+              distance: distance,
             });
           }
         }
@@ -102,6 +117,7 @@ const AnimatedHero = () => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Draw connections with enhanced visibility
       connections.forEach((connection) => {
         const gradient = ctx.createLinearGradient(
           connection.start.x,
@@ -110,57 +126,71 @@ const AnimatedHero = () => {
           connection.end.y
         );
 
-        const hueShift = (connection.hue + hue) % 360;
-        const opacity = connection.opacity * 0.5;
+        const startColor = connection.startColor;
+        const endColor = connection.endColor;
+        const opacity = connection.opacity * 0.25; // Increased base opacity
 
-        gradient.addColorStop(0, `hsla(${hueShift}, 80%, 75%, ${opacity})`);
+        gradient.addColorStop(
+          0,
+          `hsla(${startColor.h}, ${startColor.s}%, ${startColor.l}%, ${opacity})`
+        );
         gradient.addColorStop(
           0.5,
-          `hsla(${(hueShift + 15) % 360}, 85%, 80%, ${opacity * 1.2})`
+          `hsla(${(startColor.h + endColor.h) / 2}, 
+          ${(startColor.s + endColor.s) / 2}%, 
+          ${(startColor.l + endColor.l) / 2}%, 
+          ${opacity * 1.2})`
         );
         gradient.addColorStop(
           1,
-          `hsla(${(hueShift + 30) % 360}, 80%, 75%, ${opacity})`
+          `hsla(${endColor.h}, ${endColor.s}%, ${endColor.l}%, ${opacity})`
         );
 
         ctx.beginPath();
         ctx.moveTo(connection.start.x, connection.start.y);
         ctx.lineTo(connection.end.x, connection.end.y);
         ctx.strokeStyle = gradient;
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = Math.max(
+          0.5,
+          (1 - connection.distance / (canvas.width * 0.2)) * 2
+        );
         ctx.stroke();
       });
 
+      // Draw particles with enhanced glow
       particles.forEach((particle) => {
-        const particleHue = (particle.baseColor + hue) % 360;
         const pulseFactor = 1 + Math.sin(particle.pulsePhase) * 0.3;
+        const radius = particle.baseRadius * pulseFactor;
 
-        ctx.beginPath();
-        ctx.arc(
+        // Draw outer glow
+        const gradient = ctx.createRadialGradient(
           particle.x,
           particle.y,
-          particle.radius * 2 * pulseFactor,
           0,
-          Math.PI * 2
+          particle.x,
+          particle.y,
+          radius * 3
         );
-        ctx.fillStyle = `hsla(${particleHue}, 80%, 75%, 0.1)`;
+        gradient.addColorStop(
+          0,
+          `hsla(${particle.color.h}, ${particle.color.s}%, ${particle.color.l}%, 0.3)`
+        );
+        gradient.addColorStop(
+          1,
+          `hsla(${particle.color.h}, ${particle.color.s}%, ${particle.color.l}%, 0)`
+        );
+
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, radius * 3, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
         ctx.fill();
 
+        // Draw particle core
         ctx.beginPath();
-        ctx.arc(
-          particle.x,
-          particle.y,
-          particle.radius * pulseFactor,
-          0,
-          Math.PI * 2
-        );
-        ctx.fillStyle = `hsla(${particleHue}, 85%, 80%, 0.9)`;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = `hsla(${particleHue}, 90%, 85%, 0.8)`;
+        ctx.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${particle.color.h}, ${particle.color.s}%, ${particle.color.l}%, 0.6)`;
         ctx.fill();
       });
-
-      ctx.shadowBlur = 0;
     };
 
     const animate = () => {
@@ -184,8 +214,8 @@ const AnimatedHero = () => {
 
         if (distance < 120) {
           const force = (120 - distance) / 120;
-          particle.vx += (dx / distance) * force * 0.7;
-          particle.vy += (dy / distance) * force * 0.7;
+          particle.vx += (dx / distance) * force * 0.5;
+          particle.vy += (dy / distance) * force * 0.5;
         }
       });
     };
