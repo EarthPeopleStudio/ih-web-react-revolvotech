@@ -27,11 +27,12 @@ const NavbarWrapper = styled.div`
 `;
 
 const Logo = styled.img`
-  width: 130px;
-  height: 35px;
+  width: 45px;
+  height: 45px;
   cursor: pointer;
   transition: transform 0.3s ease;
   opacity: 0.95;
+  object-fit: contain;
 
   &:hover {
     transform: scale(1.05);
@@ -39,8 +40,8 @@ const Logo = styled.img`
   }
 
   @media (max-width: 768px) {
-    width: 110px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
   }
 `;
 

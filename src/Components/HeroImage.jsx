@@ -6,16 +6,17 @@ const HeroWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 160px 8% 100px;
+  padding: 120px 8% 60px;
   color: var(--text-primary);
-  height: 65vh;
+  min-height: 90vh;
   position: relative;
   overflow: hidden;
 
   @media (max-width: 768px) {
     flex-direction: column;
-    padding: 120px 5% 60px;
-    min-height: auto;
+    padding: 80px 5% 40px;
+    text-align: center;
+    gap: 20px;
   }
 `;
 
@@ -24,6 +25,7 @@ const ContentWrapper = styled.div`
   max-width: 650px;
   position: relative;
   z-index: 2;
+  margin-top: -5%;
 `;
 
 const HeroText = styled.h1`
@@ -114,25 +116,25 @@ const ContactBtn = styled(Button)`
 const HeroImage = () => {
   return (
     <HeroWrapper>
-      <AnimatedHero />
       <ContentWrapper>
         <HeroText>
-          Crafting Digital
+          Building Tomorrow's
           <br />
-          Excellence with
+          Digital World
           <br />
-          <span>Innovation</span>
+          <span>Together</span>
         </HeroText>
         <HeroDescription>
-          We specialize in creating cutting-edge digital solutions across web,
-          mobile, and game development. Transform your vision into reality with
-          our expert team.
+          From web apps to games, we bring creative ideas to life. Our passion
+          is crafting digital experiences that make a difference. Let's create
+          something amazing.
         </HeroDescription>
         <ButtonSection>
           <PortfolioBtn>View Portfolio</PortfolioBtn>
           <ContactBtn>Contact Us</ContactBtn>
         </ButtonSection>
       </ContentWrapper>
+      <AnimatedHero />
     </HeroWrapper>
   );
 };

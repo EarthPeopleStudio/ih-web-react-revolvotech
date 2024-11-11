@@ -49,6 +49,20 @@ const ServicesGrid = styled.div`
   }
 `;
 
+const IconWrapper = styled.div`
+  font-size: 3rem;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+`;
+
+const ServiceTitle = styled.h3`
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  transition: color 0.3s ease;
+`;
+
 const ServiceCard = styled.div`
   background: var(--card-bg);
   backdrop-filter: blur(10px);
@@ -61,26 +75,17 @@ const ServiceCard = styled.div`
 
   &:hover {
     transform: translateY(-10px);
-    border-color: var(--border-color);
-    box-shadow: var(--button-glow);
+    border-color: ${(props) => props.hoverColor || "var(--border-color)"};
+    box-shadow: 0 0 20px ${(props) => props.hoverColor || "var(--button-glow)"};
   }
-`;
 
-const IconWrapper = styled.div`
-  font-size: 3rem;
-  color: var(--text-primary);
-  margin-bottom: 20px;
-  transition: all 0.3s ease;
-
-  ${ServiceCard}:hover & {
-    transform: scale(1.1);
+  &:hover ${IconWrapper} {
+    color: ${(props) => props.hoverColor};
   }
-`;
 
-const ServiceTitle = styled.h3`
-  color: var(--text-primary);
-  font-size: 1.5rem;
-  margin-bottom: 15px;
+  &:hover ${ServiceTitle} {
+    color: ${(props) => props.hoverColor};
+  }
 `;
 
 const ServiceDescription = styled.p`
@@ -96,18 +101,21 @@ const Services = () => {
       title: "Web Development",
       description:
         "Create modern, responsive websites and web applications using cutting-edge technologies and best practices.",
+      hoverColor: "#00ff9d", // Neon Green
     },
     {
       icon: <MdOutlineAppSettingsAlt />,
       title: "App Development",
       description:
         "Build powerful mobile applications for iOS and Android platforms with seamless functionality.",
+      hoverColor: "#00e5ff", // Electric Blue
     },
     {
       icon: <FaGamepad />,
       title: "Game Development",
       description:
         "Develop engaging and immersive games across multiple platforms using advanced graphics.",
+      hoverColor: "#ff3366", // Electric Red
     },
   ];
 
@@ -120,7 +128,7 @@ const Services = () => {
       </Description>
       <ServicesGrid>
         {services.map((service, index) => (
-          <ServiceCard key={index}>
+          <ServiceCard key={index} hoverColor={service.hoverColor}>
             <IconWrapper>{service.icon}</IconWrapper>
             <ServiceTitle>{service.title}</ServiceTitle>
             <ServiceDescription>{service.description}</ServiceDescription>
