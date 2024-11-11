@@ -111,18 +111,10 @@ const ContactBtn = styled(Button)`
   }
 `;
 
-const ImageWrapper = styled.div`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  max-width: 600px;
-`;
-
 const HeroImage = () => {
   return (
     <HeroWrapper>
+      <AnimatedHero />
       <ContentWrapper>
         <HeroText>
           Crafting Digital
@@ -141,9 +133,6 @@ const HeroImage = () => {
           <ContactBtn>Contact Us</ContactBtn>
         </ButtonSection>
       </ContentWrapper>
-      <ImageWrapper>
-        <AnimatedHero />
-      </ImageWrapper>
     </HeroWrapper>
   );
 };

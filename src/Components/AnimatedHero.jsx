@@ -1,130 +1,211 @@
-import React from "react";
-import styled, { keyframes, css } from "styled-components";
-
-const float = keyframes`
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(2deg); }
-  100% { transform: translateY(0px) rotate(0deg); }
-`;
-
-const rotate = keyframes`
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-`;
-
-const pulse = keyframes`
-  0% { opacity: 0.5; }
-  50% { opacity: 0.8; }
-  100% { opacity: 0.5; }
-`;
+import React, { useEffect, useRef } from "react";
+import styled from "styled-components";
 
 const HeroContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 600px;
-  height: 400px;
-  position: relative;
-  animation: ${float} 6s ease-in-out infinite;
+  height: 100%;
+  z-index: 1;
 `;
 
-const RotatingGroup = styled.g`
-  animation: ${rotate} 20s linear infinite;
-`;
-
-const PulsingPath = styled.path`
-  animation: ${pulse} 3s ease-in-out infinite;
-`;
-
-const PulsingGroup = styled.g`
-  animation: ${pulse} ${(props) => 3 + props.index}s ease-in-out infinite;
+const Canvas = styled.canvas`
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
 `;
 
 const AnimatedHero = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let animationFrameId;
+    let particles = [];
+    let connections = [];
+    let mousePosition = { x: 0, y: 0 };
+    let hue = 0;
+
+    const setCanvasSize = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+      initParticles();
+    };
+
+    const initParticles = () => {
+      const particleCount = Math.min(
+        Math.floor((canvas.width * canvas.height) / 12000),
+        150
+      );
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 2 + 1.5,
+          vx: (Math.random() - 0.5) * 0.8,
+          vy: (Math.random() - 0.5) * 0.8,
+          baseColor: Math.random() * 360,
+          pulsePhase: Math.random() * Math.PI * 2,
+        });
+      }
+    };
+
+    const updateParticles = () => {
+      hue = (hue + 0.1) % 360;
+
+      particles.forEach((particle) => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        if (particle.x <= 0 || particle.x >= canvas.width) {
+          particle.vx *= -1;
+          particle.x = Math.max(0, Math.min(canvas.width, particle.x));
+        }
+        if (particle.y <= 0 || particle.y >= canvas.height) {
+          particle.vy *= -1;
+          particle.y = Math.max(0, Math.min(canvas.height, particle.y));
+        }
+
+        particle.pulsePhase = (particle.pulsePhase + 0.05) % (Math.PI * 2);
+      });
+    };
+
+    const updateConnections = () => {
+      connections = [];
+      const connectionDistance = Math.min(canvas.width, canvas.height) * 0.25;
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < connectionDistance) {
+            connections.push({
+              start: particles[i],
+              end: particles[j],
+              opacity: Math.pow(1 - distance / connectionDistance, 2),
+              hue: (particles[i].baseColor + particles[j].baseColor) / 2,
+            });
+          }
+        }
+      }
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      connections.forEach((connection) => {
+        const gradient = ctx.createLinearGradient(
+          connection.start.x,
+          connection.start.y,
+          connection.end.x,
+          connection.end.y
+        );
+
+        const hueShift = (connection.hue + hue) % 360;
+        const opacity = connection.opacity * 0.5;
+
+        gradient.addColorStop(0, `hsla(${hueShift}, 80%, 75%, ${opacity})`);
+        gradient.addColorStop(
+          0.5,
+          `hsla(${(hueShift + 15) % 360}, 85%, 80%, ${opacity * 1.2})`
+        );
+        gradient.addColorStop(
+          1,
+          `hsla(${(hueShift + 30) % 360}, 80%, 75%, ${opacity})`
+        );
+
+        ctx.beginPath();
+        ctx.moveTo(connection.start.x, connection.start.y);
+        ctx.lineTo(connection.end.x, connection.end.y);
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+      });
+
+      particles.forEach((particle) => {
+        const particleHue = (particle.baseColor + hue) % 360;
+        const pulseFactor = 1 + Math.sin(particle.pulsePhase) * 0.3;
+
+        ctx.beginPath();
+        ctx.arc(
+          particle.x,
+          particle.y,
+          particle.radius * 2 * pulseFactor,
+          0,
+          Math.PI * 2
+        );
+        ctx.fillStyle = `hsla(${particleHue}, 80%, 75%, 0.1)`;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(
+          particle.x,
+          particle.y,
+          particle.radius * pulseFactor,
+          0,
+          Math.PI * 2
+        );
+        ctx.fillStyle = `hsla(${particleHue}, 85%, 80%, 0.9)`;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = `hsla(${particleHue}, 90%, 85%, 0.8)`;
+        ctx.fill();
+      });
+
+      ctx.shadowBlur = 0;
+    };
+
+    const animate = () => {
+      updateParticles();
+      updateConnections();
+      draw();
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    const handleMouseMove = (event) => {
+      const rect = canvas.getBoundingClientRect();
+      mousePosition = {
+        x: (event.clientX - rect.left) * (canvas.width / rect.width),
+        y: (event.clientY - rect.top) * (canvas.height / rect.height),
+      };
+
+      particles.forEach((particle) => {
+        const dx = particle.x - mousePosition.x;
+        const dy = particle.y - mousePosition.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < 120) {
+          const force = (120 - distance) / 120;
+          particle.vx += (dx / distance) * force * 0.7;
+          particle.vy += (dy / distance) * force * 0.7;
+        }
+      });
+    };
+
+    setCanvasSize();
+    animate();
+
+    window.addEventListener("resize", setCanvasSize);
+    canvas.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", setCanvasSize);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
   return (
     <HeroContainer>
-      <svg width="100%" height="100%" viewBox="0 0 500 500">
-        <defs>
-          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="rgba(255,255,255,0.1)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0.3)" />
-          </linearGradient>
-        </defs>
-
-        {/* Background Grid */}
-        <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-          <path
-            d="M 30 0 L 0 0 0 30"
-            fill="none"
-            stroke="rgba(255,255,255,0.1)"
-            strokeWidth="0.5"
-          />
-        </pattern>
-        <rect width="500" height="500" fill="url(#grid)" />
-
-        {/* Rotating Circles */}
-        <RotatingGroup>
-          <circle
-            cx="250"
-            cy="250"
-            r="150"
-            fill="none"
-            stroke="rgba(255,255,255,0.1)"
-            strokeWidth="0.5"
-          />
-          <circle
-            cx="250"
-            cy="250"
-            r="120"
-            fill="none"
-            stroke="rgba(255,255,255,0.1)"
-            strokeWidth="0.5"
-          />
-          <circle
-            cx="250"
-            cy="250"
-            r="90"
-            fill="none"
-            stroke="rgba(255,255,255,0.1)"
-            strokeWidth="0.5"
-          />
-        </RotatingGroup>
-
-        {/* Central Shape */}
-        <PulsingPath
-          d="M250 150 L350 250 L250 350 L150 250 Z"
-          fill="none"
-          stroke="white"
-          strokeWidth="1"
-        />
-
-        {/* Connection Lines */}
-        {[0, 90, 180, 270].map((angle, i) => (
-          <PulsingGroup
-            key={i}
-            index={i}
-            transform={`rotate(${angle} 250 250)`}
-          >
-            <line
-              x1="250"
-              y1="150"
-              x2="250"
-              y2="100"
-              stroke="white"
-              strokeWidth="1"
-            />
-            <circle cx="250" cy="100" r="3" fill="white" />
-          </PulsingGroup>
-        ))}
-
-        {/* Center Point */}
-        <circle cx="250" cy="250" r="5" fill="url(#grad1)">
-          <animate
-            attributeName="r"
-            values="5;8;5"
-            dur="3s"
-            repeatCount="indefinite"
-          />
-        </circle>
-      </svg>
+      <Canvas ref={canvasRef} />
     </HeroContainer>
   );
 };
