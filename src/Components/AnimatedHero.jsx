@@ -27,11 +27,12 @@ const AnimatedHero = () => {
     let connections = [];
     let mousePosition = { x: 0, y: 0 };
 
-    // Enhanced color palette with better saturation and lightness
+    // Updated color palette with white shades
     const colors = [
-      { h: 0, s: 80, l: 60 }, // Brighter red
-      { h: 120, s: 70, l: 55 }, // Richer green
-      { h: 210, s: 85, l: 65 }, // Vibrant blue
+      { h: 0, s: 0, l: 100 }, // Pure white
+      { h: 0, s: 0, l: 90 }, // Light gray
+      { h: 0, s: 0, l: 80 }, // Slightly darker gray
+      { h: 0, s: 0, l: 95 }, // Almost white
     ];
 
     const setCanvasSize = () => {
@@ -54,12 +55,12 @@ const AnimatedHero = () => {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 2 + 1, // Slightly larger particles
+          radius: Math.random() * 2 + 1,
           vx: (Math.random() - 0.5) * 0.5,
           vy: (Math.random() - 0.5) * 0.5,
           color: color,
           pulsePhase: Math.random() * Math.PI * 2,
-          baseRadius: Math.random() * 2 + 1, // Store base radius for pulsing
+          baseRadius: Math.random() * 2 + 1,
         });
       }
     };
@@ -119,6 +120,10 @@ const AnimatedHero = () => {
 
       // Draw connections with enhanced visibility
       connections.forEach((connection) => {
+        const startColor = connection.startColor;
+        const endColor = connection.endColor;
+        const opacity = connection.opacity * 0.3; // Slightly increased opacity for better visibility
+
         const gradient = ctx.createLinearGradient(
           connection.start.x,
           connection.start.y,
@@ -126,25 +131,12 @@ const AnimatedHero = () => {
           connection.end.y
         );
 
-        const startColor = connection.startColor;
-        const endColor = connection.endColor;
-        const opacity = connection.opacity * 0.25; // Increased base opacity
-
-        gradient.addColorStop(
-          0,
-          `hsla(${startColor.h}, ${startColor.s}%, ${startColor.l}%, ${opacity})`
-        );
+        gradient.addColorStop(0, `hsla(0, 0%, ${startColor.l}%, ${opacity})`);
         gradient.addColorStop(
           0.5,
-          `hsla(${(startColor.h + endColor.h) / 2}, 
-          ${(startColor.s + endColor.s) / 2}%, 
-          ${(startColor.l + endColor.l) / 2}%, 
-          ${opacity * 1.2})`
+          `hsla(0, 0%, ${(startColor.l + endColor.l) / 2}%, ${opacity * 1.2})`
         );
-        gradient.addColorStop(
-          1,
-          `hsla(${endColor.h}, ${endColor.s}%, ${endColor.l}%, ${opacity})`
-        );
+        gradient.addColorStop(1, `hsla(0, 0%, ${endColor.l}%, ${opacity})`);
 
         ctx.beginPath();
         ctx.moveTo(connection.start.x, connection.start.y);
@@ -171,24 +163,18 @@ const AnimatedHero = () => {
           particle.y,
           radius * 3
         );
-        gradient.addColorStop(
-          0,
-          `hsla(${particle.color.h}, ${particle.color.s}%, ${particle.color.l}%, 0.3)`
-        );
-        gradient.addColorStop(
-          1,
-          `hsla(${particle.color.h}, ${particle.color.s}%, ${particle.color.l}%, 0)`
-        );
+        gradient.addColorStop(0, `hsla(0, 0%, ${particle.color.l}%, 0.4)`);
+        gradient.addColorStop(1, `hsla(0, 0%, ${particle.color.l}%, 0)`);
 
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, radius * 3, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
         ctx.fill();
 
-        // Draw particle core
+        // Draw particle core with increased opacity
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${particle.color.h}, ${particle.color.s}%, ${particle.color.l}%, 0.6)`;
+        ctx.fillStyle = `hsla(0, 0%, ${particle.color.l}%, 0.8)`;
         ctx.fill();
       });
     };
