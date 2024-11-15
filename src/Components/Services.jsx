@@ -5,7 +5,7 @@ import { MdOutlineAppSettingsAlt } from "react-icons/md";
 import { FaGamepad } from "react-icons/fa";
 
 const ServicesWrapper = styled.div`
-  padding: 120px 8% 80px;
+  padding: 20px 80px;
   position: relative;
   overflow: hidden;
 `;

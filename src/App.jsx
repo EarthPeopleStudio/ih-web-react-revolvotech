@@ -43,7 +43,7 @@ function App() {
   return (
     <AppWrapper>
       <MatrixRain />
-      <ContentWrapper>
+      <ContentWrapper id="home">
         <Navbar />
         <HeroImage id="home" />
         <Services id="services" />

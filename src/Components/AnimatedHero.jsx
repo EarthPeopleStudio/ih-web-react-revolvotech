@@ -30,7 +30,7 @@ const CanvasContainer = styled.div`
   height: 900px;
   position: relative;
   max-width: 100%;
-  max-height: 90vh;
+  max-height: 100%;
   aspect-ratio: 1;
 
   @media (max-width: 1440px) {
