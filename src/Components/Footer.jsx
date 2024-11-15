@@ -54,8 +54,8 @@ const CompanySection = styled(FooterSection)`
 `;
 
 const Logo = styled.img`
-  width: 130px;
-  height: 35px;
+  width: 45px;
+  height: 45px;
   margin-bottom: 20px;
 `;
 

@@ -132,27 +132,29 @@ const Portfolio = () => {
   const projects = [
     {
       id: 1,
-      title: "E-Commerce Platform",
+      title: "Fps Shooting Game",
       description:
-        "A modern e-commerce solution with real-time inventory management and secure payment processing.",
-      image: "https://via.placeholder.com/400x200",
-      tags: ["React", "Node.js", "MongoDB"],
+        "Fps Shooting Game: 3d Multiplayer Games App 2022 is a complete new thrilling multiplayer shooter game where you play as a team of commandos in an apocalypse co-op story campaign mode.",
+      image:
+        "https://assetstorev1-prd-cdn.unity3d.com/package-screenshot/c4e38545-b95f-4a72-b36e-ae0acc8735f8_scaled.jpg",
+      tags: ["Unity", "Blender", "C#"],
     },
     {
       id: 2,
-      title: "Mobile Game App",
+      title: "Color Detective",
       description:
         "An engaging mobile game built with Unity, featuring advanced graphics and multiplayer functionality.",
-      image: "https://via.placeholder.com/400x200",
-      tags: ["Unity", "C#", "Firebase"],
+      image:
+        "https://play-lh.googleusercontent.com/6qGaHaBDKH2_JqEqNzbryu-5kmlWOpt2Znx5w39T40KQbpThUZwTGzIYLi5bqCnVpA=w2560-h1440-rw",
+      tags: ["Unity", "C#", "Blender"],
     },
     {
       id: 3,
-      title: "AI Chat Assistant",
-      description:
-        "Smart chatbot powered by machine learning, providing automated customer support 24/7.",
-      image: "https://via.placeholder.com/400x200",
-      tags: ["Python", "TensorFlow", "AWS"],
+      title: "Forex Calculator",
+      description: "Forex calculator powered by flutter, ",
+      image:
+        "https://play-lh.googleusercontent.com/WcwGfNTOc2JmFJg4r10Qv-smtiIJXj7x_GX985XHqF_DoBiSQMa4HCrHbP77Arj8Hs0=w2560-h1440-rw",
+      tags: ["Flutter", "MongoDB"],
     },
   ];
 

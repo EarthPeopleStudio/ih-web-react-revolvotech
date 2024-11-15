@@ -52,7 +52,7 @@ const FormWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 30px 20px;
+    padding: 25px 10px;
   }
 `;
 
