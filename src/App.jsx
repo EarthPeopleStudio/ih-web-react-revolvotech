@@ -10,6 +10,8 @@ import Services from "./Components/Services";
 import Stacks from "./Components/Stacks";
 import MatrixRain from "./Components/MatrixRain";
 import PrivacyPolicy from "./Components/PrivacyPolicy";
+import TermsOfService from "./Components/TermsOfService";
+import CookiePolicy from "./Components/CookiePolicy";
 
 const AppWrapper = styled.div`
   --primary-color: #ffffff;
@@ -65,6 +67,12 @@ function App() {
 
             {/* Privacy Policy Page */}
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            
+            {/* Terms of Service Page */}
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            
+            {/* Cookie Policy Page */}
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
           </Routes>
           <Footer />
         </ContentWrapper>

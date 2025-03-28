@@ -215,8 +215,8 @@ const Footer = () => {
         </Copyright>
         <BottomLinks>
           <BottomLink to="/privacy-policy">Privacy Policy</BottomLink>
-          <BottomLink to="#">Terms of Service</BottomLink>
-          <BottomLink to="#">Cookie Policy</BottomLink>
+          <BottomLink to="/terms-of-service">Terms of Service</BottomLink>
+          <BottomLink to="/cookie-policy">Cookie Policy</BottomLink>
         </BottomLinks>
       </BottomBar>
     </FooterContainer>
