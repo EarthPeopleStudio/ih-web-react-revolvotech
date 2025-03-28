@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ContactBanner from "./Components/ContactBanner";
 import Footer from "./Components/Footer";
 import HeroImage from "./Components/HeroImage";
@@ -8,6 +9,7 @@ import Portfolio from "./Components/Portfolio";
 import Services from "./Components/Services";
 import Stacks from "./Components/Stacks";
 import MatrixRain from "./Components/MatrixRain";
+import PrivacyPolicy from "./Components/PrivacyPolicy";
 
 const AppWrapper = styled.div`
   --primary-color: #ffffff;
@@ -41,18 +43,33 @@ const ContentWrapper = styled.div`
 
 function App() {
   return (
-    <AppWrapper>
-      <MatrixRain />
-      <ContentWrapper id="home">
-        <Navbar />
-        <HeroImage id="home" />
-        <Services id="services" />
-        <Portfolio id="projects" />
-        <Stacks id="stacks" />
-        <ContactBanner id="contact" />
-        <Footer />
-      </ContentWrapper>
-    </AppWrapper>
+    <Router>
+      <AppWrapper>
+        <MatrixRain />
+        <ContentWrapper>
+          <Navbar />
+          <Routes>
+            {/* Home Page */}
+            <Route
+              path="/"
+              element={
+                <>
+                  <HeroImage id="home" />
+                  <Services id="services" />
+                  <Portfolio id="projects" />
+                  <Stacks id="stacks" />
+                  <ContactBanner id="contact" />
+                </>
+              }
+            />
+
+            {/* Privacy Policy Page */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          </Routes>
+          <Footer />
+        </ContentWrapper>
+      </AppWrapper>
+    </Router>
   );
 }
 

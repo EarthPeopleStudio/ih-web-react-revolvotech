@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import logoImg from "../assets/Revolvo.png";
 import { FaGithub, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const FooterContainer = styled.footer`
   color: var(--text-primary);
@@ -134,7 +135,7 @@ const BottomLinks = styled.div`
   gap: 30px;
 `;
 
-const BottomLink = styled.a`
+const BottomLink = styled(Link)`
   color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.9rem;
@@ -213,9 +214,9 @@ const Footer = () => {
           © {new Date().getFullYear()} Revolvo. All rights reserved.
         </Copyright>
         <BottomLinks>
-          <BottomLink href="#">Privacy Policy</BottomLink>
-          <BottomLink href="#">Terms of Service</BottomLink>
-          <BottomLink href="#">Cookie Policy</BottomLink>
+          <BottomLink to="/privacy-policy">Privacy Policy</BottomLink>
+          <BottomLink to="#">Terms of Service</BottomLink>
+          <BottomLink to="#">Cookie Policy</BottomLink>
         </BottomLinks>
       </BottomBar>
     </FooterContainer>
