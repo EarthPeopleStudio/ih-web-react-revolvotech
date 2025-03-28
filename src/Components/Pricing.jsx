@@ -941,7 +941,7 @@ const Pricing = () => {
       <AdvantageBanner>
         <AdvantageTitle>The Freelancer Problem</AdvantageTitle>
         <AdvantageText>
-          If you've paid for a service to an individual freelancer or small company, you were probably left with an unfinished product and dissatisfied investors. We understand that frustration.
+          If you've paid for a service from an individual freelancer, you were probably left with a messy, unfinished product and dissatisfied investors. We understand that frustration.
         </AdvantageText>
         <AdvantageText>
           That's why we encourage you to try one of our monthly packages to gauge our teamwork and ensure it meets your standards. Just sit back and relax while we make your most complex idea seem like a walk in the park.
