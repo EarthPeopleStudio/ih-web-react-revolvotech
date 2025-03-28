@@ -12,6 +12,12 @@ import MatrixRain from "./Components/MatrixRain";
 import PrivacyPolicy from "./Components/PrivacyPolicy";
 import TermsOfService from "./Components/TermsOfService";
 import CookiePolicy from "./Components/CookiePolicy";
+import AboutUs from "./Components/AboutUs";
+import OurWork from "./Components/OurWork";
+import Projects from "./Components/Projects";
+import TechShowcase from "./Components/TechShowcase";
+import Pricing from "./Components/Pricing";
+import ContactUs from "./Components/ContactUs";
 
 const AppWrapper = styled.div`
   --primary-color: #ffffff;
@@ -73,6 +79,24 @@ function App() {
             
             {/* Cookie Policy Page */}
             <Route path="/cookie-policy" element={<CookiePolicy />} />
+            
+            {/* About Us Page */}
+            <Route path="/about-us" element={<AboutUs />} />
+            
+            {/* Our Work Page */}
+            <Route path="/our-work" element={<OurWork />} />
+            
+            {/* Projects Page */}
+            <Route path="/projects" element={<Projects />} />
+            
+            {/* Tech Showcase Page */}
+            <Route path="/tech-showcase" element={<TechShowcase />} />
+            
+            {/* Pricing Page */}
+            <Route path="/pricing" element={<Pricing />} />
+            
+            {/* Contact Us Page */}
+            <Route path="/contact-us" element={<ContactUs />} />
           </Routes>
           <Footer />
         </ContentWrapper>

@@ -176,8 +176,8 @@ const Footer = () => {
 
         <FooterSection>
           <FooterTitle>Company</FooterTitle>
-          <FooterLink href="#">About Us</FooterLink>
-          <FooterLink href="#">Our Work</FooterLink>
+          <FooterLink as={Link} to="/about-us">About Us</FooterLink>
+          <FooterLink as={Link} to="/our-work">Our Work</FooterLink>
           <FooterLink href="#">Services</FooterLink>
           <FooterLink href="#">Career</FooterLink>
           <FooterLink href="#">Blog</FooterLink>

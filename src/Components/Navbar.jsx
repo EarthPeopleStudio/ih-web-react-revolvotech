@@ -3,6 +3,7 @@ import styled from "styled-components";
 import logoImg from "../assets/Revolvo.png";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 const NavbarWrapper = styled.div`
   display: flex;
@@ -26,18 +27,22 @@ const NavbarWrapper = styled.div`
   transition: all 0.3s ease;
 `;
 
-const Logo = styled.img`
-  width: 45px;
-  height: 45px;
-  cursor: pointer;
+const Logo = styled(Link)`
+  display: flex;
+  align-items: center;
   transition: transform 0.3s ease;
   opacity: 0.95;
-  object-fit: contain;
-
+  
   &:hover {
     transform: scale(1.05);
     opacity: 1;
   }
+`;
+
+const LogoImg = styled.img`
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
 
   @media (max-width: 768px) {
     width: 40px;
@@ -100,7 +105,37 @@ const NavLinks = styled.a`
   }
 `;
 
-const NavButton = styled.button`
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  position: relative;
+  padding: 5px 0;
+  transition: color 0.3s ease;
+
+  &:after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: var(--text-primary);
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+
+  &:hover {
+    color: var(--text-primary);
+    &:after {
+      width: 100%;
+    }
+  }
+`;
+
+const NavButton = styled(Link)`
   padding: 12px 28px;
   border: none;
   border-radius: 8px;
@@ -112,6 +147,9 @@ const NavButton = styled.button`
   transition: all 0.3s ease;
   box-shadow: var(--button-glow);
   margin-left: 20px;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
 
   &:hover {
     transform: translateY(-2px);
@@ -179,28 +217,27 @@ const Navbar = () => {
     }
   };
 
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
     <NavbarWrapper scrolled={scrolled}>
-      <Logo
-        src={logoImg}
-        alt="Revolvo"
-        onClick={() => scrollToSection("home")}
-      />
+      <Logo to="/">
+        <LogoImg src={logoImg} alt="Revolvo" />
+      </Logo>
 
       <MenuButton onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? <IoClose /> : <HiMenuAlt3 />}
       </MenuButton>
 
       <NavMenu isOpen={isOpen}>
-        <NavLinks onClick={() => scrollToSection("home")}>Home</NavLinks>
-        <NavLinks onClick={() => scrollToSection("projects")}>
-          Projects
-        </NavLinks>
-        <NavLinks onClick={() => scrollToSection("stacks")}>Stack</NavLinks>
+        <StyledLink to="/" onClick={closeMenu}>Home</StyledLink>
+        <StyledLink to="/projects" onClick={closeMenu}>Projects</StyledLink>
+        <StyledLink to="/tech-showcase" onClick={closeMenu}>Tech Showcase</StyledLink>
         <NavLinks onClick={() => scrollToSection("contact")}>Contact</NavLinks>
-        <NavButton onClick={() => scrollToSection("contact")}>
-          Get Quote
-        </NavButton>
+        <StyledLink to="/pricing" onClick={closeMenu}>Pricing</StyledLink>
+        <NavButton to="/contact-us" onClick={closeMenu}>Get Quote</NavButton>
       </NavMenu>
     </NavbarWrapper>
   );
