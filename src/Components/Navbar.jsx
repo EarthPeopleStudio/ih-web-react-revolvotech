@@ -234,9 +234,9 @@ const Navbar = () => {
       <NavMenu isOpen={isOpen}>
         <StyledLink to="/" onClick={closeMenu}>Home</StyledLink>
         <StyledLink to="/projects" onClick={closeMenu}>Projects</StyledLink>
+        <StyledLink to="/pricing" onClick={closeMenu}>Pricing</StyledLink>
         <StyledLink to="/tech-showcase" onClick={closeMenu}>Tech Showcase</StyledLink>
         <NavLinks onClick={() => scrollToSection("contact")}>Contact</NavLinks>
-        <StyledLink to="/pricing" onClick={closeMenu}>Pricing</StyledLink>
         <NavButton to="/contact-us" onClick={closeMenu}>Get Quote</NavButton>
       </NavMenu>
     </NavbarWrapper>
