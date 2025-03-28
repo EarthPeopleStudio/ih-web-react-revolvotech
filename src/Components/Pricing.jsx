@@ -27,8 +27,29 @@ const Subtitle = styled.p`
   color: var(--text-secondary);
   font-size: 1.2rem;
   line-height: 1.8;
-  margin-bottom: 60px;
+  margin-bottom: 30px;
   max-width: 800px;
+`;
+
+const AdvantageBanner = styled.div`
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 60px;
+`;
+
+const AdvantageTitle = styled.h2`
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+`;
+
+const AdvantageText = styled.p`
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 10px;
 `;
 
 const PricingGrid = styled.div`
@@ -206,17 +227,19 @@ const ControlButton = styled.button`
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: ${props => props.add ? "#4CAF50" : "#F44336"};
+  background: ${props => props.add ? "#4A4A4A" : "#2A2A2A"};
   color: white;
   font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
+  border: 1px solid ${props => props.add ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0.1)"};
 
   &:hover {
-    opacity: 0.8;
+    background: ${props => props.add ? "#555555" : "#333333"};
+    transform: ${props => props.add ? "scale(1.05)" : "scale(0.95)"};
   }
 `;
 
@@ -291,13 +314,65 @@ const ContactButton = styled.button`
   }
 `;
 
+const InfoSection = styled.div`
+  margin-top: 60px;
+`;
+
+const InfoTitle = styled.h3`
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+`;
+
+const InfoBlock = styled.div`
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+  border: 1px solid var(--border-color);
+`;
+
+const DiscountGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+const DiscountCard = styled.div`
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+`;
+
+const DiscountHours = styled.div`
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+`;
+
+const DiscountPercent = styled.div`
+  font-size: 1.1rem;
+  color: #4CAF50;
+  font-weight: 600;
+`;
+
+const DiscountText = styled.p`
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 8px;
+`;
+
 const resources = [
-  { id: 1, name: "Web Developer", count: 0, experience: "junior" },
-  { id: 2, name: "Mobile Developer", count: 0, experience: "junior" },
-  { id: 3, name: "Game Developer", count: 0, experience: "junior" },
-  { id: 4, name: "UI/UX Designer", count: 0, experience: "junior" },
-  { id: 5, name: "SQA Engineer", count: 0, experience: "junior" },
-  { id: 6, name: "Product Manager", count: 0, experience: "junior" },
+  { id: 1, name: "Web Developer", count: 0, experience: "intermediate" },
+  { id: 2, name: "Mobile Developer", count: 0, experience: "intermediate" },
+  { id: 3, name: "Game Developer", count: 0, experience: "intermediate" },
+  { id: 4, name: "UI/UX Designer", count: 0, experience: "intermediate" },
+  { id: 5, name: "SQA Engineer", count: 0, experience: "intermediate" },
+  { id: 6, name: "Product Manager", count: 0, experience: "intermediate" },
 ];
 
 const Pricing = () => {
@@ -317,7 +392,7 @@ const Pricing = () => {
     setCustomResources(prev => 
       prev.map(resource => 
         resource.id === id 
-          ? { ...resource, experience: resource.experience === "junior" ? "senior" : "junior" }
+          ? { ...resource, experience: resource.experience === "intermediate" ? "veteran" : "intermediate" }
           : resource
       )
     );
@@ -326,7 +401,7 @@ const Pricing = () => {
   const calculateTotal = () => {
     const hourlyRate = 176; // 176 working hours
     return customResources.reduce((total, resource) => {
-      const rate = resource.experience === "junior" ? 3 : 6;
+      const rate = resource.experience === "intermediate" ? 3 : 6;
       return total + (resource.count * rate * hourlyRate);
     }, 0);
   };
@@ -338,6 +413,18 @@ const Pricing = () => {
         Choose the perfect plan for your business needs. All of our plans include dedicated resources
         working 176 hours per month (8-hour workday, Saturday/Sunday off).
       </Subtitle>
+      
+      <AdvantageBanner>
+        <AdvantageTitle>Why Choose a Team Over Individual Freelancers?</AdvantageTitle>
+        <AdvantageText>
+          Hiring individual freelancers may seem cost-effective initially, but often results in delayed deliverables and quality issues. 
+          Our team-based approach ensures synchronized development, consistent quality, proper code reviews, and accountability.
+        </AdvantageText>
+        <AdvantageText>
+          By choosing one of our tiers, you get a dedicated team that collaborates efficiently, follows 
+          industry best practices, and delivers a polished product that meets your business objectives.
+        </AdvantageText>
+      </AdvantageBanner>
       
       <PricingGrid>
         <PricingCard>
@@ -352,12 +439,13 @@ const Pricing = () => {
           </PriceContainer>
           
           <FeatureList>
-            <FeatureItem>No-Low Code Developer with 2-3 years experience</FeatureItem>
+            <FeatureItem>Intermediate Developer with 2-3 years experience</FeatureItem>
             <FeatureItem>UI/UX Designer with 2-3 years experience</FeatureItem>
             <FeatureItem>Part-time Project Manager</FeatureItem>
             <FeatureItem>Minimal iterations</FeatureItem>
             <FeatureItem>Basic Q/A testing</FeatureItem>
             <FeatureItem>176 working hours per month</FeatureItem>
+            <FeatureItem>30% downpayment required</FeatureItem>
           </FeatureList>
           
           <SelectButton>Get Started</SelectButton>
@@ -375,13 +463,14 @@ const Pricing = () => {
           </PriceContainer>
           
           <FeatureList>
-            <FeatureItem>Experienced Engineer with 5+ years experience</FeatureItem>
-            <FeatureItem>Experienced UI/UX Engineer with 5+ years experience</FeatureItem>
+            <FeatureItem>Veteran Engineer with 5-7+ years experience</FeatureItem>
+            <FeatureItem>Veteran UI/UX Engineer with 5-7+ years experience</FeatureItem>
             <FeatureItem>Dedicated Product Manager</FeatureItem>
             <FeatureItem>Weekly or bi-weekly deliverables</FeatureItem>
             <FeatureItem>Up to 2 iterations per month</FeatureItem>
             <FeatureItem>Thorough Q/A Testing</FeatureItem>
             <FeatureItem>176 working hours per month</FeatureItem>
+            <FeatureItem>25% downpayment required</FeatureItem>
           </FeatureList>
           
           <SelectButton>Get Started</SelectButton>
@@ -400,12 +489,13 @@ const Pricing = () => {
           
           <FeatureList>
             <FeatureItem>Custom team composition</FeatureItem>
-            <FeatureItem>Mix of junior and senior resources</FeatureItem>
+            <FeatureItem>Mix of intermediate and veteran resources</FeatureItem>
             <FeatureItem>Dedicated project & product management</FeatureItem>
             <FeatureItem>Flexible iteration cycles</FeatureItem>
             <FeatureItem>Comprehensive QA and testing</FeatureItem>
             <FeatureItem>176 working hours per month</FeatureItem>
             <FeatureItem>Priority support and consulting</FeatureItem>
+            <FeatureItem>25% downpayment required</FeatureItem>
           </FeatureList>
           
           <SelectButton>Contact Us</SelectButton>
@@ -421,20 +511,20 @@ const Pricing = () => {
               <ResourceTitle>{resource.name}</ResourceTitle>
               <ExperienceSelect>
                 <ExperienceOption 
-                  selected={resource.experience === "junior"}
-                  onClick={() => resource.experience !== "junior" && toggleExperience(resource.id)}
+                  selected={resource.experience === "intermediate"}
+                  onClick={() => resource.experience !== "intermediate" && toggleExperience(resource.id)}
                 >
-                  2-3 Years ($3/h)
+                  Intermediate ($3/h)
                 </ExperienceOption>
                 <ExperienceOption 
-                  selected={resource.experience === "senior"}
-                  onClick={() => resource.experience !== "senior" && toggleExperience(resource.id)}
+                  selected={resource.experience === "veteran"}
+                  onClick={() => resource.experience !== "veteran" && toggleExperience(resource.id)}
                 >
-                  5+ Years ($6/h)
+                  Veteran ($6/h)
                 </ExperienceOption>
               </ExperienceSelect>
               <ResourceControls>
-                <ControlButton onClick={() => updateResourceCount(resource.id, -1)}>-</ControlButton>
+                <ControlButton onClick={() => updateResourceCount(resource.id, -1)}>−</ControlButton>
                 <ResourceCount>{resource.count}</ResourceCount>
                 <ControlButton add onClick={() => updateResourceCount(resource.id, 1)}>+</ControlButton>
               </ResourceControls>
@@ -449,6 +539,46 @@ const Pricing = () => {
         
         <ContactButton>Contact Us for Details</ContactButton>
       </CustomTierWrapper>
+      
+      <InfoSection>
+        <InfoBlock>
+          <InfoTitle>Prepaid Hour Blocks - Save More</InfoTitle>
+          <AdvantageText>
+            Prepay for larger blocks of hours and enjoy significant discounts on our standard rates.
+            Perfect for long-term projects or ongoing development needs.
+          </AdvantageText>
+          
+          <DiscountGrid>
+            <DiscountCard>
+              <DiscountHours>500 Hours</DiscountHours>
+              <DiscountPercent>5% Discount</DiscountPercent>
+              <DiscountText>Best for short-term projects</DiscountText>
+            </DiscountCard>
+            
+            <DiscountCard>
+              <DiscountHours>1,000 Hours</DiscountHours>
+              <DiscountPercent>10% Discount</DiscountPercent>
+              <DiscountText>Ideal for medium-sized projects</DiscountText>
+            </DiscountCard>
+            
+            <DiscountCard>
+              <DiscountHours>2,000 Hours</DiscountHours>
+              <DiscountPercent>15% Discount</DiscountPercent>
+              <DiscountText>Perfect for enterprise solutions</DiscountText>
+            </DiscountCard>
+          </DiscountGrid>
+        </InfoBlock>
+        
+        <InfoBlock>
+          <InfoTitle>Important Notes</InfoTitle>
+          <FeatureList>
+            <FeatureItem>A 25-30% downpayment is required before project initiation to secure resources</FeatureItem>
+            <FeatureItem>Pricing is subject to annual adjustments based on market rates and inflation (typically 10-15%)</FeatureItem>
+            <FeatureItem>Custom quotes available for specialized technology stacks or industry-specific requirements</FeatureItem>
+            <FeatureItem>All prices are in USD and exclude any applicable taxes or third-party service costs</FeatureItem>
+          </FeatureList>
+        </InfoBlock>
+      </InfoSection>
     </PricingWrapper>
   );
 };
