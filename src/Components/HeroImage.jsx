@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import AnimatedHero from "./AnimatedHero";
+import { Link } from "react-router-dom";
 
 const HeroWrapper = styled.div`
   display: flex;
@@ -89,11 +90,19 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const PortfolioBtn = styled(Button)`
+const PortfolioBtn = styled(Link)`
   background: var(--button-bg);
   border: none;
   color: var(--button-text);
   box-shadow: var(--button-glow);
+  padding: 15px 35px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 
   &:hover {
     transform: translateY(-2px);
@@ -102,10 +111,18 @@ const PortfolioBtn = styled(Button)`
   }
 `;
 
-const ContactBtn = styled(Button)`
+const PricingBtn = styled(Link)`
   background: transparent;
   border: 1px solid var(--button-border);
   color: var(--button-text);
+  padding: 15px 35px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
 
   &:hover {
     background: var(--button-hover-bg);
@@ -130,8 +147,8 @@ const HeroImage = () => {
           something amazing.
         </HeroDescription>
         <ButtonSection>
-          <PortfolioBtn>View Portfolio</PortfolioBtn>
-          <ContactBtn>Contact Us</ContactBtn>
+          <PortfolioBtn to="/projects">View Portfolio</PortfolioBtn>
+          <PricingBtn to="/pricing">Check Pricing</PricingBtn>
         </ButtonSection>
       </ContentWrapper>
       <AnimatedHero />

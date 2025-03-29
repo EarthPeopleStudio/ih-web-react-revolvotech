@@ -4,13 +4,14 @@ import styled from "styled-components";
 import logoImg from "../assets/Revolvo.png";
 import { FaGithub, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { commonStyles } from "../themes";
 
 const FooterContainer = styled.footer`
   color: var(--text-primary);
-  padding: 80px 8% 40px;
+  padding: var(--spacing-section) 8% var(--spacing-xl);
   position: relative;
   overflow: hidden;
-  background: var(--card-bg);
+  background: var(--dark-card-bg);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
@@ -44,8 +45,7 @@ const FooterContent = styled.div`
 `;
 
 const FooterSection = styled.div`
-  display: flex;
-  flex-direction: column;
+  ${commonStyles.flexColumn}
 `;
 
 const CompanySection = styled(FooterSection)`
@@ -57,26 +57,25 @@ const CompanySection = styled(FooterSection)`
 const Logo = styled.img`
   width: 45px;
   height: 45px;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-md);
 `;
 
 const CompanyDescription = styled.p`
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 25px;
+  ${commonStyles.bodyText}
+  margin-bottom: var(--spacing-lg);
   max-width: 400px;
 `;
 
 const SocialLinks = styled.div`
-  display: flex;
-  gap: 20px;
-  margin-top: 5px;
+  ${commonStyles.flexRow}
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xs);
 `;
 
 const SocialIcon = styled.a`
   color: var(--text-primary);
-  font-size: 20px;
-  transition: all 0.3s ease;
+  font-size: var(--font-size-lg);
+  transition: all var(--transition-normal);
 
   &:hover {
     transform: translateY(-3px);
@@ -85,17 +84,17 @@ const SocialIcon = styled.a`
 `;
 
 const FooterTitle = styled.h3`
-  font-size: 1.2rem;
-  margin-bottom: 25px;
-  font-weight: 600;
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-lg);
+  font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
 `;
 
 const FooterLink = styled.a`
   color: var(--text-secondary);
   text-decoration: none;
-  margin-bottom: 12px;
-  transition: all 0.3s ease;
+  margin-bottom: var(--spacing-sm);
+  transition: all var(--transition-normal);
   cursor: pointer;
 
   &:hover {
@@ -106,40 +105,38 @@ const FooterLink = styled.a`
 
 const ContactInfo = styled.div`
   color: var(--text-secondary);
-  margin-bottom: 12px;
-  line-height: 1.6;
+  margin-bottom: var(--spacing-sm);
+  line-height: var(--line-height-relaxed);
 `;
 
 const BottomBar = styled.div`
   margin-top: 60px;
-  padding-top: 20px;
+  padding-top: var(--spacing-md);
   border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  ${commonStyles.flexBetween}
 
   @media (max-width: 576px) {
     flex-direction: column;
-    gap: 20px;
+    gap: var(--spacing-md);
     text-align: center;
   }
 `;
 
 const Copyright = styled.p`
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: var(--font-size-sm);
 `;
 
 const BottomLinks = styled.div`
-  display: flex;
+  ${commonStyles.flexRow}
   gap: 30px;
 `;
 
 const BottomLink = styled(Link)`
   color: var(--text-secondary);
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.3s ease;
+  font-size: var(--font-size-sm);
+  transition: color var(--transition-normal);
   cursor: pointer;
 
   &:hover {
@@ -195,16 +192,16 @@ const Footer = () => {
         <FooterSection>
           <FooterTitle>Contact</FooterTitle>
           <ContactInfo>
-            1234 Digital Avenue
+            Väinämöisenkatu 11
             <br />
-            Tech District
+            33540 Tampere
             <br />
-            California, 90210
+            Finland
           </ContactInfo>
           <ContactInfo>
-            contact@revolvo.com
+            hey@revolvo.tech
             <br />
-            +1 (555) 123-4567
+            +358 41 7408087
           </ContactInfo>
         </FooterSection>
       </FooterContent>

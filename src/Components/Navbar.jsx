@@ -4,13 +4,14 @@ import logoImg from "../assets/Revolvo.png";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { commonStyles } from "../themes";
 
 const NavbarWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: var(--text-primary);
-  background: ${(props) => (props.scrolled ? "var(--card-bg)" : "transparent")};
+  background: ${(props) => (props.scrolled ? "var(--dark-card-bg)" : "transparent")};
   backdrop-filter: ${(props) => (props.scrolled ? "blur(10px)" : "none")};
   -webkit-backdrop-filter: ${(props) =>
     props.scrolled ? "blur(10px)" : "none"};
@@ -20,17 +21,17 @@ const NavbarWrapper = styled.div`
   position: fixed;
   width: 100%;
   top: 0;
-  z-index: 1000;
+  z-index: var(--z-index-header);
   border-bottom: ${(props) =>
     props.scrolled ? "1px solid var(--border-color)" : "none"};
   box-sizing: border-box;
-  transition: all 0.3s ease;
+  transition: all var(--transition-normal);
 `;
 
 const Logo = styled(Link)`
   display: flex;
   align-items: center;
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-normal);
   opacity: 0.95;
   
   &:hover {
@@ -65,11 +66,11 @@ const NavMenu = styled.ul`
     right: ${(props) => (props.isOpen ? "0" : "-100%")};
     width: 70%;
     height: 100vh;
-    background: var(--card-bg);
+    background: var(--dark-card-bg);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     padding: 100px 40px;
-    transition: 0.3s ease-in-out;
+    transition: var(--transition-normal);
     gap: 40px;
     border-left: 1px solid var(--border-color);
   }
@@ -79,11 +80,11 @@ const NavLinks = styled.a`
   text-decoration: none;
   color: var(--text-secondary);
   cursor: pointer;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
   position: relative;
   padding: 5px 0;
-  transition: color 0.3s ease;
+  transition: color var(--transition-normal);
 
   &:after {
     content: "";
@@ -93,7 +94,7 @@ const NavLinks = styled.a`
     bottom: -2px;
     left: 0;
     background: var(--text-primary);
-    transition: width 0.3s ease;
+    transition: width var(--transition-normal);
     border-radius: 2px;
   }
 
@@ -109,11 +110,11 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   color: var(--text-secondary);
   cursor: pointer;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
   position: relative;
   padding: 5px 0;
-  transition: color 0.3s ease;
+  transition: color var(--transition-normal);
 
   &:after {
     content: "";
@@ -123,7 +124,7 @@ const StyledLink = styled(Link)`
     bottom: -2px;
     left: 0;
     background: var(--text-primary);
-    transition: width 0.3s ease;
+    transition: width var(--transition-normal);
     border-radius: 2px;
   }
 
@@ -136,26 +137,58 @@ const StyledLink = styled(Link)`
 `;
 
 const NavButton = styled(Link)`
-  padding: 12px 28px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: var(--button-bg);
-  color: var(--button-text);
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-  box-shadow: var(--button-glow);
+  ${commonStyles.button}
   margin-left: 20px;
   text-decoration: none;
   display: inline-block;
   text-align: center;
-
-  &:hover {
-    transform: translateY(-2px);
-    background: var(--button-hover-bg);
-    box-shadow: var(--button-hover-glow);
+  font-size: 0.95rem;
+  background: var(--highlight);
+  box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
   }
+  
+  &:hover {
+    background: var(--highlightHover);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 0 25px rgba(255, 105, 180, 0.6), 0 0 15px rgba(255, 105, 180, 0.4);
+    
+    &:before {
+      transform: translateX(100%);
+    }
+  }
+  
+  &:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.4), 0 0 8px rgba(255, 105, 180, 0.3);
+  }
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+    }
+    50% {
+      box-shadow: 0 0 18px rgba(255, 105, 180, 0.4), 0 0 10px rgba(255, 105, 180, 0.3);
+    }
+    100% {
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+    }
+  }
+  
+  animation: pulse 2s infinite ease-in-out;
 
   @media (max-width: 768px) {
     margin-left: 0;
@@ -172,7 +205,7 @@ const MenuButton = styled.button`
   z-index: 1001;
   padding: 0;
   margin: 0;
-  transition: color 0.3s ease;
+  transition: color var(--transition-normal);
 
   &:hover {
     color: var(--text-primary);
@@ -235,9 +268,9 @@ const Navbar = () => {
         <StyledLink to="/" onClick={closeMenu}>Home</StyledLink>
         <StyledLink to="/projects" onClick={closeMenu}>Projects</StyledLink>
         <StyledLink to="/pricing" onClick={closeMenu}>Pricing</StyledLink>
+        <StyledLink to="/testimonials" onClick={closeMenu}>Testimonials</StyledLink>
         <StyledLink to="/tech-showcase" onClick={closeMenu}>Tech Showcase</StyledLink>
-        <NavLinks onClick={() => scrollToSection("contact")}>Contact</NavLinks>
-        <NavButton to="/contact-us" onClick={closeMenu}>Get Quote</NavButton>
+        <NavButton to="/contact-us" onClick={closeMenu}>Get Started</NavButton>
       </NavMenu>
     </NavbarWrapper>
   );

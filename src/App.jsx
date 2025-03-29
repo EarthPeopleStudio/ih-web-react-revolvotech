@@ -15,31 +15,14 @@ import CookiePolicy from "./Components/CookiePolicy";
 import AboutUs from "./Components/AboutUs";
 import OurWork from "./Components/OurWork";
 import Projects from "./Components/Projects";
-import TechShowcase from "./Components/TechShowcase";
+import TechShowcaseSimple from "./Components/TechShowcaseSimple";
 import Pricing from "./Components/Pricing";
 import ContactUs from "./Components/ContactUs";
+import Testimonials from "./Components/Testimonials";
+import darkTheme, { themeToVars } from "./themes";
 
 const AppWrapper = styled.div`
-  --primary-color: #ffffff;
-  --secondary-color: #e0e0e0;
-  --accent-color: #ffffff;
-  --dark-bg: #000000;
-  --card-bg: rgba(25, 25, 25, 0.95);
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --gradient-primary: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
-  --gradient-hover: linear-gradient(135deg, #a0a0a0 0%, #ffffff 100%);
-  --border-color: rgba(255, 255, 255, 0.1);
-  --shadow-color: rgba(0, 0, 0, 0.3);
-
-  /* Updated button styles */
-  --button-bg: #131313;
-  --button-border: rgba(255, 255, 255, 0.1);
-  --button-glow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  --button-hover-bg: #1a1a1a;
-  --button-hover-glow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  --button-text: #ffffff;
-
+  ${() => themeToVars(darkTheme)}
   background-color: var(--dark-bg);
   position: relative;
 `;
@@ -66,7 +49,6 @@ function App() {
                   <Services id="services" />
                   <Portfolio id="projects" />
                   <Stacks id="stacks" />
-                  <ContactBanner id="contact" />
                 </>
               }
             />
@@ -90,10 +72,13 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             
             {/* Tech Showcase Page */}
-            <Route path="/tech-showcase" element={<TechShowcase />} />
+            <Route path="/tech-showcase" element={<TechShowcaseSimple />} />
             
             {/* Pricing Page */}
             <Route path="/pricing" element={<Pricing />} />
+            
+            {/* Testimonials Page */}
+            <Route path="/testimonials" element={<Testimonials />} />
             
             {/* Contact Us Page */}
             <Route path="/contact-us" element={<ContactUs />} />

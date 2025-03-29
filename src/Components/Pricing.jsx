@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const PricingWrapper = styled.div`
   padding: 120px 8% 80px;
@@ -99,19 +100,20 @@ const AdvantageText = styled.p`
 const PricingGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 35px;
-  margin-bottom: 80px;
+  gap: 50px;
+  margin-bottom: 100px;
+  margin-top: 40px;
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 70px;
   }
 `;
 
 const PricingCard = styled.div`
   background: var(--card-bg);
   border-radius: 20px;
-  padding: 35px 35px;
+  padding: 40px 35px;
   display: flex;
   flex-direction: column;
   transition: transform 0.4s ease, box-shadow 0.4s ease;
@@ -151,7 +153,7 @@ const PricingCard = styled.div`
     
     @media (max-width: 900px) {
       transform: scale(1);
-      margin: 30px 0;
+      margin: 40px 0;
     }
   `}
 
@@ -180,7 +182,7 @@ const PricingCard = styled.div`
 const PlanName = styled.h2`
   font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   color: var(--text-primary);
   position: relative;
   display: inline-block;
@@ -231,12 +233,12 @@ const PlanDescription = styled.p`
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.5;
-  margin-bottom: 18px;
+  margin-bottom: 25px;
   flex-grow: 0;
 `;
 
 const PriceContainer = styled.div`
-  margin-bottom: 18px;
+  margin-bottom: 25px;
   margin-top: 0;
 `;
 
@@ -267,7 +269,7 @@ const CustomPrice = styled.div`
 const FeatureList = styled.ul`
   list-style-type: none;
   padding: 0;
-  margin: 0 0 25px 0;
+  margin: 0 0 35px 0;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -276,7 +278,7 @@ const FeatureList = styled.ul`
 
 const FeatureItem = styled.li`
   color: var(--text-secondary);
-  padding: 6px 0;
+  padding: 8px 0;
   font-size: 0.95rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
@@ -310,7 +312,7 @@ const CrossedFeatureItem = styled(FeatureItem)`
   }
 `;
 
-const SelectButton = styled.button`
+const SelectButton = styled(Link)`
   padding: 16px 0;
   width: 100%;
   border: none;
@@ -326,6 +328,9 @@ const SelectButton = styled.button`
   position: relative;
   overflow: hidden;
   letter-spacing: 0.5px;
+  text-align: center;
+  text-decoration: none;
+  display: block;
 
   &:hover {
     background: var(--button-hover-bg);
@@ -518,7 +523,7 @@ const TotalPrice = styled.p`
   color: white;
 `;
 
-const ContactButton = styled.button`
+const ContactButton = styled(Link)`
   padding: 16px 40px;
   border: none;
   border-radius: 30px;
@@ -532,6 +537,8 @@ const ContactButton = styled.button`
   margin: 40px auto 0;
   min-width: 220px;
   box-shadow: var(--button-glow);
+  text-align: center;
+  text-decoration: none;
 
   &:hover {
     background: var(--button-hover-bg);
@@ -611,23 +618,236 @@ const DiscountText = styled.p`
 `;
 
 const CountdownContainer = styled.div`
-  background: linear-gradient(to right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 18px 25px;
-  margin-bottom: 35px;
+  background: linear-gradient(45deg, rgba(25, 25, 25, 0.9), rgba(40, 40, 40, 0.9));
+  border: 1px solid rgba(255, 84, 112, 0.3);
+  border-radius: 20px;
+  padding: 35px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 84, 112, 0.15);
+  overflow: hidden;
+  transform: perspective(1000px) rotateX(2deg);
+  
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #ff5470, #ff7eb3);
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 0 15px rgba(255, 84, 112, 0.5);
+  }
+  
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at top right, rgba(255, 84, 112, 0.2), transparent 70%);
+    pointer-events: none;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 30px 25px;
+    transform: perspective(1000px) rotateX(1deg);
+  }
+`;
+
+const CountdownHeader = styled.h3`
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+`;
+
+const CountdownUrgency = styled.p`
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 25px;
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    margin-top: 18px;
+  }
+`;
+
+const CountdownTimerDisplay = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin: 15px 0;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+`;
+
+const CountdownUnit = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  
+  @media (max-width: 768px) {
+    min-width: 70px;
+  }
+`;
+
+const CountdownNumber = styled.div`
+  background: rgba(0, 0, 0, 0.5);
+  color: #ff5470;
+  font-size: 2.4rem;
+  font-weight: 800;
+  border-radius: 12px;
+  min-width: 85px;
+  height: 85px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
-  color: var(--text-secondary);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  width: 50%;
-  margin-left: auto;
-  margin-right: auto;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: 1px;
+  clip-path: polygon(
+    5% 0%, 
+    95% 0%, 
+    100% 5%, 
+    100% 95%, 
+    95% 100%, 
+    5% 100%, 
+    0% 95%, 
+    0% 5%
+  );
+  
+  &:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.12);
+  }
   
   @media (max-width: 768px) {
+    font-size: 2rem;
+    min-width: 75px;
+    height: 75px;
+  }
+`;
+
+const CountdownLabel = styled.div`
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+`;
+
+const CountdownButton = styled(Link)`
+  background: linear-gradient(90deg, #ff5470, #ff7eb3);
+  color: white;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 25px;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  border: none;
+  box-shadow: 0 8px 20px rgba(255, 84, 112, 0.3);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  clip-path: polygon(
+    5% 0%, 
+    95% 0%, 
+    100% 30%, 
+    100% 70%, 
+    95% 100%, 
+    5% 100%, 
+    0% 70%, 
+    0% 30%
+  );
+  
+  &:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(255, 84, 112, 0.5);
+  }
+  
+  &:active {
+    transform: translateY(1px);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 12px 24px;
+  }
+`;
+
+const PulsingDot = styled.span`
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-color: #ff5470;
+  border-radius: 50%;
+  margin-right: 12px;
+  position: relative;
+  box-shadow: 0 0 10px rgba(255, 84, 112, 0.6);
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
+    height: 100%;
+    background-color: #ff5470;
+    border-radius: 50%;
+    animation: pulse-dot 1.5s infinite;
+    opacity: 0.8;
+  }
+  
+  @keyframes pulse-dot {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(3);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
   }
 `;
 
@@ -783,50 +1003,6 @@ const TooltipContent = styled.div`
   }
 `;
 
-const TechStackExplanation = styled.div`
-  background: linear-gradient(to bottom, var(--card-bg), rgba(20, 20, 20, 0.95));
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 40px 50px;
-  margin: 60px 0;
-  color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.6;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-  
-  @media (max-width: 768px) {
-    padding: 30px 25px;
-  }
-`;
-
-const TechCard = styled.div`
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 12px;
-  padding: 20px 25px;
-  margin: 15px 0;
-  border: 1px solid var(--border-color);
-  transition: all 0.25s ease;
-  
-  h4 {
-    color: var(--text-primary);
-    font-size: 1.2rem;
-    margin-bottom: 12px;
-    font-weight: 600;
-  }
-  
-  p {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
-  
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
-    border-color: rgba(255, 255, 255, 0.15);
-  }
-`;
-
 const resources = [
   { id: 1, name: "Front-End Web Developer", count: 0, experience: "intermediate" },
   { id: 2, name: "Back-End Web Developer", count: 0, experience: "intermediate" },
@@ -930,6 +1106,30 @@ const Pricing = () => {
     return savings.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  // Add keyframes for pulse animation
+  useEffect(() => {
+    const styleSheet = document.styleSheets[0];
+    const keyframes = `
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 18px rgba(255, 105, 180, 0.4), 0 0 10px rgba(255, 105, 180, 0.3);
+        }
+        100% {
+          box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+        }
+      }
+    `;
+    
+    try {
+      styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+    } catch (e) {
+      console.error("Failed to insert keyframes rule:", e);
+    }
+  }, []);
+
   return (
     <PricingWrapper>
       <Title>Our Pricing</Title>
@@ -938,63 +1138,34 @@ const Pricing = () => {
         working efficiently to bring your vision to life globally, with teams serving clients in the USA, UK, Europe, Australia, and Dubai.
       </Subtitle>
       
-      <AdvantageBanner>
-        <AdvantageTitle>The Freelancer Problem</AdvantageTitle>
-        <AdvantageText>
-          If you've paid for a service from an individual freelancer, you were probably left with a messy, unfinished product and dissatisfied investors. We understand that frustration.
-        </AdvantageText>
-        <AdvantageText>
-          That's why we encourage you to try one of our monthly packages to gauge our teamwork and ensure it meets your standards. Just sit back and relax while we make your most complex idea seem like a walk in the park.
-        </AdvantageText>
-      </AdvantageBanner>
-      
-      <AdvantageBanner>
-        <AdvantageTitle>Why Choose a Team Over Individual Freelancers?</AdvantageTitle>
-        <AdvantageText>
-          Hiring individual freelancers may seem cost-effective initially, but often results in delayed deliverables and quality issues. 
-          Our team-based approach ensures synchronized development, consistent quality, proper code reviews, and accountability.
-        </AdvantageText>
-        <AdvantageText>
-          By choosing one of our tiers, you get a dedicated team that collaborates efficiently, follows 
-          industry best practices, and delivers a polished product that meets your business objectives.
-        </AdvantageText>
-        <div style={{ marginTop: '20px', padding: '15px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-color)' }}>
-          <h4 style={{ fontSize: '1.1rem', marginBottom: '10px', color: 'var(--text-primary)' }}>Cost-Saving Opportunity</h4>
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-            We can leverage existing assets (templates, packages, libraries, public repositories) to accelerate development and reduce costs when appropriate. 
-            This option requires consultation as integration complexity varies by project. We'll discuss suitable pre-built solutions during our initial assessment to 
-            help you make informed decisions on the perfect balance between custom development and leveraging existing resources.
-          </p>
-        </div>
-      </AdvantageBanner>
-      
-      <HoursExplanation>
-        <HoursTitle>Working Hours Calculation</HoursTitle>
-        <p>
-          Our standard pricing is based on 176 working hours per month (8-hour workday × 22 working days).
-          The actual number of working hours may vary depending on the specific month:
-        </p>
-        <ul style={{ marginTop: '10px', paddingLeft: '20px' }}>
-          <li>Months with fewer than 22 working days (like February) will be billed less</li>
-          <li>Months with more than 22 working days will be billed accordingly</li>
-        </ul>
-        <HoursNote>
-          We always calculate the exact working days in each month, excluding weekends and standard holidays.
-          Your invoice will reflect the precise number of working hours for that billing period.
-        </HoursNote>
-        <div style={{ 
-          marginTop: '15px', 
-          padding: '10px 15px', 
-          background: 'rgba(255,255,255,0.05)', 
-          borderRadius: '6px', 
-          border: '1px solid rgba(255,255,255,0.08)'
-        }}>
-          <strong>Overtime Rates:</strong> Any additional hours beyond the calculated working hours for a given month will be charged at 2× the standard hourly rate. Prior approval will be required for any overtime work.
-        </div>
-      </HoursExplanation>
-      
       <CountdownContainer>
-        Price increase in <CountdownHighlight>{countdown.days}d {countdown.hours}h {countdown.minutes}m {countdown.seconds}s</CountdownHighlight> • Lock in current rates before January 1, 2026
+        <CountdownHeader>
+          <PulsingDot />LIMITED TIME OFFER: Lock in 2025 Rates
+        </CountdownHeader>
+        <CountdownTimerDisplay>
+          <CountdownUnit>
+            <CountdownNumber>{countdown.days}</CountdownNumber>
+            <CountdownLabel>Days</CountdownLabel>
+          </CountdownUnit>
+          <CountdownUnit>
+            <CountdownNumber>{countdown.hours}</CountdownNumber>
+            <CountdownLabel>Hours</CountdownLabel>
+          </CountdownUnit>
+          <CountdownUnit>
+            <CountdownNumber>{countdown.minutes}</CountdownNumber>
+            <CountdownLabel>Minutes</CountdownLabel>
+          </CountdownUnit>
+          <CountdownUnit>
+            <CountdownNumber>{countdown.seconds}</CountdownNumber>
+            <CountdownLabel>Seconds</CountdownLabel>
+          </CountdownUnit>
+        </CountdownTimerDisplay>
+        <CountdownUrgency>
+          Prices will increase on January 1, 2026. Act now to secure current rates!
+        </CountdownUrgency>
+        <CountdownButton to="/contact-us">
+          Lock in Current Rates
+        </CountdownButton>
       </CountdownContainer>
       
       <BillingToggleContainer>
@@ -1021,7 +1192,7 @@ const Pricing = () => {
           </PriceContainer>
           
           <FeatureList>
-            <FeatureItem>Intermediate Developer with 2-3 years experience</FeatureItem>
+            <FeatureItem>Low-No Code Developer with 2-3 years experience</FeatureItem>
             <FeatureItem>UI/UX Designer with 2-3 years experience</FeatureItem>
             <FeatureItem>Technical Project Manager (part-time)</FeatureItem>
             <CrossedFeatureItem>No iterations from initial requirements</CrossedFeatureItem>
@@ -1033,7 +1204,7 @@ const Pricing = () => {
             <FeatureItem>24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
-          <SelectButton>Get Started</SelectButton>
+          <SelectButton to="/contact-us">Get Started</SelectButton>
         </PricingCard>
         
         <PricingCard featured>
@@ -1068,7 +1239,28 @@ const Pricing = () => {
             <FeatureItem>24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
-          <SelectButton>Get Started</SelectButton>
+          <SelectButton 
+            to="/contact-us" 
+            style={{
+              background: 'var(--highlight)',
+              boxShadow: '0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2)',
+              position: 'relative',
+              overflow: 'hidden',
+              animation: 'pulse 2s infinite ease-in-out'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--highlightHover)';
+              e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
+              e.currentTarget.style.boxShadow = '0 0 25px rgba(255, 105, 180, 0.6), 0 0 15px rgba(255, 105, 180, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--highlight)';
+              e.currentTarget.style.transform = '';
+              e.currentTarget.style.boxShadow = '0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2)';
+            }}
+          >
+            Get Started
+          </SelectButton>
         </PricingCard>
         
         <PricingCard>
@@ -1086,7 +1278,7 @@ const Pricing = () => {
             <FeatureItem>Custom team composition</FeatureItem>
             <FeatureItem>Mix of intermediate and veteran resources</FeatureItem>
             <FeatureItem>Dedicated Technical Project Manager</FeatureItem>
-            <FeatureItem>Senior Technical Product Manager</FeatureItem>
+            <FeatureItem>Dedicated Technical Product Manager</FeatureItem>
             <FeatureItem>Flexible iteration cycles</FeatureItem>
             <FeatureItem>Comprehensive QA and testing</FeatureItem>
             <FeatureItem>Dedicated Slack channel</FeatureItem>
@@ -1096,99 +1288,9 @@ const Pricing = () => {
             <FeatureItem>24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
-          <SelectButton>Contact Us</SelectButton>
+          <SelectButton to="/contact-us">Contact Us</SelectButton>
         </PricingCard>
       </PricingGrid>
-      
-      <div style={{ 
-        marginTop: '100px', 
-        marginBottom: '80px',
-        padding: '30px',
-        background: 'rgba(255, 255, 255, 0.02)',
-        borderRadius: '15px',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-        border: '1px solid var(--border-color)',
-      }}>
-        <h2 style={{ 
-          fontSize: '1.8rem', 
-          marginBottom: '20px', 
-          color: 'var(--text-primary)',
-          textAlign: 'center'
-        }}>
-          Global Reach, Local Understanding
-        </h2>
-        <p style={{ 
-          fontSize: '1.1rem', 
-          lineHeight: '1.7', 
-          color: 'var(--text-secondary)',
-          textAlign: 'center',
-          marginBottom: '30px'
-        }}>
-          Our remote development teams work with clients worldwide, providing tailored services across these key regions:
-        </p>
-        
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '20px',
-          marginTop: '20px'
-        }}>
-          <div style={{
-            padding: '15px',
-            background: 'rgba(0, 0, 0, 0.2)',
-            borderRadius: '10px',
-            textAlign: 'center',
-            border: '1px solid var(--border-color)'
-          }}>
-            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '8px' }}>United States</h3>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Silicon Valley • New York • Texas</p>
-          </div>
-          
-          <div style={{
-            padding: '15px',
-            background: 'rgba(0, 0, 0, 0.2)',
-            borderRadius: '10px',
-            textAlign: 'center',
-            border: '1px solid var(--border-color)'
-          }}>
-            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '8px' }}>United Kingdom</h3>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>London • Manchester • Edinburgh</p>
-          </div>
-          
-          <div style={{
-            padding: '15px',
-            background: 'rgba(0, 0, 0, 0.2)',
-            borderRadius: '10px',
-            textAlign: 'center',
-            border: '1px solid var(--border-color)'
-          }}>
-            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '8px' }}>Europe</h3>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Berlin • Amsterdam • Paris</p>
-          </div>
-          
-          <div style={{
-            padding: '15px',
-            background: 'rgba(0, 0, 0, 0.2)',
-            borderRadius: '10px',
-            textAlign: 'center',
-            border: '1px solid var(--border-color)'
-          }}>
-            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '8px' }}>Australia</h3>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Sydney • Melbourne • Brisbane</p>
-          </div>
-          
-          <div style={{
-            padding: '15px',
-            background: 'rgba(0, 0, 0, 0.2)',
-            borderRadius: '10px',
-            textAlign: 'center',
-            border: '1px solid var(--border-color)'
-          }}>
-            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '8px' }}>UAE & Middle East</h3>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Dubai • Abu Dhabi • Doha</p>
-          </div>
-        </div>
-      </div>
       
       <CustomTierWrapper>
         <CustomTierTitle>Build Your Custom Team</CustomTierTitle>
@@ -1259,77 +1361,35 @@ const Pricing = () => {
           <TotalPrice>${calculateTotal().toLocaleString()}</TotalPrice>
         </TotalContainer>
         
-        <ContactButton>Contact Us for Details</ContactButton>
+        <ContactButton to="/contact-us">Contact Us for Details</ContactButton>
       </CustomTierWrapper>
       
-      <TechStackExplanation>
-        <h2 style={{ 
-          fontSize: '2rem', 
-          marginBottom: '25px', 
-          color: 'white',
-          textAlign: 'center',
-        }}>Our Technology Expertise</h2>
-        
-        <p style={{ 
-          textAlign: 'center', 
-          maxWidth: '800px', 
-          margin: '0 auto 30px',
-          color: 'var(--text-secondary)',
-          fontSize: '1.1rem',
-          lineHeight: '1.7'
-        }}>
-          Our global team of experts specializes in a wide range of technologies to bring your vision to life
-        </p>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '25px' }}>
-          <TechCard>
-            <h4>Web Development</h4>
-            <p>We create responsive, high-performance web applications using modern frameworks like React, Angular, Vue, Node.js, Laravel, and Django. Our expertise spans from simple landing pages to complex enterprise applications with microservices architecture, ensuring scalable and maintainable solutions.</p>
-          </TechCard>
-          
-          <TechCard>
-            <h4>Mobile Development</h4>
-            <p>Our mobile app developers build native (iOS/Android) and cross-platform applications using Flutter, React Native, or native Swift and Kotlin. We focus on creating intuitive user experiences with efficient backends, supporting features like real-time synchronization, offline functionality, and device-specific optimizations.</p>
-          </TechCard>
-          
-          <TechCard>
-            <h4>Game Development</h4>
-            <p>Beyond traditional games, our team creates immersive AR/VR/XR experiences, simulations, and educational gaming applications using Unity, Unreal Engine, and WebGL. We develop across platforms, including mobile, desktop, console, and web, with expertise in 3D modeling, physics simulations, and multiplayer functionality.</p>
-          </TechCard>
-          
-          <TechCard>
-            <h4>UI/UX Design</h4>
-            <p>Our designers create beautiful, intuitive interfaces that balance aesthetics with functionality. We follow user-centered design principles, conducting research and testing to ensure your product not only looks impressive but also provides an optimal user experience across all devices and platforms.</p>
-          </TechCard>
-          
-          <TechCard>
-            <h4>Digital Art & Animation</h4>
-            <p>Our 2D/3D artists and animators create everything from illustrations and characters to complex animations and visual effects. We support various styles—from minimalist to photorealistic—and provide assets for games, apps, marketing materials, and promotional videos that bring your ideas to life.</p>
-          </TechCard>
-          
-          <TechCard>
-            <h4>AI & IoT Solutions</h4>
-            <p>Our specialized engineers develop AI-powered applications using machine learning, natural language processing, and computer vision. We also create IoT solutions that connect physical devices with digital systems, enabling data collection, analysis, and automation for smart homes, industrial applications, and innovative consumer products.</p>
-          </TechCard>
-          
-          <TechCard>
-            <h4>Project & Product Management</h4>
-            <p>Our dedicated managers ensure your project runs smoothly from concept to deployment. Project Managers oversee timelines, resource allocation, and deliverables, while Product Managers focus on strategic vision, feature prioritization, and market alignment. Together, they maintain clear communication, resolve blockers, and ensure business objectives are met.</p>
-          </TechCard>
-          
-          <TechCard>
-            <h4>Content Creation & SEO/ASO</h4>
-            <p>Our writers produce engaging technical content, user documentation, marketing copy, and SEO/ASO optimized materials. We create content strategies that improve discoverability, user engagement, and conversion rates. From app store descriptions to technical guides, our writers translate complex concepts into accessible, compelling content.</p>
-          </TechCard>
-          
-          <TechCard>
-            <h4>DevOps & Security</h4>
-            <p>Our DevOps engineers establish CI/CD pipelines, automate deployments, and optimize infrastructure using tools like Docker, Kubernetes, and AWS/Azure/GCP. Our security specialists implement best practices for data protection, vulnerability assessment, and compliance with regulations like GDPR and CCPA, ensuring your applications are both robust and secure.</p>
-          </TechCard>
-        </div>
-      </TechStackExplanation>
-      
       <InfoSection>
+        <HoursExplanation>
+          <HoursTitle>Working Hours Calculation</HoursTitle>
+          <p>
+            Our standard pricing is based on 176 working hours per month (8-hour workday × 22 working days).
+            The actual number of working hours may vary depending on the specific month:
+          </p>
+          <ul style={{ marginTop: '10px', paddingLeft: '20px' }}>
+            <li>Months with fewer than 22 working days (like February) will be billed less</li>
+            <li>Months with more than 22 working days will be billed accordingly</li>
+          </ul>
+          <HoursNote>
+            We always calculate the exact working days in each month, excluding weekends and standard holidays.
+            Your invoice will reflect the precise number of working hours for that billing period.
+          </HoursNote>
+          <div style={{ 
+            marginTop: '15px', 
+            padding: '10px 15px', 
+            background: 'rgba(255,255,255,0.05)', 
+            borderRadius: '6px', 
+            border: '1px solid rgba(255,255,255,0.08)'
+          }}>
+            <strong>Overtime Rates:</strong> Any additional hours beyond the calculated working hours for a given month will be charged at 2× the standard hourly rate. Prior approval will be required for any overtime work.
+          </div>
+        </HoursExplanation>
+        
         <InfoBlock>
           <InfoTitle>Important Notes</InfoTitle>
           <FeatureList>
