@@ -215,13 +215,13 @@ const MobileNavigationDemo = () => {
   
   const demoContainerStyle = {
     width: '280px',
-    height: '500px',
-    background: 'linear-gradient(165deg, #071B3D 0%, #004080 100%)',
+    height: '560px',
+    background: 'linear-gradient(165deg, #003b63 0%, #04a6c2 100%)',
     borderRadius: '36px',
     overflow: 'hidden',
     position: 'relative',
     boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5), inset 0 2px 10px rgba(255, 255, 255, 0.1)',
-    border: '8px solid #0A2A5E',
+    border: '8px solid #000000',
     transform: pulseEffect ? 'scale(1.02)' : 'scale(1)',
     transition: 'transform 0.4s ease-out',
     fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -280,8 +280,8 @@ const MobileNavigationDemo = () => {
   `;
   
   const tabItemStyle = (isActive) => ({
-    background: isActive ? 'linear-gradient(135deg, rgba(33, 150, 243, 0.3), rgba(79, 195, 247, 0.15))' : 'rgba(255,255,255,0.02)',
-    color: isActive ? '#64B5F6' : 'rgba(255,255,255,0.5)',
+    background: isActive ? 'linear-gradient(135deg, rgba(0, 176, 155, 0.3), rgba(29, 209, 161, 0.15))' : 'rgba(255,255,255,0.02)',
+    color: isActive ? '#1dd1a1' : 'rgba(255,255,255,0.5)',
     display: 'flex', 
     flexDirection: 'column',
     alignItems: 'center',
@@ -293,20 +293,20 @@ const MobileNavigationDemo = () => {
     borderRadius: '14px',
     margin: '0 4px',
     transition: 'all 0.3s ease',
-    boxShadow: isActive ? '0 5px 15px rgba(33, 150, 243, 0.25)' : 'none',
+    boxShadow: isActive ? '0 5px 15px rgba(29, 209, 161, 0.25)' : 'none',
     transform: isActive ? 'translateY(-3px)' : 'translateY(0)',
-    border: isActive ? '1px solid rgba(100, 181, 246, 0.3)' : '1px solid transparent',
+    border: isActive ? '1px solid rgba(29, 209, 161, 0.3)' : '1px solid transparent',
   });
   
   // Content for each screen
   const renderHomeContent = () => (
     <div style={{ padding: '5px' }}>
       <div style={{ 
-        background: 'linear-gradient(135deg, #1976D2, #64B5F6)', 
+        background: 'linear-gradient(135deg, #00b0ab, #1dd1a1)', 
         borderRadius: '20px', 
         padding: '22px 25px', 
         marginBottom: '20px',
-        boxShadow: '0 15px 30px rgba(33, 150, 243, 0.35)',
+        boxShadow: '0 15px 30px rgba(0, 176, 155, 0.35)',
         transform: pulseEffect ? 'scale(1.02)' : 'scale(1)',
         transition: 'transform 0.4s ease, box-shadow 0.4s ease',
         position: 'relative',
@@ -453,6 +453,14 @@ const MobileNavigationDemo = () => {
               boxShadow: '0 5px 10px rgba(0, 0, 0, 0.15)'
             }}>{stat.icon}</div>
             <div style={{ color: 'white', fontSize: '14px', fontWeight: '700', marginBottom: '2px' }}>{stat.value}</div>
+            <div style={{ 
+              background: 'linear-gradient(135deg, #00b0ab, #1dd1a1)', 
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontSize: '14px', 
+              fontWeight: '700',
+              marginBottom: '2px'
+            }}>{stat.value}</div>
             <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '10px' }}>{stat.label}</div>
           </div>
         ))}
@@ -475,7 +483,7 @@ const MobileNavigationDemo = () => {
           left: 0,
           right: 0,
           height: '80px',
-          background: 'linear-gradient(135deg, #3a47d5 0%, #00d2ff 100%)',
+          background: 'linear-gradient(135deg, #00b0ab 0%, #1dd1a1 100%)',
           opacity: 0.3,
           borderRadius: '20px',
           zIndex: 0,
@@ -484,7 +492,7 @@ const MobileNavigationDemo = () => {
           width: '85px', 
           height: '85px', 
           borderRadius: '50%', 
-          background: 'linear-gradient(135deg, #3a47d5 0%, #00d2ff 100%)', 
+          background: 'linear-gradient(135deg, #00b0ab 0%, #1dd1a1 100%)', 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center', 
@@ -525,75 +533,50 @@ const MobileNavigationDemo = () => {
           padding: '15px',
           boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
         }}>
-          {[
-            { label: 'Workouts', value: '32' },
-            { label: 'Following', value: '124' },
-            { label: 'Followers', value: '85' }
-          ].map((stat, index) => (
-            <div key={index} style={{ 
-              textAlign: 'center',
-              padding: '0 10px',
-              borderRight: index !== 2 ? '1px solid rgba(255, 255, 255, 0.1)' : 'none',
-            }}>
-              <div style={{ color: '#3a47d5', fontSize: '18px', fontWeight: 'bold' }}>{stat.value}</div>
-              <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' }}>{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      <div style={{ padding: '0 10px' }}>
-        <div style={{ 
-          fontSize: '15px', 
-          fontWeight: 'bold', 
-          color: 'white', 
-          marginBottom: '15px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}>
-          Personal Achievements
-          <span style={{ fontSize: '12px', color: '#00d2ff', fontWeight: 'normal' }}>View All</span>
-        </div>
-        
-        {[
-          { title: 'Consistent Runner', desc: 'Ran for 7 consecutive days', icon: '🏆', color: '#FFD700' },
-          { title: '5K Master', desc: 'Completed 5K under 25 mins', icon: '🥇', color: '#C0C0C0' },
-          { title: 'Early Bird', desc: '5 morning workouts this week', icon: '🌅', color: '#CD7F32' }
-        ].map((achievement, index) => (
-          <div key={index} style={{ 
-            padding: '15px', 
-            background: 'rgba(255, 255, 255, 0.05)', 
-            borderRadius: '14px', 
-            marginBottom: '12px', 
-            display: 'flex', 
-            alignItems: 'center',
-            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            transform: `translateY(${index * 5}px)`,
-            opacity: 0.9,
-            transition: 'all 0.3s ease',
+          <div style={{ 
+            textAlign: 'center',
+            padding: '0 10px',
+            borderRight: '1px solid rgba(255, 255, 255, 0.1)',
           }}>
             <div style={{ 
-              width: '42px', 
-              height: '42px', 
-              borderRadius: '12px', 
-              background: `rgba(${achievement.color === '#FFD700' ? '255, 215, 0' : achievement.color === '#C0C0C0' ? '192, 192, 192' : '205, 127, 50'}, 0.15)`, 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              marginRight: '15px', 
-              fontSize: '18px',
-              boxShadow: '0 5px 10px rgba(0, 0, 0, 0.1)'
-            }}>
-              {achievement.icon}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ color: 'white', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>{achievement.title}</div>
-              <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' }}>{achievement.desc}</div>
-            </div>
+              background: 'rgba(255, 255, 255, 0.7)', 
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontSize: '18px', 
+              fontWeight: 'bold' 
+            }}>32</div>
+            <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' }}>Workouts</div>
           </div>
-        ))}
+          
+          <div style={{ 
+            textAlign: 'center',
+            padding: '0 10px',
+            borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+          }}>
+            <div style={{ 
+              background: 'rgba(255, 255, 255, 0.7)', 
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontSize: '18px', 
+              fontWeight: 'bold' 
+            }}>124</div>
+            <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' }}>Following</div>
+          </div>
+          
+          <div style={{ 
+            textAlign: 'center',
+            padding: '0 10px',
+          }}>
+            <div style={{ 
+              background: 'rgba(255, 255, 255, 0.7)', 
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              fontSize: '18px', 
+              fontWeight: 'bold' 
+            }}>85</div>
+            <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' }}>Followers</div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -611,7 +594,7 @@ const MobileNavigationDemo = () => {
         alignItems: 'center', 
       }}>
         App Settings
-        <span style={{ fontSize: '12px', color: '#ff5470', fontWeight: 'normal' }}>Reset All</span>
+        <span style={{ fontSize: '12px', color: 'white', fontWeight: 'normal' }}>Reset All</span>
       </div>
       
       {[
@@ -639,7 +622,7 @@ const MobileNavigationDemo = () => {
             height: '42px', 
             borderRadius: '12px', 
             background: setting.activated 
-              ? 'linear-gradient(135deg, rgba(255, 84, 112, 0.2), rgba(255, 138, 91, 0.15))' 
+              ? 'linear-gradient(135deg, rgba(0, 176, 155, 0.2), rgba(29, 209, 161, 0.15))' 
               : 'rgba(255, 255, 255, 0.1)', 
             display: 'flex', 
             alignItems: 'center', 
@@ -659,11 +642,11 @@ const MobileNavigationDemo = () => {
               width: '46px', 
               height: '24px', 
               borderRadius: '12px', 
-              background: setting.activated ? 'linear-gradient(135deg, #ff5470, #ff8a5b)' : 'rgba(255, 255, 255, 0.15)', 
+              background: setting.activated ? 'linear-gradient(135deg, #00b0ab, #1dd1a1)' : 'rgba(255, 255, 255, 0.15)', 
               padding: '2px', 
               position: 'relative',
               transition: 'background 0.3s ease',
-              boxShadow: setting.activated ? '0 2px 8px rgba(255, 84, 112, 0.5)' : 'none',
+              boxShadow: setting.activated ? '0 2px 8px rgba(0, 176, 155, 0.5)' : 'none',
             }}>
               <div style={{ 
                 width: '20px', 
@@ -696,30 +679,24 @@ const MobileNavigationDemo = () => {
       {[
         { title: 'Help & Support', desc: 'Get assistance and FAQ', icon: '❓' },
         { title: 'About App', desc: 'Version 2.1.3', icon: 'ℹ️' },
-        { title: 'Log Out', desc: 'Sign out from your account', icon: '🚪', color: '#ff5470' }
+        { title: 'Log Out', desc: 'Sign out from your account', icon: '🚪' }
       ].map((option, index) => (
         <div key={index} style={{ 
           padding: '15px', 
-          background: option.color 
-            ? 'rgba(255, 84, 112, 0.08)' 
-            : 'rgba(255, 255, 255, 0.05)', 
+          background: 'rgba(255, 255, 255, 0.05)', 
           borderRadius: '14px', 
           marginBottom: '12px', 
           display: 'flex', 
           alignItems: 'center',
           boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-          border: option.color 
-            ? '1px solid rgba(255, 84, 112, 0.2)' 
-            : '1px solid rgba(255, 255, 255, 0.05)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
           transition: 'all 0.3s ease',
         }}>
           <div style={{ 
             width: '42px', 
             height: '42px', 
             borderRadius: '12px', 
-            background: option.color 
-              ? 'rgba(255, 84, 112, 0.2)' 
-              : 'rgba(255, 255, 255, 0.1)', 
+            background: 'rgba(255, 255, 255, 0.05)', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center', 
@@ -730,7 +707,7 @@ const MobileNavigationDemo = () => {
             {option.icon}
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ color: option.color || 'white', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>{option.title}</div>
+            <div style={{ color: 'white', fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>{option.title}</div>
             <div style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '12px' }}>{option.desc}</div>
           </div>
         </div>
@@ -780,95 +757,178 @@ const MobileNavigationDemo = () => {
   `;
   
   return (
-    <div style={demoContainerStyle}>
-      <style>
-        {keyframeStyle}
-        {hideScrollbarStyle}
-      </style>
-      <div style={headerStyle}>
-        <div style={{ 
-          color: 'white', 
-          fontSize: '18px', 
-          fontWeight: 'bold',
+    <div style={{position: 'relative'}}>
+      {/* Side buttons */}
+      <div style={{
+        position: 'absolute',
+        right: '-2px',
+        top: '90px',
+        width: '4px',
+        height: '50px',
+        background: '#000000',
+        borderRadius: '2px 0 0 2px',
+        zIndex: 10,
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        right: '-2px',
+        top: '150px',
+        width: '4px',
+        height: '60px',
+        background: '#000000',
+        borderRadius: '2px 0 0 2px',
+        zIndex: 10,
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        left: '-2px',
+        top: '120px',
+        width: '4px',
+        height: '70px',
+        background: '#000000',
+        borderRadius: '0 2px 2px 0',
+        zIndex: 10,
+      }}></div>
+      
+      <div style={demoContainerStyle}>
+        <style>
+          {keyframeStyle}
+          {hideScrollbarStyle}
+        </style>
+        
+        {/* Notch */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '120px',
+          height: '25px',
+          background: '#000000',
+          borderRadius: '0 0 16px 16px',
+          zIndex: 100,
           display: 'flex',
+          justifyContent: 'center',
           alignItems: 'center',
-          gap: '8px',
+          gap: '8px'
         }}>
-          <span style={{ 
-            color: '#ff5470', 
-            fontSize: '18px', 
-            marginRight: '2px',
-            animation: pulseEffect ? 'pulse 0.8s infinite alternate' : 'none',
-          }}>
-            {activeTab === 'Home' ? '♥' : activeTab === 'Profile' ? '♦' : '♠'}
-          </span>
-          {activeTab === 'Home' ? 'FitTrack' : activeTab}
+          <div style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            background: 'rgba(60, 60, 60, 0.8)',
+          }}></div>
+          <div style={{
+            width: '12px',
+            height: '12px',
+            borderRadius: '50%',
+            background: 'rgba(60, 60, 60, 0.9)',
+          }}></div>
+          <div style={{
+            width: '8px',
+            height: '4px',
+            borderRadius: '2px',
+            background: 'rgba(60, 60, 60, 0.8)',
+          }}></div>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={headerStyle}>
           <div style={{ 
-            width: '32px', 
-            height: '32px', 
-            borderRadius: '50%', 
-            background: 'rgba(255, 255, 255, 0.05)', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            fontSize: '14px', 
-            color: 'rgba(255, 255, 255, 0.8)',
-            position: 'relative',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            color: 'white', 
+            fontSize: '18px', 
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
           }}>
-            🔔
-            {showNotification && (
-              <div style={{
-                position: 'absolute',
-                top: '3px',
-                right: '3px',
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                background: '#ff5470',
-                border: '1px solid #1E1E24',
-                animation: 'pulse 1s infinite alternate',
-              }}></div>
-            )}
-          </div>
-        </div>
-      </div>
-      
-      <div style={screenStyle}>
-        <div className="hide-scrollbar" style={contentStyleObject}>
-          {renderContent()}
-        </div>
-      </div>
-      
-      <div style={{ 
-        position: 'absolute', 
-        bottom: 0, 
-        left: 0, 
-        right: 0, 
-        display: 'flex', 
-        padding: '15px', 
-        background: 'rgba(20, 20, 25, 0.95)', 
-        backdropFilter: 'blur(10px)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
-        borderRadius: '0 0 16px 16px',
-      }}>
-        {['Home', 'Profile', 'Settings'].map((tab) => (
-          <div key={tab} style={tabItemStyle(tab === activeTab)} onClick={() => handleTabChange(tab)}>
-            <div style={{ 
-              marginBottom: '8px', 
-              fontSize: '18px',
-              opacity: tab === activeTab ? 1 : 0.7,
-              transform: tab === activeTab ? 'scale(1.1)' : 'scale(1)',
-              transition: 'all 0.3s ease',
+            <span style={{ 
+              color: '#ff5470', 
+              fontSize: '18px', 
+              marginRight: '2px',
+              animation: pulseEffect ? 'pulse 0.8s infinite alternate' : 'none',
             }}>
-              {tab === 'Home' ? '🏠' : tab === 'Profile' ? '👤' : '⚙️'}
-            </div>
-            <div>{tab}</div>
+              💪
+            </span>
+            {activeTab === 'Home' ? 'FitTrack' : activeTab}
           </div>
-        ))}
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ 
+              width: '32px', 
+              height: '32px', 
+              borderRadius: '50%', 
+              background: 'rgba(255, 255, 255, 0.05)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              fontSize: '14px', 
+              color: 'rgba(255, 255, 255, 0.8)',
+              position: 'relative',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+            }}>
+              🔔
+              {showNotification && (
+                <div style={{
+                  position: 'absolute',
+                  top: '3px',
+                  right: '3px',
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: '#ff5470',
+                  border: '1px solid #1E1E24',
+                  animation: 'pulse 1s infinite alternate',
+                }}></div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        <div style={screenStyle}>
+          <div className="hide-scrollbar" style={contentStyleObject}>
+            {renderContent()}
+          </div>
+        </div>
+        
+        <div style={{ 
+          position: 'absolute', 
+          bottom: 0, 
+          left: 0, 
+          right: 0, 
+          display: 'flex', 
+          padding: '15px', 
+          background: 'rgba(0, 59, 99, 0.95)', 
+          backdropFilter: 'blur(10px)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+          borderRadius: '0 0 28px 28px',
+        }}>
+          {['Home', 'Profile', 'Settings'].map((tab) => (
+            <div key={tab} style={tabItemStyle(tab === activeTab)} onClick={() => handleTabChange(tab)}>
+              <div style={{ 
+                marginBottom: '8px', 
+                fontSize: '18px',
+                opacity: tab === activeTab ? 1 : 0.7,
+                transform: tab === activeTab ? 'scale(1.1)' : 'scale(1)',
+                transition: 'all 0.3s ease',
+              }}>
+                {tab === 'Home' ? '🏠' : tab === 'Profile' ? '👤' : '⚙️'}
+              </div>
+              <div>{tab}</div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Home indicator */}
+        <div style={{
+          position: 'absolute',
+          bottom: '6px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100px',
+          height: '4px',
+          background: 'rgba(255, 255, 255, 0.5)',
+          borderRadius: '2px',
+          zIndex: 100,
+        }}></div>
       </div>
     </div>
   );
@@ -916,13 +976,13 @@ const FlutterCardDemo = () => {
   
   const demoContainerStyle = {
     width: '280px',
-    height: '500px',
-    background: 'linear-gradient(165deg, #300A06 0%, #9D1F1F 100%)',
+    height: '560px',
+    background: 'linear-gradient(165deg, #8B0000 0%, #FF4500 100%)',
     borderRadius: '36px',
     overflow: 'hidden',
     position: 'relative',
     boxShadow: '0 25px 50px rgba(0, 0, 0, 0.5), inset 0 2px 10px rgba(255, 255, 255, 0.1)',
-    border: '8px solid #4A0D10',
+    border: '8px solid #000000',
     fontFamily: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
     transform: pulseEffect ? 'scale(1.02)' : 'scale(1)',
     transition: 'transform 0.4s ease-out',
@@ -945,7 +1005,7 @@ const FlutterCardDemo = () => {
     alignItems: 'center',
     borderBottom: '1px solid rgba(255,255,255,0.08)',
     marginBottom: '15px',
-    background: 'rgba(48,10,6,0.95)',
+    background: 'rgba(139,0,0,0.95)',
     backdropFilter: 'blur(10px)',
     borderRadius: '28px 28px 0 0',
     boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
@@ -971,8 +1031,8 @@ const FlutterCardDemo = () => {
   `;
   
   const navItemStyle = (isActive) => ({
-    background: isActive ? 'linear-gradient(135deg, rgba(255, 87, 34, 0.25), rgba(244, 67, 54, 0.2))' : 'rgba(255,255,255,0.02)',
-    color: isActive ? '#FF5722' : 'rgba(255,255,255,0.5)',
+    background: isActive ? 'linear-gradient(135deg, rgba(255, 153, 0, 0.3), rgba(255, 214, 0, 0.15))' : 'rgba(255,255,255,0.02)',
+    color: isActive ? '#FFD700' : 'rgba(255,255,255,0.5)',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -984,9 +1044,9 @@ const FlutterCardDemo = () => {
     borderRadius: '14px',
     margin: '0 4px',
     transition: 'all 0.3s ease',
-    boxShadow: isActive ? '0 5px 15px rgba(244, 67, 54, 0.2)' : 'none',
+    boxShadow: isActive ? '0 5px 15px rgba(255, 153, 0, 0.2)' : 'none',
     transform: isActive ? 'translateY(-3px)' : 'translateY(0)',
-    border: isActive ? '1px solid rgba(255, 87, 34, 0.3)' : '1px solid transparent',
+    border: isActive ? '1px solid rgba(255, 153, 0, 0.3)' : '1px solid transparent',
   });
   
   // Animation keyframes
@@ -1033,13 +1093,13 @@ const FlutterCardDemo = () => {
       }}>
         <div style={{ 
           height: '150px', 
-          background: 'linear-gradient(135deg, #F44336, #FF5722)', 
+          background: 'linear-gradient(135deg, #FF3D00, #FF9800)', 
           borderRadius: '24px', 
           padding: '22px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          boxShadow: '0 20px 40px rgba(244, 67, 54, 0.35)',
+          boxShadow: '0 20px 40px rgba(255, 61, 0, 0.35)',
           overflow: 'hidden',
           position: 'relative',
           border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -1212,7 +1272,7 @@ const FlutterCardDemo = () => {
                 textOverflow: 'ellipsis',
               }}>{product.name}</div>
               <div style={{ 
-                color: '#ff3d00', 
+                color: 'white', 
                 fontSize: '12px', 
                 fontWeight: 'bold',
               }}>{product.price}</div>
@@ -1296,7 +1356,7 @@ const FlutterCardDemo = () => {
                 marginBottom: '5px' 
               }}>
                 <div>{item.name}</div>
-                <div style={{ color: '#EB1555' }}>{item.price}</div>
+                <div style={{ color: 'white' }}>{item.price}</div>
               </div>
               <div style={{ 
                 display: 'flex',
@@ -1572,92 +1632,175 @@ const FlutterCardDemo = () => {
   };
   
   return (
-    <div style={demoContainerStyle}>
-      <style>
-        {keyframeStyle}
-        {hideScrollbarStyle}
-      </style>
-      <div style={headerStyle}>
-        <div style={{ 
-          color: 'white', 
-          fontSize: '18px', 
-          fontWeight: 'bold',
+    <div style={{position: 'relative'}}>
+      {/* Side buttons */}
+      <div style={{
+        position: 'absolute',
+        right: '-2px',
+        top: '90px',
+        width: '4px',
+        height: '50px',
+        background: '#000000',
+        borderRadius: '2px 0 0 2px',
+        zIndex: 10,
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        right: '-2px',
+        top: '150px',
+        width: '4px',
+        height: '60px',
+        background: '#000000',
+        borderRadius: '2px 0 0 2px',
+        zIndex: 10,
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        left: '-2px',
+        top: '120px',
+        width: '4px',
+        height: '70px',
+        background: '#000000',
+        borderRadius: '0 2px 2px 0',
+        zIndex: 10,
+      }}></div>
+    
+      <div style={demoContainerStyle}>
+        <style>
+          {keyframeStyle}
+          {hideScrollbarStyle}
+        </style>
+        
+        {/* Notch */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '120px',
+          height: '25px',
+          background: '#000000',
+          borderRadius: '0 0 16px 16px',
+          zIndex: 100,
           display: 'flex',
+          justifyContent: 'center',
           alignItems: 'center',
-          gap: '8px',
+          gap: '8px'
         }}>
-          <span style={{
-            color: '#EB1555',
-            fontSize: '16px',
-            marginRight: '2px',
+          <div style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            background: 'rgba(60, 60, 60, 0.8)',
+          }}></div>
+          <div style={{
+            width: '12px',
+            height: '12px',
+            borderRadius: '50%',
+            background: 'rgba(60, 60, 60, 0.9)',
+          }}></div>
+          <div style={{
+            width: '8px',
+            height: '4px',
+            borderRadius: '2px',
+            background: 'rgba(60, 60, 60, 0.8)',
+          }}></div>
+        </div>
+        <div style={headerStyle}>
+          <div style={{ 
+            color: 'white', 
+            fontSize: '18px', 
+            fontWeight: 'bold',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
           }}>
-            {activeScreen === 'home' ? '✦' : activeScreen === 'cart' ? '✧' : '✦'}
-          </span>
-          {activeScreen === 'home' ? 'Fashion Store' : 
-           activeScreen === 'cart' ? 'My Cart' : 'My Profile'}
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          {activeScreen === 'home' && (
-            <div style={{ 
-              width: '32px', 
-              height: '32px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
+            <span style={{ 
+              color: '#EB1555',
               fontSize: '16px',
-              cursor: 'pointer',
-              background: 'rgba(255, 255, 255, 0.05)',
-              borderRadius: '50%',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+              marginRight: '2px',
             }}>
-              🔍
-            </div>
-          )}
-        </div>
-      </div>
-      
-      <div style={screenStyle}>
-        <div className="hide-scrollbar" style={contentStyleObject}>
-          {renderContent()}
-        </div>
-      </div>
-      
-      <div style={{ 
-        position: 'absolute', 
-        bottom: 0, 
-        left: 0, 
-        right: 0, 
-        display: 'flex', 
-        padding: '15px', 
-        background: 'rgba(20, 20, 25, 0.95)', 
-        backdropFilter: 'blur(10px)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
-        borderRadius: '0 0 16px 16px',
-      }}>
-        {[
-          { name: 'Home', icon: '🏠', screen: 'home' },
-          { name: 'Categories', icon: '🔍', screen: 'categories' },
-          { name: 'Cart', icon: '🛒', screen: 'cart', badge: showBadge },
-          { name: 'Profile', icon: '👤', screen: 'profile' }
-        ].map((item) => (
-          <div 
-            key={item.screen} 
-            style={navItemStyle(item.screen === activeScreen)}
-            onClick={() => handleNavChange(item.screen)}
-          >
-            <div style={{ 
-              marginBottom: '8px', 
-              fontSize: '18px',
-              opacity: item.screen === activeScreen ? 1 : 0.7,
-              transform: item.screen === activeScreen ? 'scale(1.1)' : 'scale(1)',
-              transition: 'all 0.3s ease',
-            }}>
-              {item.icon}
-            </div>
-            <div>{item.name}</div>
+              {activeScreen === 'home' ? '🏠' : activeScreen === 'cart' ? '🛒' : '👤'}
+            </span>
+            {activeScreen === 'home' ? 'Fashion Store' : 
+             activeScreen === 'cart' ? 'My Cart' : 'My Profile'}
           </div>
-        ))}
+          <div style={{ display: 'flex', gap: '12px' }}>
+            {activeScreen === 'home' && (
+              <div style={{ 
+                width: '32px', 
+                height: '32px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                fontSize: '16px',
+                cursor: 'pointer',
+                background: 'rgba(255, 255, 255, 0.05)',
+                borderRadius: '50%',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+              }}>
+                🔍
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div style={screenStyle}>
+          <div className="hide-scrollbar" style={contentStyleObject}>
+            {renderContent()}
+          </div>
+        </div>
+        
+        <div style={{ 
+          position: 'absolute', 
+          bottom: 0, 
+          left: 0, 
+          right: 0, 
+          display: 'flex', 
+          padding: '15px', 
+          background: 'rgba(139, 0, 0, 0.9)', 
+          backdropFilter: 'blur(10px)',
+          borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+          borderRadius: '0 0 28px 28px',
+        }}>
+          {[
+            { name: 'Home', icon: '🏠', screen: 'home' },
+            { name: 'Categories', icon: '🔍', screen: 'categories' },
+            { name: 'Cart', icon: '🛒', screen: 'cart', badge: showBadge },
+            { name: 'Profile', icon: '👤', screen: 'profile' }
+          ].map((item) => (
+            <div 
+              key={item.screen} 
+              style={navItemStyle(item.screen === activeScreen)}
+              onClick={() => handleNavChange(item.screen)}
+            >
+              <div style={{ 
+                marginBottom: '8px', 
+                fontSize: '18px',
+                opacity: item.screen === activeScreen ? 1 : 0.7,
+                transform: item.screen === activeScreen ? 'scale(1.1)' : 'scale(1)',
+                transition: 'all 0.3s ease',
+              }}>
+                {item.icon}
+              </div>
+              <div>{item.name}</div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Home indicator */}
+        <div style={{
+          position: 'absolute',
+          bottom: '6px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100px',
+          height: '4px',
+          background: 'rgba(255, 255, 255, 0.5)',
+          borderRadius: '2px',
+          zIndex: 100,
+        }}></div>
       </div>
     </div>
   );

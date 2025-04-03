@@ -221,10 +221,14 @@ const ResponsivePortfolioDemo = () => {
   const [viewMode, setViewMode] = useState('desktop');
   const [hoveredProject, setHoveredProject] = useState(null);
   const [animatedHeader, setAnimatedHeader] = useState(true);
+  const [activatedMenu, setActivatedMenu] = useState(false);
   
   // Add animation effect on component mount
   useEffect(() => {
-    const timer = setTimeout(() => setAnimatedHeader(false), 1500);
+    const timer = setTimeout(() => {
+      setAnimatedHeader(false);
+      setActivatedMenu(true);
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
   
@@ -234,13 +238,15 @@ const ResponsivePortfolioDemo = () => {
     overflow: 'hidden',
     position: 'relative',
     transition: 'all 0.3s ease',
-    background: 'linear-gradient(135deg, #0f0f13 0%, #171723 100%)',
-    borderRadius: viewMode === 'desktop' ? '12px' : '24px',
-    border: viewMode === 'mobile' ? '8px solid #222' : '1px solid rgba(255,255,255,0.05)',
+    background: 'linear-gradient(135deg, #0a0a12 0%, #1d1d35 100%)',
+    borderRadius: viewMode === 'desktop' ? '18px' : '32px',
+    border: viewMode === 'mobile' ? '12px solid #111' : '1px solid rgba(80, 70, 255, 0.1)',
     maxWidth: viewMode === 'desktop' ? '100%' : 
-              viewMode === 'tablet' ? '500px' : '240px',
+              viewMode === 'tablet' ? '500px' : '260px',
     margin: '0 auto',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+    boxShadow: viewMode === 'desktop' ? 
+      '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 60px rgba(80, 70, 255, 0.15) inset' : 
+      '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(80, 70, 255, 0.1) inset',
     fontSize: viewMode === 'mobile' ? '0.9em' : '1em'
   };
   
@@ -248,49 +254,53 @@ const ResponsivePortfolioDemo = () => {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: viewMode === 'desktop' ? '20px 30px' : 
-             viewMode === 'tablet' ? '15px 20px' : '12px 15px',
+    padding: viewMode === 'desktop' ? '22px 30px' : 
+             viewMode === 'tablet' ? '18px 22px' : '14px 15px',
     borderBottom: '1px solid rgba(255,255,255,0.07)',
     background: animatedHeader ? 
-      'linear-gradient(90deg, rgba(30,30,40,0.9) 0%, rgba(30,30,40,0.8) 100%)' : 
-      'linear-gradient(90deg, rgba(20,20,25,0.9) 0%, rgba(25,25,35,0.85) 100%)',
-    backdropFilter: 'blur(10px)',
-    transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+      'linear-gradient(90deg, rgba(20,20,30,0.7) 0%, rgba(30,30,50,0.6) 100%)' : 
+      'linear-gradient(90deg, rgba(15,15,25,0.8) 0%, rgba(25,25,45,0.75) 100%)',
+    backdropFilter: 'blur(12px)',
+    transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
     transform: animatedHeader ? 'translateY(-100%)' : 'translateY(0%)',
-    opacity: animatedHeader ? 0 : 1
+    opacity: animatedHeader ? 0 : 1,
+    boxShadow: '0 5px 25px rgba(0, 0, 0, 0.15)'
   };
   
   const logoStyle = {
     color: '#fff',
     fontWeight: '700',
-    fontSize: viewMode === 'desktop' ? '1.2rem' : 
-              viewMode === 'tablet' ? '1rem' : '0.9rem',
+    fontSize: viewMode === 'desktop' ? '1.4rem' : 
+              viewMode === 'tablet' ? '1.2rem' : '1rem',
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
+    gap: '10px',
     position: 'relative',
     transition: 'all 0.3s ease',
-    textShadow: '0 2px 10px rgba(255, 84, 112, 0.3)'
+    textShadow: '0 2px 12px rgba(139, 92, 246, 0.5)'
   };
   
   const navStyle = {
     display: 'flex',
     gap: viewMode === 'desktop' ? '30px' : 
-        viewMode === 'tablet' ? '20px' : '10px'
+        viewMode === 'tablet' ? '20px' : '12px'
   };
   
   const navItemStyle = (isActive) => ({
-    color: isActive ? '#ff5470' : 'rgba(255,255,255,0.7)',
+    color: isActive ? '#8b5cf6' : 'rgba(255,255,255,0.7)',
     fontWeight: isActive ? '600' : '400',
-    fontSize: viewMode === 'desktop' ? '0.9rem' : 
-              viewMode === 'tablet' ? '0.8rem' : '0.75rem',
+    fontSize: viewMode === 'desktop' ? '0.95rem' : 
+              viewMode === 'tablet' ? '0.85rem' : '0.8rem',
     cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    borderBottom: isActive ? '2px solid #ff5470' : '2px solid transparent',
-    paddingBottom: '3px',
+    transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    borderBottom: isActive ? '2px solid #8b5cf6' : '2px solid transparent',
+    paddingBottom: '5px',
     position: 'relative',
+    transform: isActive && activatedMenu ? 'translateY(-2px)' : 'translateY(0)',
+    opacity: activatedMenu ? 1 : 0,
+    animation: activatedMenu ? `fadeIn 0.4s forwards ${isActive ? 0 : 0.1}s` : 'none',
     '&:hover': {
-      color: isActive ? '#ff5470' : 'rgba(255,255,255,0.9)'
+      color: isActive ? '#8b5cf6' : 'rgba(255,255,255,0.9)'
     },
     '&:after': isActive ? {
       content: '""',
@@ -299,20 +309,20 @@ const ResponsivePortfolioDemo = () => {
       left: '0',
       width: '100%',
       height: '2px',
-      background: 'linear-gradient(90deg, #ff5470, rgba(255,84,112,0.5))',
+      background: 'linear-gradient(90deg, #8b5cf6, rgba(139, 92, 246, 0.3))',
       borderRadius: '4px',
-      boxShadow: '0 2px 8px rgba(255, 84, 112, 0.5)'
+      boxShadow: '0 2px 12px rgba(139, 92, 246, 0.6)'
     } : {}
   });
   
   const contentStyle = {
     padding: viewMode === 'desktop' ? '25px 30px' : 
-             viewMode === 'tablet' ? '20px 25px' : '15px',
+             viewMode === 'tablet' ? '22px 25px' : '18px',
     height: 'calc(100% - 70px)',
     overflowY: 'auto',
     display: 'flex',
     flexDirection: 'column',
-    gap: viewMode === 'mobile' ? '15px' : '20px',
+    gap: viewMode === 'mobile' ? '18px' : '24px',
     transition: 'opacity 0.5s ease',
     animation: 'fadeIn 0.5s forwards',
     msOverflowStyle: 'none',
@@ -322,26 +332,39 @@ const ResponsivePortfolioDemo = () => {
   
   const projectGridStyle = {
     display: 'grid',
-    gridTemplateColumns: viewMode === 'desktop' ? 'repeat(auto-fill, minmax(160px, 1fr))' : 
+    gridTemplateColumns: viewMode === 'desktop' ? 'repeat(auto-fill, minmax(180px, 1fr))' : 
                           viewMode === 'tablet' ? 'repeat(2, 1fr)' : '1fr',
     gap: viewMode === 'desktop' ? '20px' : 
-         viewMode === 'tablet' ? '15px' : '10px'
+         viewMode === 'tablet' ? '15px' : '12px'
   };
   
   const projectCardStyle = (index) => ({
     position: 'relative',
-    height: viewMode === 'desktop' ? '140px' : 
-            viewMode === 'tablet' ? '120px' : '90px',
-    borderRadius: viewMode === 'mobile' ? '8px' : '12px',
+    height: viewMode === 'desktop' ? '160px' : 
+            viewMode === 'tablet' ? '140px' : '110px',
+    borderRadius: viewMode === 'mobile' ? '12px' : '16px',
     overflow: 'hidden',
     cursor: 'pointer',
-    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-    transform: hoveredProject === index ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
+    transition: 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+    transform: hoveredProject === index ? 'translateY(-10px) scale(1.03)' : 'translateY(0) scale(1)',
     boxShadow: hoveredProject === index ? 
-      '0 15px 30px -5px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.1) inset' : 
-      '0 4px 20px rgba(0,0,0,0.3)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    animation: `fadeIn 0.5s forwards ${0.1 + index * 0.1}s`
+      '0 20px 40px -5px rgba(0,0,0,0.6), 0 0 25px rgba(139, 92, 246, 0.15) inset' : 
+      '0 8px 25px rgba(0,0,0,0.35)',
+    border: '1px solid rgba(139, 92, 246, 0.1)',
+    animation: `fadeIn 0.6s forwards ${0.2 + index * 0.15}s`,
+    opacity: 0,
+    '&:before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '3px',
+      background: 'linear-gradient(to right, #8b5cf6, transparent)',
+      zIndex: 5,
+      opacity: hoveredProject === index ? 1 : 0.5,
+      transition: 'opacity 0.3s ease'
+    }
   });
   
   const projectOverlayStyle = (index) => ({
@@ -349,56 +372,67 @@ const ResponsivePortfolioDemo = () => {
     bottom: 0,
     left: 0,
     right: 0,
-    padding: '15px',
-    background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 50%, transparent 100%)',
+    padding: '20px',
+    background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, transparent 100%)',
     transform: hoveredProject === index ? 'translateY(0)' : 'translateY(100%)',
-    transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
     display: 'flex',
     flexDirection: 'column',
-    gap: '8px'
+    gap: '8px',
+    backdropFilter: 'blur(3px)'
   });
   
   const projects = [
     { 
-      color: '#4158D0', 
-      bgGradient: 'linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%)', 
+      color: '#4C1D95', 
+      bgGradient: 'linear-gradient(45deg, #4C1D95 0%, #7C3AED 40%, #EF4444 90%)', 
       title: 'Brand Identity',
-      icon: '🎨',
-      year: '2023' 
+      icon: '✨',
+      year: '2023',
+      tools: ['Figma', 'Photoshop']
     },
     { 
-      color: '#0093E9', 
-      bgGradient: 'linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)', 
+      color: '#1D4ED8', 
+      bgGradient: 'linear-gradient(160deg, #1E40AF 0%, #3B82F6 50%, #93C5FD 100%)', 
       title: 'Mobile App UI',
       icon: '📱',
-      year: '2023' 
+      year: '2023',
+      tools: ['React Native', 'Sketch']
     },
     { 
-      color: '#00DBDE', 
-      bgGradient: 'linear-gradient(90deg, #00DBDE 0%, #FC00FF 100%)', 
+      color: '#0F766E', 
+      bgGradient: 'linear-gradient(90deg, #0F766E 0%, #2DD4BF 50%, #A7F3D0 100%)', 
       title: 'Web Dashboard',
       icon: '📊',
-      year: '2022' 
+      year: '2022',
+      tools: ['React', 'D3.js']
     },
     { 
-      color: '#08AEEA', 
-      bgGradient: 'linear-gradient(0deg, #08AEEA 0%, #2AF598 100%)', 
+      color: '#9333EA', 
+      bgGradient: 'linear-gradient(0deg, #6D28D9 0%, #A855F7 50%, #E879F9 100%)', 
       title: 'Social Platform',
       icon: '🌐',
-      year: '2022' 
+      year: '2022',
+      tools: ['Vue.js', 'Firebase']
     },
   ];
   
   // Add keyframe animations
   const animationStyles = `
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
     @keyframes shimmer {
       0% { background-position: -200% center; }
       100% { background-position: 200% center; }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
     }
     
     .hide-scrollbar::-webkit-scrollbar {
@@ -415,12 +449,17 @@ const ResponsivePortfolioDemo = () => {
       <div style={containerStyle}>
         <style>{`
           @keyframes fadeIn { 
-            from { opacity: 0; } 
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(15px); } 
+            to { opacity: 1; transform: translateY(0); }
           }
           @keyframes shimmer {
             0% { background-position: -468px 0; }
             100% { background-position: 468px 0; }
+          }
+          @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
           }
           .hide-scrollbar {
             -ms-overflow-style: none;
@@ -433,10 +472,18 @@ const ResponsivePortfolioDemo = () => {
         <div style={headerStyle} className={animatedHeader ? 'animated-header' : ''}>
           <div style={logoStyle}>
             <span style={{
-              color: '#ff5470',
-              fontSize: viewMode === 'desktop' ? '1.4rem' : '1.2rem',
-              filter: 'drop-shadow(0 0 8px rgba(255,84,112,0.5))'
-            }}>◆</span> Portfolio
+              color: '#8b5cf6',
+              fontSize: viewMode === 'desktop' ? '1.6rem' : '1.4rem',
+              filter: 'drop-shadow(0 0 10px rgba(139, 92, 246, 0.6))',
+              animation: activatedMenu ? 'pulse 2s infinite' : 'none'
+            }}>⬢</span> 
+            <span style={{
+              background: 'linear-gradient(to right, #8b5cf6, #ec4899)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: activatedMenu ? 'fadeIn 0.5s forwards' : 'none',
+              opacity: activatedMenu ? 1 : 0
+            }}>Portfolio</span>
           </div>
           <div style={navStyle}>
             <div 
@@ -465,24 +512,31 @@ const ResponsivePortfolioDemo = () => {
             <>
               <div style={{
                 color: '#fff', 
-                fontSize: viewMode === 'desktop' ? '1.5rem' : '1.2rem', 
+                fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem', 
                 fontWeight: '700',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
                 position: 'relative',
-                paddingBottom: '10px',
-                borderBottom: '1px solid rgba(255,255,255,0.05)'
+                paddingBottom: '12px',
+                borderBottom: '1px solid rgba(139, 92, 246, 0.15)',
+                animation: 'fadeIn 0.4s forwards',
+                background: 'linear-gradient(to right, #fff, rgba(255,255,255,0.8))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
               }}>
                 <span>Recent Projects</span>
                 <span style={{
                   fontSize: '0.8rem',
-                  fontWeight: '400',
-                  color: '#ff5470',
-                  background: 'rgba(255,84,112,0.1)',
-                  padding: '4px 8px',
+                  fontWeight: '500',
+                  color: '#fff',
+                  background: 'linear-gradient(to right, #8b5cf6, #ec4899)',
+                  padding: '5px 10px',
                   borderRadius: '20px',
-                  marginLeft: 'auto'
+                  marginLeft: 'auto',
+                  boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)',
+                  WebkitBackgroundClip: 'initial',
+                  WebkitTextFillColor: 'initial'
                 }}>
                   4 projects
                 </span>
@@ -497,24 +551,28 @@ const ResponsivePortfolioDemo = () => {
                   >
                     <div style={{
                       position: 'absolute',
-                      top: '10px',
-                      right: '10px',
-                      background: 'rgba(0,0,0,0.3)',
+                      top: '12px',
+                      right: '12px',
+                      background: 'rgba(255,255,255,0.15)',
                       borderRadius: '50%',
-                      width: '32px',
-                      height: '32px',
+                      width: '38px',
+                      height: '38px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '18px'
+                      fontSize: '20px',
+                      backdropFilter: 'blur(3px)',
+                      boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      animation: hoveredProject === index ? 'pulse 2s infinite' : 'none'
                     }}>
                       {project.icon}
                     </div>
                     <div style={projectOverlayStyle(index)}>
                       <div style={{
                         color: '#fff', 
-                        fontSize: '0.9rem', 
-                        fontWeight: '600',
+                        fontSize: '1rem', 
+                        fontWeight: '700',
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center'
@@ -522,31 +580,61 @@ const ResponsivePortfolioDemo = () => {
                         {project.title}
                         <span style={{
                           fontSize: '0.7rem',
-                          fontWeight: '400',
-                          background: 'rgba(255,255,255,0.2)',
-                          padding: '3px 6px',
-                          borderRadius: '4px'
+                          fontWeight: '500',
+                          background: 'rgba(139, 92, 246, 0.3)',
+                          padding: '4px 8px',
+                          borderRadius: '6px',
+                          backdropFilter: 'blur(5px)',
+                          border: '1px solid rgba(139, 92, 246, 0.2)'
                         }}>
                           {project.year}
                         </span>
                       </div>
                       <div style={{
                         display: 'flex',
-                        alignItems: 'center',
-                        color: 'rgba(255,255,255,0.7)', 
-                        fontSize: '0.8rem',
-                        gap: '5px'
+                        flexDirection: 'column',
+                        gap: '8px'
                       }}>
-                        <span style={{
+                        <div style={{
+                          display: 'flex',
+                          gap: '5px',
+                          flexWrap: 'wrap'
+                        }}>
+                          {project.tools.map((tool, i) => (
+                            <span key={i} style={{
+                              background: 'rgba(255,255,255,0.1)',
+                              padding: '3px 6px',
+                              borderRadius: '4px',
+                              fontSize: '0.65rem',
+                              color: 'rgba(255,255,255,0.8)',
+                              border: '1px solid rgba(255,255,255,0.05)'
+                            }}>
+                              {tool}
+                            </span>
+                          ))}
+                        </div>
+                        <div style={{
                           display: 'flex',
                           alignItems: 'center',
-                          background: 'rgba(255,255,255,0.1)',
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                          fontSize: '0.7rem'
+                          color: 'rgba(255,255,255,0.9)', 
+                          fontSize: '0.8rem',
+                          gap: '5px',
+                          marginTop: '4px'
                         }}>
-                          View Project →
-                        </span>
+                          <span style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '5px',
+                            background: 'linear-gradient(90deg, #8b5cf6, #ec4899)',
+                            padding: '5px 12px',
+                            borderRadius: '6px',
+                            fontSize: '0.75rem',
+                            fontWeight: '500',
+                            boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                          }}>
+                            View Project <span style={{fontSize: '1rem'}}>→</span>
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -558,61 +646,74 @@ const ResponsivePortfolioDemo = () => {
           {activeSection === 'about' && (
             <div style={{
               color: 'rgba(255,255,255,0.8)', 
-              fontSize: '0.9rem', 
+              fontSize: '0.95rem', 
               lineHeight: '1.6',
               animation: 'fadeIn 0.5s forwards'
             }}>
               <h2 style={{
                 color: '#fff', 
-                marginBottom: '15px', 
-                fontSize: viewMode === 'desktop' ? '1.5rem' : '1.2rem',
+                marginBottom: '18px', 
+                fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                paddingBottom: '10px',
-                borderBottom: '1px solid rgba(255,255,255,0.05)'
+                paddingBottom: '12px',
+                borderBottom: '1px solid rgba(139, 92, 246, 0.15)',
+                background: 'linear-gradient(to right, #fff, rgba(255,255,255,0.8))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
               }}>
-                <span style={{color: '#ff5470', marginRight: '5px'}}>01.</span> About Me
+                <span style={{
+                  color: '#8b5cf6', 
+                  marginRight: '5px',
+                  WebkitBackgroundClip: 'initial',
+                  WebkitTextFillColor: 'initial'
+                }}>01.</span> About Me
               </h2>
               <div style={{
                 display: 'flex',
                 flexDirection: viewMode === 'desktop' ? 'row' : 'column',
-                gap: '20px'
+                gap: '25px'
               }}>
                 <div style={{
                   position: 'relative',
-                  width: viewMode === 'desktop' ? '100px' : '80px',
-                  height: viewMode === 'desktop' ? '100px' : '80px',
-                  borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #ff5470, #ff8a5b)',
+                  width: viewMode === 'desktop' ? '110px' : '90px',
+                  height: viewMode === 'desktop' ? '110px' : '90px',
+                  borderRadius: '16px',
+                  background: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '40px',
-                  alignSelf: 'flex-start',
-                  marginBottom: viewMode === 'desktop' ? '0' : '10px',
-                  boxShadow: '0 10px 20px rgba(255,84,112,0.3)',
-                  border: '2px solid rgba(255,255,255,0.1)'
+                  fontSize: '44px',
+                  alignSelf: viewMode === 'desktop' ? 'center' : 'flex-start',
+                  marginBottom: viewMode === 'desktop' ? '0' : '5px',
+                  boxShadow: '0 15px 30px rgba(139, 92, 246, 0.4)',
+                  border: '2px solid rgba(255,255,255,0.1)',
+                  animation: 'pulse 3s infinite'
                 }}>
                   👋
                 </div>
                 <div>
-                  <p>I'm a UI/UX designer and front-end developer with 5+ years of experience creating beautiful and functional digital experiences.</p>
-                  <p style={{marginTop: '10px'}}>My expertise includes responsive web design, mobile app interfaces, and interactive prototypes with a focus on accessibility and user engagement.</p>
+                  <p style={{marginTop: 0}}>I'm a UI/UX designer and front-end developer with 5+ years of experience creating beautiful and functional digital experiences.</p>
+                  <p style={{marginTop: '15px'}}>My expertise includes responsive web design, mobile app interfaces, and interactive prototypes with a focus on accessibility and user engagement.</p>
                   
                   <div style={{
                     display: 'flex',
                     flexWrap: 'wrap',
                     gap: '8px',
-                    marginTop: '15px'
+                    marginTop: '20px'
                   }}>
                     {['React', 'Vue.js', 'Figma', 'UX Research', 'Responsive Design'].map((skill, index) => (
                       <span key={index} style={{
-                        background: 'rgba(255,255,255,0.05)',
-                        padding: '5px 10px',
+                        background: 'rgba(139, 92, 246, 0.1)',
+                        padding: '6px 12px',
                         borderRadius: '20px',
                         fontSize: '0.75rem',
-                        border: '1px solid rgba(255,255,255,0.1)'
+                        border: '1px solid rgba(139, 92, 246, 0.2)',
+                        color: '#fff',
+                        fontWeight: '500',
+                        backdropFilter: 'blur(5px)',
+                        boxShadow: index % 2 === 0 ? '0 4px 12px rgba(139, 92, 246, 0.15)' : 'none'
                       }}>
                         {skill}
                       </span>
@@ -626,105 +727,142 @@ const ResponsivePortfolioDemo = () => {
           {activeSection === 'contact' && (
             <div style={{
               color: 'rgba(255,255,255,0.8)', 
-              fontSize: '0.9rem',
+              fontSize: '0.95rem',
               animation: 'fadeIn 0.5s forwards'
             }}>
               <h2 style={{
                 color: '#fff', 
-                marginBottom: '15px', 
-                fontSize: viewMode === 'desktop' ? '1.5rem' : '1.2rem',
+                marginBottom: '18px', 
+                fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                paddingBottom: '10px',
-                borderBottom: '1px solid rgba(255,255,255,0.05)'
+                paddingBottom: '12px',
+                borderBottom: '1px solid rgba(139, 92, 246, 0.15)',
+                background: 'linear-gradient(to right, #fff, rgba(255,255,255,0.8))',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
               }}>
-                <span style={{color: '#ff5470', marginRight: '5px'}}>02.</span> Get In Touch
+                <span style={{
+                  color: '#8b5cf6', 
+                  marginRight: '5px',
+                  WebkitBackgroundClip: 'initial',
+                  WebkitTextFillColor: 'initial'
+                }}>02.</span> Get In Touch
               </h2>
               <div style={{
-                background: 'rgba(255,255,255,0.03)', 
-                padding: '20px', 
-                borderRadius: '12px', 
-                marginBottom: '15px',
-                border: '1px solid rgba(255,255,255,0.05)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                background: 'rgba(139, 92, 246, 0.05)', 
+                padding: '22px', 
+                borderRadius: '16px', 
+                marginBottom: '18px',
+                border: '1px solid rgba(139, 92, 246, 0.1)',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.15), 0 0 20px rgba(139, 92, 246, 0.05) inset',
+                backdropFilter: 'blur(10px)'
               }}>
                 <div style={{
-                  marginBottom: '10px', 
+                  marginBottom: '14px', 
                   color: '#fff',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px'
+                  gap: '12px'
                 }}>
                   <span style={{
-                    background: 'rgba(255,84,112,0.1)',
+                    background: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
                     borderRadius: '50%',
-                    width: '30px',
-                    height: '30px',
+                    width: '38px',
+                    height: '38px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    boxShadow: '0 5px 15px rgba(139, 92, 246, 0.3)',
+                    fontSize: '18px'
                   }}>
                     ✉️
                   </span>
-                  Email
+                  <span style={{
+                    fontWeight: '600',
+                    fontSize: '1.05rem'
+                  }}>Email</span>
                 </div>
                 <div style={{
-                  color: '#ff5470',
-                  background: 'rgba(255,84,112,0.05)',
-                  padding: '10px',
-                  borderRadius: '6px',
-                  marginLeft: '40px'
+                  color: '#fff',
+                  background: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.15))',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  marginLeft: '50px',
+                  fontWeight: '500',
+                  border: '1px solid rgba(139, 92, 246, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backdropFilter: 'blur(5px)'
                 }}>
-                  hello@portfolio.com
+                  <span style={{
+                    background: 'linear-gradient(to right, #8b5cf6, #ec4899)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>hello@portfolio.com</span>
                 </div>
               </div>
               <div style={{
-                background: 'rgba(255,255,255,0.03)', 
-                padding: '20px', 
-                borderRadius: '12px',
-                border: '1px solid rgba(255,255,255,0.05)',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.1)'
+                background: 'rgba(139, 92, 246, 0.05)', 
+                padding: '22px', 
+                borderRadius: '16px',
+                border: '1px solid rgba(139, 92, 246, 0.1)',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.15), 0 0 20px rgba(139, 92, 246, 0.05) inset',
+                backdropFilter: 'blur(10px)'
               }}>
                 <div style={{
-                  marginBottom: '10px', 
+                  marginBottom: '14px', 
                   color: '#fff',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px'
+                  gap: '12px'
                 }}>
                   <span style={{
-                    background: 'rgba(255,84,112,0.1)',
+                    background: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
                     borderRadius: '50%',
-                    width: '30px',
-                    height: '30px',
+                    width: '38px',
+                    height: '38px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    boxShadow: '0 5px 15px rgba(139, 92, 246, 0.3)',
+                    fontSize: '18px'
                   }}>
                     🔗
                   </span>
-                  Social
+                  <span style={{
+                    fontWeight: '600',
+                    fontSize: '1.05rem'
+                  }}>Social</span>
                 </div>
                 <div style={{
                   display: 'flex', 
                   gap: '10px',
-                  marginLeft: '40px'
+                  marginLeft: '50px',
+                  flexWrap: 'wrap'
                 }}>
                   {['Twitter', 'LinkedIn', 'Dribbble'].map((social, index) => (
                     <div key={index} style={{
-                      color: '#ff5470', 
                       cursor: 'pointer',
-                      background: 'rgba(255,84,112,0.05)',
-                      padding: '8px 12px',
-                      borderRadius: '6px',
+                      background: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.15))',
+                      padding: '10px 16px',
+                      borderRadius: '8px',
                       transition: 'all 0.3s ease',
-                      '&:hover': {
-                        background: 'rgba(255,84,112,0.1)',
-                        transform: 'translateY(-2px)'
-                      }
+                      fontWeight: '500',
+                      backdropFilter: 'blur(5px)',
+                      border: '1px solid rgba(139, 92, 246, 0.15)',
+                      boxShadow: index % 2 === 0 ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
                     }}>
-                      {social}
+                      <span style={{
+                        background: 'linear-gradient(to right, #8b5cf6, #ec4899)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent'
+                      }}>{social}</span>
                     </div>
                   ))}
                 </div>
@@ -741,16 +879,16 @@ const ResponsivePortfolioDemo = () => {
       }}>
         <button 
           style={{
-            padding: '6px 12px',
-            background: viewMode === 'desktop' ? 'linear-gradient(135deg, rgba(255,84,112,0.3), rgba(255,84,112,0.1))' : 'transparent',
-            color: viewMode === 'desktop' ? '#ff5470' : 'rgba(255,255,255,0.7)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            padding: '7px 14px',
+            background: viewMode === 'desktop' ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2))' : 'transparent',
+            color: viewMode === 'desktop' ? '#8b5cf6' : 'rgba(255,255,255,0.7)',
+            border: '1px solid rgba(139, 92, 246, 0.2)',
             borderRadius: '20px',
-            fontSize: '0.8rem',
+            fontSize: '0.85rem',
             fontWeight: viewMode === 'desktop' ? '600' : '400',
             cursor: 'pointer',
             transition: 'all 0.3s ease',
-            boxShadow: viewMode === 'desktop' ? '0 2px 10px rgba(255,84,112,0.2)' : 'none'
+            boxShadow: viewMode === 'desktop' ? '0 4px 12px rgba(139, 92, 246, 0.15)' : 'none'
           }}
           onClick={() => setViewMode('desktop')}
         >
@@ -758,16 +896,16 @@ const ResponsivePortfolioDemo = () => {
         </button>
         <button 
           style={{
-            padding: '6px 12px',
-            background: viewMode === 'tablet' ? 'linear-gradient(135deg, rgba(255,84,112,0.3), rgba(255,84,112,0.1))' : 'transparent',
-            color: viewMode === 'tablet' ? '#ff5470' : 'rgba(255,255,255,0.7)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            padding: '7px 14px',
+            background: viewMode === 'tablet' ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2))' : 'transparent',
+            color: viewMode === 'tablet' ? '#8b5cf6' : 'rgba(255,255,255,0.7)',
+            border: '1px solid rgba(139, 92, 246, 0.2)',
             borderRadius: '20px',
-            fontSize: '0.8rem',
+            fontSize: '0.85rem',
             fontWeight: viewMode === 'tablet' ? '600' : '400',
             cursor: 'pointer',
             transition: 'all 0.3s ease',
-            boxShadow: viewMode === 'tablet' ? '0 2px 10px rgba(255,84,112,0.2)' : 'none'
+            boxShadow: viewMode === 'tablet' ? '0 4px 12px rgba(139, 92, 246, 0.15)' : 'none'
           }}
           onClick={() => setViewMode('tablet')}
         >
@@ -775,16 +913,16 @@ const ResponsivePortfolioDemo = () => {
         </button>
         <button 
           style={{
-            padding: '6px 12px',
-            background: viewMode === 'mobile' ? 'linear-gradient(135deg, rgba(255,84,112,0.3), rgba(255,84,112,0.1))' : 'transparent',
-            color: viewMode === 'mobile' ? '#ff5470' : 'rgba(255,255,255,0.7)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            padding: '7px 14px',
+            background: viewMode === 'mobile' ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2))' : 'transparent',
+            color: viewMode === 'mobile' ? '#8b5cf6' : 'rgba(255,255,255,0.7)',
+            border: '1px solid rgba(139, 92, 246, 0.2)',
             borderRadius: '20px',
-            fontSize: '0.8rem',
+            fontSize: '0.85rem',
             fontWeight: viewMode === 'mobile' ? '600' : '400',
             cursor: 'pointer',
             transition: 'all 0.3s ease',
-            boxShadow: viewMode === 'mobile' ? '0 2px 10px rgba(255,84,112,0.2)' : 'none'
+            boxShadow: viewMode === 'mobile' ? '0 4px 12px rgba(139, 92, 246, 0.15)' : 'none'
           }}
           onClick={() => setViewMode('mobile')}
         >
@@ -832,7 +970,7 @@ const ProductShowcaseDemo = () => {
     const interval = setInterval(() => {
       const nextIndex = (activeProduct + 1) % products.length;
       changeProduct(nextIndex);
-    }, 3000);
+    }, 4200); // Adjusted to account for animation delays (5000 - 800ms total animation time)
     
     return () => clearInterval(interval);
   }, [activeProduct]);
@@ -1147,7 +1285,7 @@ const ProductShowcase = () => {
       const nextIndex = 
         (activeProduct + 1) % products.length;
       setActiveProduct(nextIndex);
-    }, 3000);
+    }, 5000);
     
     return () => clearInterval(interval);
   }, [activeProduct]);
@@ -1217,7 +1355,7 @@ const ProductShowcase = () => {
             key={index}
             active={index === activeProduct}
             onClick={() => 
-              setActiveProduct(index)
+              changeProduct(index)
             }
           />
         ))}

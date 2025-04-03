@@ -16,6 +16,10 @@ import GamesShowcase from "./TechShowcase/GamesShowcase";
 import UIUXShowcase from "./TechShowcase/UIUXShowcase";
 // Import AIShowcase component
 import AIShowcase from "./TechShowcase/AIShowcase";
+// Import MusicShowcase component
+import MusicShowcase from "./TechShowcase/MusicShowcase";
+// Import ContentShowcase component
+import ContentShowcase from "./TechShowcase/ContentShowcase";
 
 // Global style to prevent copying from code blocks
 const GlobalStyle = styled.div`
@@ -476,8 +480,12 @@ export default function TechShowcase() {
         return <UIUXShowcase key="ui-ux" />;
       case 'Games':
         return <GamesShowcase key="games" />;
+      case 'Music':
+        return <MusicShowcase key="music" />;
       case 'AI':
         return <AIShowcase key="ai" />;
+      case 'Content':
+        return <ContentShowcase key="content" />;
       default:
         return <WebsitesShowcase key="websites-default" />;
     }
@@ -515,10 +523,22 @@ export default function TechShowcase() {
             Games
           </Tab>
           <Tab 
+            active={activeCategory === 'Music'} 
+            onClick={() => handleTabClick('Music')}
+          >
+            Music
+          </Tab>
+          <Tab 
             active={activeCategory === 'AI'} 
             onClick={() => handleTabClick('AI')}
           >
             AI
+          </Tab>
+          <Tab 
+            active={activeCategory === 'Content'} 
+            onClick={() => handleTabClick('Content')}
+          >
+            Content
           </Tab>
         </TabsContainer>
         

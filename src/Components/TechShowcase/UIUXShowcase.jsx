@@ -319,7 +319,7 @@ const LottieAnimationDemo = () => {
               position: 'absolute',
               width: '120%',
               height: '120%',
-              background: 'radial-gradient(circle, rgba(152, 175, 244, 0.45) 0%, rgba(152, 175, 244, 0.25) 50%, rgba(152, 175, 244, 0) 70%)',
+              background: 'radial-gradient(circle, rgba(254, 164, 148, 0.45) 0%, rgba(254, 164, 148, 0.25) 50%, rgba(254, 164, 148, 0) 70%)',
               borderRadius: '50%',
               filter: 'blur(11px)',
               zIndex: -1,
