@@ -223,16 +223,16 @@ const LottieAnimationDemo = () => {
   const additionalStyles = `
     @keyframes pulse-glow {
       0% {
-        opacity: 0.6;
-        transform: scale(0.85);
+        opacity: 0.4;
+        transform: scale(0.9);
       }
       50% {
-        opacity: 0.8;
+        opacity: 0.6;
         transform: scale(1);
       }
       100% {
-        opacity: 0.9;
-        transform: scale(1.15);
+        opacity: 0.7;
+        transform: scale(1.1);
       }
     }
   `;
@@ -267,15 +267,15 @@ const LottieAnimationDemo = () => {
           }}>
             <div style={{
               position: 'absolute',
-              width: '120%',
-              height: '120%',
-              background: 'radial-gradient(circle, rgba(152, 175, 244, 0.45) 0%, rgba(152, 175, 244, 0.25) 50%, rgba(152, 175, 244, 0) 70%)',
+              width: '110%',
+              height: '110%',
+              background: 'radial-gradient(circle, rgba(152, 175, 244, 0.35) 0%, rgba(152, 175, 244, 0.15) 50%, rgba(152, 175, 244, 0) 65%)',
               borderRadius: '50%',
-              filter: 'blur(11px)',
+              filter: 'blur(8px)',
               zIndex: -1,
               animation: 'pulse-glow 5s infinite alternate ease-in-out',
-              left: '-10%',
-              top: '-10%'
+              left: '-5%',
+              top: '-5%'
             }}></div>
             <Lottie 
               animationData={dogAnimation}
@@ -317,16 +317,16 @@ const LottieAnimationDemo = () => {
           }}>
             <div style={{
               position: 'absolute',
-              width: '120%',
-              height: '120%',
-              background: 'radial-gradient(circle, rgba(254, 164, 148, 0.45) 0%, rgba(254, 164, 148, 0.25) 50%, rgba(254, 164, 148, 0) 70%)',
+              width: '110%',
+              height: '110%',
+              background: 'radial-gradient(circle, rgba(254, 164, 148, 0.35) 0%, rgba(254, 164, 148, 0.15) 50%, rgba(254, 164, 148, 0) 65%)',
               borderRadius: '50%',
-              filter: 'blur(11px)',
+              filter: 'blur(8px)',
               zIndex: -1,
               animation: 'pulse-glow 5s infinite alternate ease-in-out',
               animationDelay: '2.5s',
-              left: '-10%',
-              top: '-10%'
+              left: '-5%',
+              top: '-5%'
             }}></div>
             <Lottie 
               animationData={cupAnimation}
@@ -1470,9 +1470,11 @@ export default
 
 // Enhanced CSS Animation Demo Component
 const ImprovedCSSAnimationDemo = () => {
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(true);
   const [currentAnimation, setCurrentAnimation] = useState('pulse');
   const [previewAnimation, setPreviewAnimation] = useState('');
+  const [autoCycling, setAutoCycling] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   
   const animationOptions = [
     { id: 'pulse', name: 'Pulse' },
@@ -1486,6 +1488,40 @@ const ImprovedCSSAnimationDemo = () => {
     { id: 'gradient', name: 'Gradient' },
     { id: 'ripple', name: 'Ripple' }
   ];
+  
+  // Auto cycle through animations
+  useEffect(() => {
+    if (!autoCycling) return;
+    
+    // Start animation automatically
+    if (!isAnimating) {
+      setIsAnimating(true);
+    }
+    
+    const cycleInterval = setInterval(() => {
+      const nextIndex = (currentIndex + 1) % animationOptions.length;
+      setCurrentIndex(nextIndex);
+      setCurrentAnimation(animationOptions[nextIndex].id);
+    }, 3000); // Show each animation for 3 seconds
+    
+    return () => clearInterval(cycleInterval);
+  }, [currentIndex, autoCycling, isAnimating]);
+  
+  // Handle user interaction - pause auto cycling when user interacts
+  const handleUserInteraction = () => {
+    setAutoCycling(false);
+  };
+  
+  // Resume auto cycling after period of inactivity
+  useEffect(() => {
+    if (autoCycling) return;
+    
+    const resumeTimeout = setTimeout(() => {
+      setAutoCycling(true);
+    }, 10000); // Resume auto cycling after 10 seconds of inactivity
+    
+    return () => clearTimeout(resumeTimeout);
+  }, [autoCycling]);
   
   const getAnimation = () => {
     if (!isAnimating) return 'none';
@@ -1533,8 +1569,8 @@ const ImprovedCSSAnimationDemo = () => {
     transition: 'all 0.3s ease',
     transform: isAnimating && currentAnimation !== 'bounce' && currentAnimation !== 'float' && currentAnimation !== 'shake' && currentAnimation !== 'glitch' ? 'translateY(-3px)' : 'translateY(0)',
     boxShadow: isAnimating && currentAnimation !== 'neon' 
-      ? '0 8px 20px rgba(255, 84, 112, 0.4)' 
-      : '0 4px 10px rgba(255, 84, 112, 0.2)',
+      ? '0 6px 15px rgba(255, 84, 112, 0.3)' 
+      : '0 4px 8px rgba(255, 84, 112, 0.15)',
     animation: currentAnimation === 'gradient' && isAnimating ? 'gradient 8s linear infinite' : getAnimation(),
     textShadow: isAnimating && (currentAnimation === 'glitch' || currentAnimation === 'neon') 
       ? (currentAnimation === 'glitch' ? '-2px 0 #00fffc, 2px 2px #fc00ff' : 'none')
@@ -1604,11 +1640,11 @@ const ImprovedCSSAnimationDemo = () => {
           @keyframes pulse {
             0% {
               transform: scale(1);
-              box-shadow: 0 0 0 0 rgba(255, 84, 112, 0.6);
+              box-shadow: 0 0 0 0 rgba(255, 84, 112, 0.5);
             }
             70% {
-              transform: scale(1.08);
-              box-shadow: 0 0 0 15px rgba(255, 84, 112, 0);
+              transform: scale(1.05);
+              box-shadow: 0 0 0 10px rgba(255, 84, 112, 0);
             }
             100% {
               transform: scale(1);
@@ -1618,63 +1654,63 @@ const ImprovedCSSAnimationDemo = () => {
           
           @keyframes shake {
             0%, 100% { transform: translateX(0) rotate(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-6px) rotate(-2deg); }
-            20%, 40%, 60%, 80% { transform: translateX(6px) rotate(2deg); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) rotate(-1deg); }
+            20%, 40%, 60%, 80% { transform: translateX(5px) rotate(1deg); }
           }
           
           @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
-            40% { transform: translateY(-25px) scale(1.1); }
-            60% { transform: translateY(-15px) scale(1.05); }
+            40% { transform: translateY(-20px) scale(1.08); }
+            60% { transform: translateY(-12px) scale(1.04); }
           }
           
           @keyframes float {
             0% { transform: translateY(0px) rotate(0deg); }
-            25% { transform: translateY(-12px) rotate(3deg); }
+            25% { transform: translateY(-8px) rotate(2deg); }
             50% { transform: translateY(0px) rotate(0deg); }
-            75% { transform: translateY(12px) rotate(-3deg); }
+            75% { transform: translateY(8px) rotate(-2deg); }
             100% { transform: translateY(0px) rotate(0deg); }
           }
           
           @keyframes glitch {
             0%, 100% { 
               transform: translate(0); 
-              text-shadow: -2px 0 #00fffc, 2px 2px #fc00ff;
+              text-shadow: -1.5px 0 #00fffc, 1.5px 1.5px #fc00ff;
             }
             20% { 
-              transform: translate(-5px, 5px); 
-              text-shadow: 2px 0 #00fffc, -2px -2px #fc00ff;
+              transform: translate(-4px, 4px); 
+              text-shadow: 1.5px 0 #00fffc, -1.5px -1.5px #fc00ff;
             }
             40% { 
-              transform: translate(5px, -5px); 
-              text-shadow: -2px 0 #00fffc, 2px 2px #fc00ff;
+              transform: translate(4px, -4px); 
+              text-shadow: -1.5px 0 #00fffc, 1.5px 1.5px #fc00ff;
             }
             60% { 
-              transform: translate(-5px, 5px); 
-              text-shadow: 2px 0 #fc00ff, -2px -2px #00fffc;
+              transform: translate(-4px, 4px); 
+              text-shadow: 1.5px 0 #fc00ff, -1.5px -1.5px #00fffc;
             }
             80% { 
-              transform: translate(5px, -5px); 
-              text-shadow: -2px 0 #fc00ff, 2px 2px #00fffc;
+              transform: translate(4px, -4px); 
+              text-shadow: -1.5px 0 #fc00ff, 1.5px 1.5px #00fffc;
             }
           }
           
           @keyframes neon {
             0%, 100% {
-              text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff5470, 0 0 20px #ff5470, 0 0 25px #ff5470;
-              box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff5470, 0 0 20px #ff5470;
+              text-shadow: 0 0 3px #fff, 0 0 6px #fff, 0 0 10px #ff5470, 0 0 15px #ff5470, 0 0 18px #ff5470;
+              box-shadow: 0 0 3px #fff, 0 0 6px #fff, 0 0 10px #ff5470, 0 0 15px #ff5470;
             }
             50% {
-              text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 7px #ff5470, 0 0 10px #ff5470, 0 0 12px #ff5470;
-              box-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 7px #ff5470, 0 0 10px #ff5470;
+              text-shadow: 0 0 1.5px #fff, 0 0 3px #fff, 0 0 5px #ff5470, 0 0 8px #ff5470, 0 0 10px #ff5470;
+              box-shadow: 0 0 1.5px #fff, 0 0 3px #fff, 0 0 5px #ff5470, 0 0 8px #ff5470;
             }
           }
           
           @keyframes morph {
             0%, 100% { border-radius: 8px; }
-            25% { border-radius: 50% 8px 8px 8px; transform: rotate(-5deg); }
-            50% { border-radius: 8px 50% 8px 8px; transform: rotate(5deg); }
-            75% { border-radius: 8px 8px 50% 8px; transform: rotate(-5deg); }
+            25% { border-radius: 40% 8px 8px 8px; transform: rotate(-3deg); }
+            50% { border-radius: 8px 40% 8px 8px; transform: rotate(3deg); }
+            75% { border-radius: 8px 8px 40% 8px; transform: rotate(-3deg); }
           }
           
           @keyframes liquid {
@@ -1684,7 +1720,7 @@ const ImprovedCSSAnimationDemo = () => {
             }
             25% {
               top: -60%;
-              left: 30%;
+              left: 25%;
             }
             50% {
               top: -40%;
@@ -1692,7 +1728,7 @@ const ImprovedCSSAnimationDemo = () => {
             }
             75% {
               top: -20%;
-              left: -30%;
+              left: -25%;
             }
             100% {
               top: 0%;
@@ -1709,10 +1745,10 @@ const ImprovedCSSAnimationDemo = () => {
           @keyframes ripple {
             0% {
               transform: scale(0);
-              opacity: 0.8;
+              opacity: 0.6;
             }
             100% {
-              transform: scale(2);
+              transform: scale(1.8);
               opacity: 0;
             }
           }
@@ -1740,18 +1776,31 @@ const ImprovedCSSAnimationDemo = () => {
               fontWeight: 600,
               textAlign: 'left'
             }}>
-              Animation Type
+              {autoCycling ? "Auto-Cycling Animations" : "Animation Type"}
+              {autoCycling && (
+                <span style={{ 
+                  fontSize: '0.8rem', 
+                  fontWeight: 'normal', 
+                  marginLeft: '10px',
+                  color: 'rgba(255,255,255,0.6)'
+                }}>
+                  (click any button to pause)
+                </span>
+              )}
             </h4>
           </div>
           
           <div style={selectorStyle}>
-            {animationOptions.map(option => (
+            {animationOptions.map((option, index) => (
               <button 
                 key={option.id}
                 style={animSelectBtnStyle(currentAnimation === option.id, previewAnimation === option.id)}
                 onClick={() => {
                   setCurrentAnimation(option.id);
-                  if (!isAnimating) setIsAnimating(true);
+                  setCurrentIndex(index);
+                  setIsAnimating(true);
+                  setAutoCycling(false);
+                  handleUserInteraction();
                   setPreviewAnimation('');
                 }}
                 onMouseEnter={() => setPreviewAnimation(option.id)}
@@ -1782,22 +1831,19 @@ const ImprovedCSSAnimationDemo = () => {
             width: currentAnimation === 'liquid' ? '180px' : 'auto'
           }}
           onClick={() => {
-            if (currentAnimation === 'ripple' && !isAnimating) {
-              setIsAnimating(true);
-            } else {
-              setIsAnimating(!isAnimating);
-            }
+            setIsAnimating(!isAnimating);
+            handleUserInteraction();
           }}
         >
-          {isAnimating ? 'Stop Animation' : 'Start Animation'}
+          {currentAnimation.charAt(0).toUpperCase() + currentAnimation.slice(1)} Animation
           {isAnimating && currentAnimation === 'liquid' && (
             <div style={{
               position: 'absolute',
               top: '-80%',
               left: '0%',
-              width: '140%',
-              height: '150%',
-              background: 'rgba(255, 255, 255, 0.2)',
+              width: '130%',
+              height: '140%',
+              background: 'rgba(255, 255, 255, 0.15)',
               transform: 'rotate(45deg)',
               zIndex: '-1',
               animation: 'liquid 4s linear infinite'
@@ -1809,10 +1855,10 @@ const ImprovedCSSAnimationDemo = () => {
                 position: 'absolute',
                 top: '50%',
                 left: '50%',
-                width: '150%',
-                height: '150%',
+                width: '140%',
+                height: '140%',
                 borderRadius: '50%',
-                background: 'rgba(255, 255, 255, 0.2)',
+                background: 'rgba(255, 255, 255, 0.15)',
                 transform: 'translate(-50%, -50%) scale(0)',
                 zIndex: '-1',
                 animation: `ripple 2.5s ${index * 0.8}s ease-out infinite`,

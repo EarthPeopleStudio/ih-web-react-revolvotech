@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -220,219 +220,486 @@ const ResponsivePortfolioDemo = () => {
   const [activeSection, setActiveSection] = useState('work');
   const [viewMode, setViewMode] = useState('desktop');
   const [hoveredProject, setHoveredProject] = useState(null);
-  const [animatedHeader, setAnimatedHeader] = useState(true);
-  const [activatedMenu, setActivatedMenu] = useState(false);
+  const [animatedHeader, setAnimatedHeader] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(false);
+  const [shapesVisible, setShapesVisible] = useState(false);
+  const [initialized, setInitialized] = useState(false);
+  const [autoDemo, setAutoDemo] = useState(true);
+  const [lastInteraction, setLastInteraction] = useState(Date.now());
+  const autoResumeTimeoutRef = useRef(null);
+
+  // References for animations
+  const shapesRef = useRef(null);
+  const containerRef = useRef(null);
   
-  // Add animation effect on component mount
+  // Optimize loading sequence
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setAnimatedHeader(false);
-      setActivatedMenu(true);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    // Preload all states immediately to avoid cascading timeouts
+    setInitialized(true); // Initialize immediately
+    
+    // Use requestAnimationFrame for better performance
+    requestAnimationFrame(() => {
+      setLoadingComplete(true);
+      
+      // Stagger shape animations with reduced delay
+      setTimeout(() => {
+        setShapesVisible(true);
+      }, 150); // Reduced from 400ms
+    });
+    
+    return () => {
+      // Clean up any potential memory leaks
+      if (autoResumeTimeoutRef.current) {
+        clearTimeout(autoResumeTimeoutRef.current);
+      }
+    };
+  }, []); // Only run on mount
   
-  const containerStyle = {
+  // Resume auto demo after period of inactivity
+  useEffect(() => {
+    if (autoDemo) return; // Skip if already in auto mode
+    
+    // Clear any existing auto-resume timeout
+    if (autoResumeTimeoutRef.current) {
+      clearTimeout(autoResumeTimeoutRef.current);
+    }
+    
+    // Set a new timeout to resume auto demo after inactivity (10 seconds)
+    autoResumeTimeoutRef.current = setTimeout(() => {
+      const now = Date.now();
+      const inactiveTime = now - lastInteraction;
+      
+      // If user has been inactive for more than 10 seconds, resume auto demo
+      if (inactiveTime > 10000) {
+        setAutoDemo(true);
+      }
+    }, 10000);
+    
+    return () => {
+      if (autoResumeTimeoutRef.current) {
+        clearTimeout(autoResumeTimeoutRef.current);
+      }
+    };
+  }, [autoDemo, lastInteraction]);
+  
+  // Handle user interaction
+  const handleUserInteraction = () => {
+    setLastInteraction(Date.now());
+    setAutoDemo(false);
+  };
+  
+  // Optimize cycling animations - only start when component is fully loaded
+  useEffect(() => {
+    if (!autoDemo || !loadingComplete) return;
+    
+    const sections = ['work', 'about', 'contact'];
+    const currentIndex = sections.indexOf(activeSection);
+    
+    // Reduced time from 6000ms to 5000ms for faster cycling
+    const sectionTimer = setTimeout(() => {
+      setActiveSection(sections[(currentIndex + 1) % sections.length]);
+    }, 5000);
+    
+    return () => clearTimeout(sectionTimer);
+  }, [activeSection, autoDemo, loadingComplete]);
+  
+  // Optimize device mode cycling
+  useEffect(() => {
+    if (!autoDemo || !loadingComplete) return;
+    
+    const modes = ['desktop', 'tablet', 'mobile'];
+    const currentIndex = modes.indexOf(viewMode);
+    
+    // Reduced time from 10000ms to 8000ms for faster cycling
+    const modeTimer = setTimeout(() => {
+      setViewMode(modes[(currentIndex + 1) % modes.length]);
+    }, 8000);
+    
+    return () => clearTimeout(modeTimer);
+  }, [viewMode, autoDemo, loadingComplete]);
+  
+  // Optimize project card hover effect
+  useEffect(() => {
+    if (!autoDemo || !loadingComplete || activeSection !== 'work') return;
+    
+    let currentProject = null;
+    
+    // Reduced time from 3000ms to 2500ms for faster cycling
+    const hoverTimer = setInterval(() => {
+      if (currentProject !== null) {
+        setHoveredProject(null);
+        currentProject = null;
+      } else {
+        currentProject = Math.floor(Math.random() * projects.length);
+        setHoveredProject(currentProject);
+      }
+    }, 2500);
+    
+    return () => clearInterval(hoverTimer);
+  }, [activeSection, autoDemo, loadingComplete]);
+  
+  // Optimize shape animations for better performance
+  useEffect(() => {
+    if (!shapesVisible || !shapesRef.current) return;
+    
+    // Use more performant CSS properties (prefer transform over others)
+    const shapeElements = shapesRef.current.children;
+    if (shapeElements && shapeElements.length > 0) {
+      Array.from(shapeElements).forEach((shape, index) => {
+        // Use transform-based animations instead of multiple properties
+        shape.style.animation = `float ${2 + index % 2}s infinite ease-in-out`; // Reduced animation time
+        shape.style.animationDelay = `${index * 0.3}s`; // Reduced delay
+      });
+    }
+  }, [shapesVisible]);
+  
+  // Device frame based on viewMode
+  const getDeviceFrame = () => {
+    if (viewMode === 'desktop') {
+      return {
+        outerStyle: {
     width: '100%',
-    height: '420px',
+          maxWidth: '600px',
+          margin: '0 auto 20px',
+          padding: '20px 20px 30px',
+          background: '#333',
+          borderRadius: '16px 16px 6px 6px',
+          boxShadow: '0 30px 60px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(255,255,255,0.1), inset 0 1px 10px rgba(0,0,0,0.8)',
+          position: 'relative',
+          zIndex: 2,
+          transform: initialized ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.98)',
+          opacity: initialized ? 1 : 0,
+          transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s', // Faster transition
+          boxSizing: 'border-box',
+          willChange: 'transform, opacity' // Performance hint for browser
+        },
+        standStyle: {
+          position: 'absolute',
+          bottom: '-15px',
+          left: '50%',
+          width: '140px',
+          height: '20px',
+          background: 'linear-gradient(to bottom, #333 0%, #222 100%)',
+          transform: 'translateX(-50%)',
+          borderRadius: '0 0 10px 10px',
+          boxShadow: '0 5px 10px rgba(0,0,0,0.2)'
+        },
+        screenStyle: {
+          width: '100%',
+          height: '400px',
+          background: '#FAFAFA',
+          borderRadius: '8px',
     overflow: 'hidden',
     position: 'relative',
-    transition: 'all 0.3s ease',
-    background: 'linear-gradient(135deg, #0a0a12 0%, #1d1d35 100%)',
-    borderRadius: viewMode === 'desktop' ? '18px' : '32px',
-    border: viewMode === 'mobile' ? '12px solid #111' : '1px solid rgba(80, 70, 255, 0.1)',
-    maxWidth: viewMode === 'desktop' ? '100%' : 
-              viewMode === 'tablet' ? '500px' : '260px',
-    margin: '0 auto',
-    boxShadow: viewMode === 'desktop' ? 
-      '0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 60px rgba(80, 70, 255, 0.15) inset' : 
-      '0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 40px rgba(80, 70, 255, 0.1) inset',
-    fontSize: viewMode === 'mobile' ? '0.9em' : '1em'
+          boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.05)',
+          border: '1px solid #e0e0e0'
+        },
+        cameraStyle: {
+          position: 'absolute',
+          top: '10px',
+          left: '50%',
+          width: '6px',
+          height: '6px',
+          background: 'rgba(0,0,0,0.2)',
+          borderRadius: '50%',
+          transform: 'translateX(-50%)',
+          boxShadow: 'inset 0 0 2px rgba(0,0,0,0.5)'
+        }
+      };
+    } else if (viewMode === 'tablet') {
+      return {
+        outerStyle: {
+          width: '100%',
+          maxWidth: '450px',
+          margin: '0 auto 20px',
+          padding: '20px',
+          background: 'linear-gradient(to bottom, #444 0%, #333 100%)',
+          borderRadius: '30px',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.3), inset 0 0 0 2px rgba(255,255,255,0.05), inset 0 0 10px rgba(0,0,0,0.5)',
+          position: 'relative',
+          zIndex: 2,
+          transform: initialized ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.98)',
+          opacity: initialized ? 1 : 0,
+          transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s'
+        },
+        buttonStyle: {
+          position: 'absolute',
+          top: '50%',
+          right: '6px',
+          width: '4px',
+          height: '40px',
+          background: '#222',
+          borderRadius: '2px',
+          transform: 'translateY(-50%)',
+          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.1)'
+        },
+        screenStyle: {
+          width: '100%',
+          height: '400px',
+          background: '#FAFAFA',
+          borderRadius: '10px',
+          overflow: 'hidden',
+          position: 'relative',
+          boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.05)',
+          border: '1px solid #e0e0e0'
+        },
+        cameraStyle: {
+          position: 'absolute',
+          top: '10px',
+          left: '50%',
+          width: '5px',
+          height: '5px',
+          background: 'rgba(0,0,0,0.2)',
+          borderRadius: '50%',
+          transform: 'translateX(-50%)',
+          boxShadow: 'inset 0 0 2px rgba(0,0,0,0.5)'
+        }
+      };
+    } else {
+      return {
+        outerStyle: {
+          width: '100%',
+          maxWidth: '280px',
+          margin: '0 auto 20px',
+          padding: '15px 10px',
+          background: 'linear-gradient(to bottom, #444 0%, #222 100%)',
+          borderRadius: '30px',
+          boxShadow: '0 15px 30px rgba(0,0,0,0.3), inset 0 0 0 2px rgba(255,255,255,0.05), inset 0 0 10px rgba(0,0,0,0.5)',
+          position: 'relative',
+          zIndex: 2,
+          transform: initialized ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.98)',
+          opacity: initialized ? 1 : 0,
+          transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
+          boxSizing: 'border-box'
+        },
+        speakerStyle: {
+          position: 'absolute',
+          top: '12px',
+          left: '50%',
+          width: '60px',
+          height: '6px',
+          background: '#222',
+          borderRadius: '3px',
+          transform: 'translateX(-50%)',
+          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.1)'
+        },
+        notchStyle: {
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          width: '120px',
+          height: '25px',
+          background: '#222',
+          borderRadius: '0 0 12px 12px',
+          transform: 'translateX(-50%)',
+    display: 'flex',
+    alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: 'inset 0 -2px 5px rgba(0,0,0,0.2)'
+        },
+        notchCameraStyle: {
+          width: '8px',
+          height: '8px',
+          background: '#111',
+          borderRadius: '50%',
+          marginRight: '5px',
+          boxShadow: 'inset 0 0 2px rgba(0,0,0,0.8), 0 0 1px rgba(255,255,255,0.1)'
+        },
+        notchSpeakerStyle: {
+          width: '35px',
+          height: '4px',
+          background: '#111',
+          borderRadius: '2px',
+          boxShadow: 'inset 0 0 2px rgba(0,0,0,0.8), 0 0 1px rgba(255,255,255,0.1)'
+        },
+        screenStyle: {
+          width: '100%',
+          height: '450px',
+          background: '#FAFAFA',
+          borderRadius: '20px',
+          overflow: 'hidden',
+    position: 'relative',
+          boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.05)',
+          border: '1px solid #e0e0e0'
+        },
+        buttonStyle: {
+          position: 'absolute',
+          top: '120px',
+          right: '-2px',
+          width: '3px',
+          height: '30px',
+          background: 'rgba(0,0,0,0.2)',
+          borderRadius: '2px 0 0 2px',
+          boxShadow: 'inset 1px 0 2px rgba(0,0,0,0.3)'
+        },
+        volumeButtonsStyle: {
+          position: 'absolute',
+          top: '80px',
+          left: '-2px',
+    display: 'flex',
+          flexDirection: 'column',
+          gap: '10px'
+        },
+        volumeButtonStyle: {
+          width: '3px',
+          height: '25px',
+          background: 'rgba(0,0,0,0.2)',
+          borderRadius: '0 2px 2px 0',
+          boxShadow: 'inset -1px 0 2px rgba(0,0,0,0.3)'
+        }
+      };
+    }
+  };
+
+  const deviceFrame = getDeviceFrame();
+  
+  const backgroundGradient = {
+      position: 'absolute',
+    top: '-10%',
+    left: '-10%',
+    width: '120%',
+    height: '120%',
+    background: 'linear-gradient(-45deg, rgba(244,114,182,0.2) 0%, rgba(59,130,246,0.2) 50%, rgba(16,185,129,0.2) 100%)',
+    zIndex: 0,
+    borderRadius: '100%',
+    filter: 'blur(50px)',
+    animation: 'rotateBg 30s linear infinite',
+    opacity: loadingComplete ? 0.6 : 0
+  };
+  
+  const contentStyle = {
+    padding: viewMode === 'desktop' ? '20px 25px' : 
+             viewMode === 'tablet' ? '18px 22px' : '16px',
+    height: viewMode === 'desktop' ? '360px' : viewMode === 'tablet' ? '360px' : '420px',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: viewMode === 'mobile' ? '18px' : '25px',
+    msOverflowStyle: 'none',
+    scrollbarWidth: 'none',
+    className: 'hide-scrollbar',
+    position: 'relative',
+    background: '#FAFAFA',
+    transition: 'opacity 0.4s ease',
+    opacity: loadingComplete ? 1 : 0
   };
   
   const headerStyle = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: viewMode === 'desktop' ? '22px 30px' : 
-             viewMode === 'tablet' ? '18px 22px' : '14px 15px',
-    borderBottom: '1px solid rgba(255,255,255,0.07)',
-    background: animatedHeader ? 
-      'linear-gradient(90deg, rgba(20,20,30,0.7) 0%, rgba(30,30,50,0.6) 100%)' : 
-      'linear-gradient(90deg, rgba(15,15,25,0.8) 0%, rgba(25,25,45,0.75) 100%)',
-    backdropFilter: 'blur(12px)',
-    transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
+    padding: viewMode === 'desktop' ? '14px 25px' : 
+             viewMode === 'tablet' ? '12px 22px' : '10px 16px',
+    background: 'linear-gradient(to right, rgba(255,255,255,0.95), rgba(245,245,250,0.95))',
+    borderBottom: '1px solid #EAEAEA',
+    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.03)',
+    backdropFilter: 'blur(5px)',
+    transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
     transform: animatedHeader ? 'translateY(-100%)' : 'translateY(0%)',
     opacity: animatedHeader ? 0 : 1,
-    boxShadow: '0 5px 25px rgba(0, 0, 0, 0.15)'
-  };
-  
-  const logoStyle = {
-    color: '#fff',
-    fontWeight: '700',
-    fontSize: viewMode === 'desktop' ? '1.4rem' : 
-              viewMode === 'tablet' ? '1.2rem' : '1rem',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    position: 'relative',
-    transition: 'all 0.3s ease',
-    textShadow: '0 2px 12px rgba(139, 92, 246, 0.5)'
-  };
-  
-  const navStyle = {
-    display: 'flex',
-    gap: viewMode === 'desktop' ? '30px' : 
-        viewMode === 'tablet' ? '20px' : '12px'
-  };
-  
-  const navItemStyle = (isActive) => ({
-    color: isActive ? '#8b5cf6' : 'rgba(255,255,255,0.7)',
-    fontWeight: isActive ? '600' : '400',
-    fontSize: viewMode === 'desktop' ? '0.95rem' : 
-              viewMode === 'tablet' ? '0.85rem' : '0.8rem',
-    cursor: 'pointer',
-    transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-    borderBottom: isActive ? '2px solid #8b5cf6' : '2px solid transparent',
-    paddingBottom: '5px',
-    position: 'relative',
-    transform: isActive && activatedMenu ? 'translateY(-2px)' : 'translateY(0)',
-    opacity: activatedMenu ? 1 : 0,
-    animation: activatedMenu ? `fadeIn 0.4s forwards ${isActive ? 0 : 0.1}s` : 'none',
-    '&:hover': {
-      color: isActive ? '#8b5cf6' : 'rgba(255,255,255,0.9)'
-    },
-    '&:after': isActive ? {
-      content: '""',
-      position: 'absolute',
-      bottom: '-2px',
-      left: '0',
-      width: '100%',
-      height: '2px',
-      background: 'linear-gradient(90deg, #8b5cf6, rgba(139, 92, 246, 0.3))',
-      borderRadius: '4px',
-      boxShadow: '0 2px 12px rgba(139, 92, 246, 0.6)'
-    } : {}
-  });
-  
-  const contentStyle = {
-    padding: viewMode === 'desktop' ? '25px 30px' : 
-             viewMode === 'tablet' ? '22px 25px' : '18px',
-    height: 'calc(100% - 70px)',
-    overflowY: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: viewMode === 'mobile' ? '18px' : '24px',
-    transition: 'opacity 0.5s ease',
-    animation: 'fadeIn 0.5s forwards',
-    msOverflowStyle: 'none',
-    scrollbarWidth: 'none',
-    className: 'hide-scrollbar'
-  };
-  
-  const projectGridStyle = {
-    display: 'grid',
-    gridTemplateColumns: viewMode === 'desktop' ? 'repeat(auto-fill, minmax(180px, 1fr))' : 
-                          viewMode === 'tablet' ? 'repeat(2, 1fr)' : '1fr',
-    gap: viewMode === 'desktop' ? '20px' : 
-         viewMode === 'tablet' ? '15px' : '12px'
+    position: 'sticky',
+    top: 0,
+    zIndex: 5
   };
   
   const projectCardStyle = (index) => ({
     position: 'relative',
-    height: viewMode === 'desktop' ? '160px' : 
-            viewMode === 'tablet' ? '140px' : '110px',
-    borderRadius: viewMode === 'mobile' ? '12px' : '16px',
+    height: viewMode === 'desktop' ? '170px' : 
+            viewMode === 'tablet' ? '150px' : '120px',
+    borderRadius: '12px',
     overflow: 'hidden',
     cursor: 'pointer',
-    transition: 'all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-    transform: hoveredProject === index ? 'translateY(-10px) scale(1.03)' : 'translateY(0) scale(1)',
+    background: 'white',
+    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+    transform: hoveredProject === index ? 'translateY(-8px)' : 'translateY(0)',
     boxShadow: hoveredProject === index ? 
-      '0 20px 40px -5px rgba(0,0,0,0.6), 0 0 25px rgba(139, 92, 246, 0.15) inset' : 
-      '0 8px 25px rgba(0,0,0,0.35)',
-    border: '1px solid rgba(139, 92, 246, 0.1)',
-    animation: `fadeIn 0.6s forwards ${0.2 + index * 0.15}s`,
-    opacity: 0,
-    '&:before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      height: '3px',
-      background: 'linear-gradient(to right, #8b5cf6, transparent)',
-      zIndex: 5,
-      opacity: hoveredProject === index ? 1 : 0.5,
-      transition: 'opacity 0.3s ease'
-    }
+      '0 15px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05)' : 
+      '0 5px 15px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.03)',
+    border: '1px solid #EAEAEA',
+    animation: loadingComplete ? `fadeIn 0.5s forwards ${0.2 + index * 0.1}s` : 'none',
+    opacity: 0
   });
   
-  const projectOverlayStyle = (index) => ({
+  const shapeStyle = (size, top, left, delay, type, color) => ({
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: '20px',
-    background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, transparent 100%)',
-    transform: hoveredProject === index ? 'translateY(0)' : 'translateY(100%)',
-    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    backdropFilter: 'blur(3px)'
+    width: size,
+    height: type === 'circle' ? size : type === 'square' ? size : size/2,
+    top: top,
+    left: left,
+    background: color,
+    borderRadius: type === 'circle' ? '50%' : type === 'triangle' ? '0' : '4px',
+    clipPath: type === 'triangle' ? 'polygon(50% 0%, 0% 100%, 100% 100%)' : 'none',
+    opacity: shapesVisible ? 0.7 : 0,
+    transform: shapesVisible ? 'translateY(0) rotate(0)' : 'translateY(20px) rotate(-20deg)',
+    transition: `all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${delay}s`,
+    animation: shapesVisible ? `float ${3 + Math.random() * 4}s infinite ease-in-out` : 'none',
+    zIndex: 1
   });
   
   const projects = [
     { 
-      color: '#4C1D95', 
-      bgGradient: 'linear-gradient(45deg, #4C1D95 0%, #7C3AED 40%, #EF4444 90%)', 
+      color: 'linear-gradient(135deg, #FFF4E5 0%, #FFE8CC 100%)',
+      accent: '#FF9900',
       title: 'Brand Identity',
-      icon: '✨',
+      icon: '✦',
       year: '2023',
       tools: ['Figma', 'Photoshop']
     },
     { 
-      color: '#1D4ED8', 
-      bgGradient: 'linear-gradient(160deg, #1E40AF 0%, #3B82F6 50%, #93C5FD 100%)', 
+      color: 'linear-gradient(135deg, #E8F4FF 0%, #D1E9FF 100%)',
+      accent: '#2D7FF9',
       title: 'Mobile App UI',
-      icon: '📱',
+      icon: '◎',
       year: '2023',
       tools: ['React Native', 'Sketch']
     },
     { 
-      color: '#0F766E', 
-      bgGradient: 'linear-gradient(90deg, #0F766E 0%, #2DD4BF 50%, #A7F3D0 100%)', 
+      color: 'linear-gradient(135deg, #F0FFF4 0%, #DCFFE7 100%)',
+      accent: '#38A169',
       title: 'Web Dashboard',
-      icon: '📊',
+      icon: '◩',
       year: '2022',
       tools: ['React', 'D3.js']
     },
     { 
-      color: '#9333EA', 
-      bgGradient: 'linear-gradient(0deg, #6D28D9 0%, #A855F7 50%, #E879F9 100%)', 
+      color: 'linear-gradient(135deg, #FFF1F3 0%, #FFE4E8 100%)',
+      accent: '#E53E3E',
       title: 'Social Platform',
-      icon: '🌐',
+      icon: '◇',
       year: '2022',
       tools: ['Vue.js', 'Firebase']
     },
   ];
-  
-  // Add keyframe animations
-  const animationStyles = `
+
+  const shapes = [
+    { size: '60px', top: '15%', left: '10%', delay: 0.1, type: 'circle', color: 'rgba(255, 153, 0, 0.15)' },
+    { size: '40px', top: '70%', left: '8%', delay: 0.3, type: 'square', color: 'rgba(45, 127, 249, 0.15)' },
+    { size: '30px', top: '40%', left: '85%', delay: 0.4, type: 'circle', color: 'rgba(56, 161, 105, 0.15)' },
+    { size: '50px', top: '80%', left: '75%', delay: 0.2, type: 'triangle', color: 'rgba(229, 62, 62, 0.15)' },
+    { size: '25px', top: '20%', left: '75%', delay: 0.5, type: 'square', color: 'rgba(102, 126, 234, 0.15)' }
+  ];
+
+  const animations = `
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
     
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(3deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
     }
     
     @keyframes pulse {
-      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
-      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
-      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    @keyframes rotateBg {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     
     .hide-scrollbar::-webkit-scrollbar {
@@ -446,196 +713,276 @@ const ResponsivePortfolioDemo = () => {
   
   return (
     <>
-      <div style={containerStyle}>
-        <style>{`
-          @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(15px); } 
-            to { opacity: 1; transform: translateY(0); }
-          }
-          @keyframes shimmer {
-            0% { background-position: -468px 0; }
-            100% { background-position: 468px 0; }
-          }
-          @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
-          }
-          .hide-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-          }
-          .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
-        <div style={headerStyle} className={animatedHeader ? 'animated-header' : ''}>
-          <div style={logoStyle}>
-            <span style={{
-              color: '#8b5cf6',
-              fontSize: viewMode === 'desktop' ? '1.6rem' : '1.4rem',
-              filter: 'drop-shadow(0 0 10px rgba(139, 92, 246, 0.6))',
-              animation: activatedMenu ? 'pulse 2s infinite' : 'none'
-            }}>⬢</span> 
-            <span style={{
-              background: 'linear-gradient(to right, #8b5cf6, #ec4899)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              animation: activatedMenu ? 'fadeIn 0.5s forwards' : 'none',
-              opacity: activatedMenu ? 1 : 0
-            }}>Portfolio</span>
-          </div>
-          <div style={navStyle}>
-            <div 
-              style={navItemStyle(activeSection === 'work')} 
-              onClick={() => setActiveSection('work')}
-            >
-              Work
-            </div>
-            <div 
-              style={navItemStyle(activeSection === 'about')} 
-              onClick={() => setActiveSection('about')}
-            >
-              About
-            </div>
-            <div 
-              style={navItemStyle(activeSection === 'contact')} 
-              onClick={() => setActiveSection('contact')}
-            >
-              Contact
-            </div>
-          </div>
-        </div>
+      <div style={{ position: 'relative', padding: '20px 0 60px' }}>
+        <style>{animations}</style>
         
-        <div style={contentStyle} className="hide-scrollbar">
-          {activeSection === 'work' && (
-            <>
+        <div style={backgroundGradient}></div>
+        
+        {/* Device Frame */}
+        <div style={{
+          ...deviceFrame.outerStyle,
+          transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
+        }} ref={containerRef}>
+          {viewMode === 'desktop' && <div style={deviceFrame.standStyle}></div>}
+          {viewMode === 'tablet' && <div style={deviceFrame.buttonStyle}></div>}
+          {viewMode === 'mobile' && <div style={deviceFrame.speakerStyle}></div>}
+          
+          <div style={{
+            ...deviceFrame.screenStyle,
+            transition: 'all 0.4s ease'
+          }}>
+            {viewMode !== 'mobile' && <div style={deviceFrame.cameraStyle}></div>}
+            
+            {/* Mobile device notch and speaker */}
+            {viewMode === 'mobile' && (
+              <div style={deviceFrame.notchStyle}>
+                <div style={deviceFrame.notchCameraStyle}></div>
+                <div style={deviceFrame.notchSpeakerStyle}></div>
+          </div>
+            )}
+            
+            {/* Side buttons for mobile */}
+            {viewMode === 'mobile' && (
+              <>
+                <div style={deviceFrame.buttonStyle}></div>
+                <div style={deviceFrame.volumeButtonsStyle}>
+                  <div style={deviceFrame.volumeButtonStyle}></div>
+                  <div style={deviceFrame.volumeButtonStyle}></div>
+            </div>
+              </>
+            )}
+            
+            {/* Background shapes */}
+            <div ref={shapesRef}>
+              {shapes.map((shape, i) => (
+                <div
+                  key={i}
+                  style={shapeStyle(
+                    shape.size,
+                    shape.top,
+                    shape.left,
+                    shape.delay,
+                    shape.type,
+                    shape.color
+                  )}
+                />
+              ))}
+            </div>
+            
+            {/* Header */}
+            <div style={{
+              ...headerStyle,
+              transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}>
               <div style={{
-                color: '#fff', 
-                fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem', 
                 fontWeight: '700',
+                fontSize: viewMode === 'desktop' ? '1.3rem' : 
+                          viewMode === 'tablet' ? '1.2rem' : '1.1rem',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                position: 'relative',
-                paddingBottom: '12px',
-                borderBottom: '1px solid rgba(139, 92, 246, 0.15)',
-                animation: 'fadeIn 0.4s forwards',
-                background: 'linear-gradient(to right, #fff, rgba(255,255,255,0.8))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
+                color: '#222',
+                position: 'relative'
               }}>
-                <span>Recent Projects</span>
                 <span style={{
-                  fontSize: '0.8rem',
-                  fontWeight: '500',
-                  color: '#fff',
-                  background: 'linear-gradient(to right, #8b5cf6, #ec4899)',
-                  padding: '5px 10px',
+                  fontSize: '1.4rem',
+                  color: '#222',
+                  background: 'linear-gradient(135deg, #ff9900, #ff5470)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>◮</span>
+                <span>Portfolio</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                gap: viewMode === 'desktop' ? '30px' : 
+                    viewMode === 'tablet' ? '20px' : '15px'
+              }}>
+                {['Work', 'About', 'Contact'].map((item) => (
+                  <div 
+                    key={item}
+                    style={{
+                      color: activeSection === item.toLowerCase() ? '#222' : '#777',
+                      fontWeight: activeSection === item.toLowerCase() ? '600' : '500',
+                      fontSize: viewMode === 'desktop' ? '0.95rem' : 
+                                viewMode === 'tablet' ? '0.85rem' : '0.8rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      position: 'relative',
+                      padding: '6px 0',
+                      borderBottom: activeSection === item.toLowerCase() ? '2px solid #ff5470' : '2px solid transparent'
+                    }}
+                    onClick={() => {
+                      handleUserInteraction();
+                      setActiveSection(item.toLowerCase());
+                    }}
+                  >
+                    {item}
+            </div>
+                ))}
+          </div>
+        </div>
+        
+            {/* Content area with interactive sections */}
+            <div 
+              style={{
+                ...contentStyle,
+                transition: 'opacity 0.6s ease'
+              }} 
+              className="hide-scrollbar"
+              onMouseMove={handleUserInteraction}
+              onClick={handleUserInteraction}
+            >
+          {activeSection === 'work' && (
+            <>
+              <div style={{
+                    color: '#222', 
+                    fontSize: viewMode === 'desktop' ? '1.6rem' : '1.4rem', 
+                fontWeight: '700',
+                display: 'flex',
+                alignItems: 'center',
+                    justifyContent: 'space-between',
+                position: 'relative',
+                    paddingBottom: '15px',
+                    marginBottom: '5px',
+                    borderBottom: '1px solid #EAEAEA',
+                    zIndex: 2
+                  }}>
+                    <span>Projects</span>
+                <span style={{
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      color: 'white',
+                      background: 'linear-gradient(to right, #ff9900, #ff5470)',
+                      padding: '5px 12px',
                   borderRadius: '20px',
-                  marginLeft: 'auto',
-                  boxShadow: '0 4px 15px rgba(139, 92, 246, 0.3)',
-                  WebkitBackgroundClip: 'initial',
-                  WebkitTextFillColor: 'initial'
+                      boxShadow: '0 4px 10px rgba(255, 84, 112, 0.2)'
                 }}>
                   4 projects
                 </span>
               </div>
-              <div style={projectGridStyle}>
+                  
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: viewMode === 'desktop' ? 'repeat(auto-fill, minmax(200px, 1fr))' : 
+                                          viewMode === 'tablet' ? 'repeat(2, 1fr)' : '1fr',
+                    gap: '16px'
+                  }}>
                 {projects.map((project, index) => (
                   <div 
                     key={index}
-                    style={{...projectCardStyle(index), background: project.bgGradient}}
+                        style={projectCardStyle(index)}
                     onMouseEnter={() => setHoveredProject(index)}
                     onMouseLeave={() => setHoveredProject(null)}
                   >
                     <div style={{
                       position: 'absolute',
-                      top: '12px',
-                      right: '12px',
-                      background: 'rgba(255,255,255,0.15)',
-                      borderRadius: '50%',
-                      width: '38px',
-                      height: '38px',
+                          top: '0',
+                          left: '0',
+                          width: '100%',
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          justifyContent: 'flex-start',
+                          padding: '16px',
+                          boxSizing: 'border-box',
+                          flexDirection: 'column',
+                          transition: 'transform 0.4s ease',
+                          transform: hoveredProject === index ? 'translateY(-60px)' : 'translateY(0)',
+                          background: 'white',
+                          zIndex: 2
+                        }}>
+                          <div style={{
+                            fontSize: '28px',
+                            marginBottom: '10px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '20px',
-                      backdropFilter: 'blur(3px)',
-                      boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      animation: hoveredProject === index ? 'pulse 2s infinite' : 'none'
+                            width: '50px',
+                            height: '50px',
+                            background: project.color,
+                            borderRadius: '8px',
+                            color: project.accent,
+                            boxShadow: '0 4px 10px rgba(0,0,0,0.07)'
                     }}>
                       {project.icon}
                     </div>
-                    <div style={projectOverlayStyle(index)}>
                       <div style={{
-                        color: '#fff', 
-                        fontSize: '1rem', 
-                        fontWeight: '700',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center'
+                            fontSize: '1rem',
+                        fontWeight: '600',
+                            color: '#222',
+                            marginBottom: '6px'
                       }}>
                         {project.title}
-                        <span style={{
-                          fontSize: '0.7rem',
-                          fontWeight: '500',
-                          background: 'rgba(139, 92, 246, 0.3)',
-                          padding: '4px 8px',
-                          borderRadius: '6px',
-                          backdropFilter: 'blur(5px)',
-                          border: '1px solid rgba(139, 92, 246, 0.2)'
-                        }}>
-                          {project.year}
-                        </span>
                       </div>
                       <div style={{
+                            fontSize: '0.85rem',
+                            fontWeight: '500',
+                            color: '#666',
                         display: 'flex',
-                        flexDirection: 'column',
-                        gap: '8px'
+                        alignItems: 'center',
+                        gap: '5px'
                       }}>
-                        <div style={{
-                          display: 'flex',
-                          gap: '5px',
-                          flexWrap: 'wrap'
-                        }}>
-                          {project.tools.map((tool, i) => (
-                            <span key={i} style={{
-                              background: 'rgba(255,255,255,0.1)',
-                              padding: '3px 6px',
-                              borderRadius: '4px',
-                              fontSize: '0.65rem',
-                              color: 'rgba(255,255,255,0.8)',
-                              border: '1px solid rgba(255,255,255,0.05)'
-                            }}>
-                              {tool}
-                            </span>
-                          ))}
+                            <span>{project.year}</span>
+                          </div>
                         </div>
+                        
+                        {/* Details panel that slides up on hover */}
                         <div style={{
+                          position: 'absolute',
+                          bottom: '0',
+                          left: '0',
+                          width: '100%',
+                          padding: '16px',
+                          boxSizing: 'border-box',
+                          background: project.color,
+                          transition: 'transform 0.4s ease',
+                          transform: hoveredProject === index ? 'translateY(0)' : 'translateY(100%)',
+                          borderTop: `3px solid ${project.accent}`,
                           display: 'flex',
-                          alignItems: 'center',
-                          color: 'rgba(255,255,255,0.9)', 
-                          fontSize: '0.8rem',
-                          gap: '5px',
-                          marginTop: '4px'
+                          flexDirection: 'column',
+                          gap: '10px',
+                          zIndex: 1
                         }}>
-                          <span style={{
+                          <div style={{
+                            display: 'flex',
+                            gap: '5px',
+                            flexWrap: 'wrap'
+                          }}>
+                            {project.tools.map((tool, i) => (
+                              <span key={i} style={{
+                                background: 'white',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                                fontSize: '0.7rem',
+                                color: '#444',
+                                fontWeight: '500',
+                                boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                        }}>
+                                {tool}
+                        </span>
+                            ))}
+                      </div>
+                          
+                          <button style={{
+                            border: 'none',
+                            background: 'white',
+                            color: '#222',
+                            padding: '8px 12px',
+                            borderRadius: '6px',
+                            fontWeight: '600',
+                            fontSize: '0.8rem',
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
                             display: 'flex',
                             alignItems: 'center',
+                            justifyContent: 'center',
                             gap: '5px',
-                            background: 'linear-gradient(90deg, #8b5cf6, #ec4899)',
-                            padding: '5px 12px',
-                            borderRadius: '6px',
-                            fontSize: '0.75rem',
-                            fontWeight: '500',
-                            boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
+                            alignSelf: 'flex-start',
+                            transition: 'transform 0.2s ease'
                           }}>
-                            View Project <span style={{fontSize: '1rem'}}>→</span>
-                          </span>
-                        </div>
-                      </div>
+                            View Project <span style={{marginLeft: '2px'}}>→</span>
+                          </button>
                     </div>
                   </div>
                 ))}
@@ -643,77 +990,81 @@ const ResponsivePortfolioDemo = () => {
             </>
           )}
           
+              {/* About section */}
           {activeSection === 'about' && (
             <div style={{
-              color: 'rgba(255,255,255,0.8)', 
-              fontSize: '0.95rem', 
+                  color: '#444', 
+                  fontSize: '0.95rem', 
               lineHeight: '1.6',
-              animation: 'fadeIn 0.5s forwards'
+                  animation: 'fadeIn 0.5s forwards',
+                  zIndex: 2
             }}>
               <h2 style={{
-                color: '#fff', 
-                marginBottom: '18px', 
-                fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem',
+                    color: '#222', 
+                    marginTop: '0',
+                    marginBottom: '20px', 
+                    fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem',
+                    fontWeight: '700',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                paddingBottom: '12px',
-                borderBottom: '1px solid rgba(139, 92, 246, 0.15)',
-                background: 'linear-gradient(to right, #fff, rgba(255,255,255,0.8))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
-                <span style={{
-                  color: '#8b5cf6', 
-                  marginRight: '5px',
-                  WebkitBackgroundClip: 'initial',
-                  WebkitTextFillColor: 'initial'
-                }}>01.</span> About Me
+                    paddingBottom: '15px',
+                    borderBottom: '1px solid #EAEAEA'
+                  }}>
+                    <span style={{
+                      fontSize: '1rem',
+                      background: 'linear-gradient(to right, #ff9900, #ff5470)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      fontWeight: '600'
+                    }}>01.</span> About Me
               </h2>
+                  
               <div style={{
                 display: 'flex',
                 flexDirection: viewMode === 'desktop' ? 'row' : 'column',
-                gap: '25px'
+                    gap: '25px'
               }}>
                 <div style={{
                   position: 'relative',
-                  width: viewMode === 'desktop' ? '110px' : '90px',
-                  height: viewMode === 'desktop' ? '110px' : '90px',
-                  borderRadius: '16px',
-                  background: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
+                      width: viewMode === 'desktop' ? '110px' : '90px',
+                      height: viewMode === 'desktop' ? '110px' : '90px',
+                      background: 'linear-gradient(135deg, #fff4e5, #ffe8cc)',
+                  borderRadius: '12px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '44px',
-                  alignSelf: viewMode === 'desktop' ? 'center' : 'flex-start',
-                  marginBottom: viewMode === 'desktop' ? '0' : '5px',
-                  boxShadow: '0 15px 30px rgba(139, 92, 246, 0.4)',
-                  border: '2px solid rgba(255,255,255,0.1)',
-                  animation: 'pulse 3s infinite'
+                      fontSize: '44px',
+                      alignSelf: viewMode === 'desktop' ? 'flex-start' : 'flex-start',
+                      marginBottom: viewMode === 'desktop' ? '0' : '5px',
+                      boxShadow: '0 8px 20px rgba(0,0,0,0.07)',
+                      border: '1px solid #EAEAEA',
+                      animation: 'float 5s infinite ease-in-out'
                 }}>
                   👋
                 </div>
+                    
                 <div>
-                  <p style={{marginTop: 0}}>I'm a UI/UX designer and front-end developer with 5+ years of experience creating beautiful and functional digital experiences.</p>
-                  <p style={{marginTop: '15px'}}>My expertise includes responsive web design, mobile app interfaces, and interactive prototypes with a focus on accessibility and user engagement.</p>
+                      <p style={{marginTop: 0, marginBottom: '15px'}}>I'm a UI/UX designer and front-end developer with 5+ years of experience creating beautiful and functional digital experiences.</p>
+                      
+                      <p style={{marginTop: '0', marginBottom: '20px'}}>My expertise includes responsive web design, mobile app interfaces, and interactive prototypes with a focus on accessibility and user engagement.</p>
                   
                   <div style={{
                     display: 'flex',
                     flexWrap: 'wrap',
                     gap: '8px',
-                    marginTop: '20px'
+                        marginTop: '20px'
                   }}>
                     {['React', 'Vue.js', 'Figma', 'UX Research', 'Responsive Design'].map((skill, index) => (
                       <span key={index} style={{
-                        background: 'rgba(139, 92, 246, 0.1)',
-                        padding: '6px 12px',
+                            background: 'white',
+                            padding: '6px 12px',
                         borderRadius: '20px',
                         fontSize: '0.75rem',
-                        border: '1px solid rgba(139, 92, 246, 0.2)',
-                        color: '#fff',
-                        fontWeight: '500',
-                        backdropFilter: 'blur(5px)',
-                        boxShadow: index % 2 === 0 ? '0 4px 12px rgba(139, 92, 246, 0.15)' : 'none'
+                            color: '#444',
+                            fontWeight: '500',
+                            boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+                            border: '1px solid #EAEAEA'
                       }}>
                         {skill}
                       </span>
@@ -724,145 +1075,134 @@ const ResponsivePortfolioDemo = () => {
             </div>
           )}
           
+              {/* Contact section */}
           {activeSection === 'contact' && (
             <div style={{
-              color: 'rgba(255,255,255,0.8)', 
-              fontSize: '0.95rem',
-              animation: 'fadeIn 0.5s forwards'
+                  color: '#444', 
+                  fontSize: '0.95rem',
+                  animation: 'fadeIn 0.5s forwards',
+                  zIndex: 2
             }}>
               <h2 style={{
-                color: '#fff', 
-                marginBottom: '18px', 
-                fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                paddingBottom: '12px',
-                borderBottom: '1px solid rgba(139, 92, 246, 0.15)',
-                background: 'linear-gradient(to right, #fff, rgba(255,255,255,0.8))',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent'
-              }}>
-                <span style={{
-                  color: '#8b5cf6', 
-                  marginRight: '5px',
-                  WebkitBackgroundClip: 'initial',
-                  WebkitTextFillColor: 'initial'
-                }}>02.</span> Get In Touch
+                    color: '#222', 
+                    marginTop: '0',
+                    marginBottom: '20px', 
+                    fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem',
+                    fontWeight: '700',
+                    paddingBottom: '15px',
+                    borderBottom: '1px solid #EAEAEA'
+                  }}>
+                    <span style={{
+                      fontSize: '1rem',
+                      background: 'linear-gradient(to right, #ff9900, #ff5470)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      fontWeight: '600'
+                    }}>02.</span> Get In Touch
               </h2>
+                  
               <div style={{
-                background: 'rgba(139, 92, 246, 0.05)', 
-                padding: '22px', 
-                borderRadius: '16px', 
-                marginBottom: '18px',
-                border: '1px solid rgba(139, 92, 246, 0.1)',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.15), 0 0 20px rgba(139, 92, 246, 0.05) inset',
-                backdropFilter: 'blur(10px)'
+                    background: 'white', 
+                padding: '20px', 
+                    borderRadius: '14px', 
+                    marginBottom: '16px',
+                    boxShadow: '0 5px 20px rgba(0,0,0,0.05)',
+                    border: '1px solid #EAEAEA',
+                    position: 'relative',
+                    overflow: 'hidden'
               }}>
                 <div style={{
-                  marginBottom: '14px', 
-                  color: '#fff',
+                      marginBottom: '14px', 
+                      color: '#222',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px'
-                }}>
-                  <span style={{
-                    background: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
-                    borderRadius: '50%',
-                    width: '38px',
-                    height: '38px',
+                      gap: '12px'
+                    }}>
+                      <div style={{
+                        width: '38px',
+                        height: '38px',
+                        background: 'linear-gradient(135deg, #fff4e5, #ffe8cc)',
+                        color: '#FF9900',
+                        borderRadius: '10px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 5px 15px rgba(139, 92, 246, 0.3)',
-                    fontSize: '18px'
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
                   }}>
                     ✉️
-                  </span>
-                  <span style={{
-                    fontWeight: '600',
-                    fontSize: '1.05rem'
-                  }}>Email</span>
                 </div>
                 <div style={{
-                  color: '#fff',
-                  background: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.15))',
-                  padding: '12px',
-                  borderRadius: '8px',
-                  marginLeft: '50px',
-                  fontWeight: '500',
-                  border: '1px solid rgba(139, 92, 246, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  backdropFilter: 'blur(5px)'
+                        fontWeight: '600',
+                        fontSize: '1.05rem'
+                      }}>Email</div>
+                    </div>
+                    
+                    <div style={{
+                      color: '#222',
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      background: '#F9F9F9',
+                      border: '1px solid #EAEAEA',
+                      marginLeft: '50px',
+                      fontWeight: '500'
                 }}>
-                  <span style={{
-                    background: 'linear-gradient(to right, #8b5cf6, #ec4899)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent'
-                  }}>hello@portfolio.com</span>
+                  hello@portfolio.com
                 </div>
               </div>
+                  
               <div style={{
-                background: 'rgba(139, 92, 246, 0.05)', 
-                padding: '22px', 
-                borderRadius: '16px',
-                border: '1px solid rgba(139, 92, 246, 0.1)',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.15), 0 0 20px rgba(139, 92, 246, 0.05) inset',
-                backdropFilter: 'blur(10px)'
+                    background: 'white', 
+                padding: '20px', 
+                    borderRadius: '14px',
+                    boxShadow: '0 5px 20px rgba(0,0,0,0.05)',
+                    border: '1px solid #EAEAEA'
               }}>
                 <div style={{
-                  marginBottom: '14px', 
-                  color: '#fff',
+                      marginBottom: '14px', 
+                      color: '#222',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px'
-                }}>
-                  <span style={{
-                    background: 'linear-gradient(135deg, #8b5cf6, #ec4899)',
-                    borderRadius: '50%',
-                    width: '38px',
-                    height: '38px',
+                      gap: '12px'
+                    }}>
+                      <div style={{
+                        width: '38px',
+                        height: '38px',
+                        background: 'linear-gradient(135deg, #e8f4ff, #d1e9ff)',
+                        color: '#2D7FF9',
+                        borderRadius: '10px',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 5px 15px rgba(139, 92, 246, 0.3)',
-                    fontSize: '18px'
+                        justifyContent: 'center',
+                        fontSize: '18px',
+                        boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
                   }}>
                     🔗
-                  </span>
-                  <span style={{
-                    fontWeight: '600',
-                    fontSize: '1.05rem'
-                  }}>Social</span>
                 </div>
+                      <div style={{
+                        fontWeight: '600',
+                        fontSize: '1.05rem'
+                      }}>Social</div>
+                    </div>
+                    
                 <div style={{
                   display: 'flex', 
                   gap: '10px',
-                  marginLeft: '50px',
-                  flexWrap: 'wrap'
+                      marginLeft: '50px',
+                      flexWrap: 'wrap'
                 }}>
                   {['Twitter', 'LinkedIn', 'Dribbble'].map((social, index) => (
                     <div key={index} style={{
                       cursor: 'pointer',
-                      background: 'linear-gradient(to right, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.15))',
-                      padding: '10px 16px',
-                      borderRadius: '8px',
-                      transition: 'all 0.3s ease',
-                      fontWeight: '500',
-                      backdropFilter: 'blur(5px)',
-                      border: '1px solid rgba(139, 92, 246, 0.15)',
-                      boxShadow: index % 2 === 0 ? '0 4px 12px rgba(0, 0, 0, 0.1)' : 'none',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
+                          padding: '8px 14px',
+                      borderRadius: '6px',
+                          fontWeight: '500',
+                          color: '#222',
+                          background: '#F9F9F9',
+                          border: '1px solid #EAEAEA',
+                          transition: 'all 0.2s ease'
                     }}>
-                      <span style={{
-                        background: 'linear-gradient(to right, #8b5cf6, #ec4899)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent'
-                      }}>{social}</span>
+                      {social}
                     </div>
                   ))}
                 </div>
@@ -871,63 +1211,47 @@ const ResponsivePortfolioDemo = () => {
           )}
         </div>
       </div>
+        </div>
+        
+        {/* View mode selector */}
       <div style={{
         display: 'flex',
         justifyContent: 'center',
         gap: '8px',
-        marginTop: '15px'
+          marginTop: '30px',
+          position: 'relative',
+          zIndex: 5
       }}>
+          {['Desktop', 'Tablet', 'Mobile'].map((mode) => (
         <button 
+              key={mode}
           style={{
-            padding: '7px 14px',
-            background: viewMode === 'desktop' ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2))' : 'transparent',
-            color: viewMode === 'desktop' ? '#8b5cf6' : 'rgba(255,255,255,0.7)',
-            border: '1px solid rgba(139, 92, 246, 0.2)',
+                padding: '7px 14px',
+                background: viewMode === mode.toLowerCase() 
+                  ? 'linear-gradient(to right, #ff9900, #ff5470)' 
+                  : 'white',
+                color: viewMode === mode.toLowerCase() ? 'white' : '#777',
+                border: viewMode === mode.toLowerCase() 
+                  ? 'none' 
+                  : '1px solid #EAEAEA',
             borderRadius: '20px',
-            fontSize: '0.85rem',
-            fontWeight: viewMode === 'desktop' ? '600' : '400',
+                fontSize: '0.85rem',
+                fontWeight: viewMode === mode.toLowerCase() ? '600' : '500',
             cursor: 'pointer',
             transition: 'all 0.3s ease',
-            boxShadow: viewMode === 'desktop' ? '0 4px 12px rgba(139, 92, 246, 0.15)' : 'none'
-          }}
-          onClick={() => setViewMode('desktop')}
-        >
-          Desktop
+                boxShadow: viewMode === mode.toLowerCase() 
+                  ? '0 4px 12px rgba(255,84,112,0.3)' 
+                  : '0 2px 5px rgba(0,0,0,0.05)'
+              }}
+              onClick={() => {
+                handleUserInteraction();
+                setViewMode(mode.toLowerCase());
+              }}
+            >
+              {mode}
         </button>
-        <button 
-          style={{
-            padding: '7px 14px',
-            background: viewMode === 'tablet' ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2))' : 'transparent',
-            color: viewMode === 'tablet' ? '#8b5cf6' : 'rgba(255,255,255,0.7)',
-            border: '1px solid rgba(139, 92, 246, 0.2)',
-            borderRadius: '20px',
-            fontSize: '0.85rem',
-            fontWeight: viewMode === 'tablet' ? '600' : '400',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            boxShadow: viewMode === 'tablet' ? '0 4px 12px rgba(139, 92, 246, 0.15)' : 'none'
-          }}
-          onClick={() => setViewMode('tablet')}
-        >
-          Tablet
-        </button>
-        <button 
-          style={{
-            padding: '7px 14px',
-            background: viewMode === 'mobile' ? 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(236, 72, 153, 0.2))' : 'transparent',
-            color: viewMode === 'mobile' ? '#8b5cf6' : 'rgba(255,255,255,0.7)',
-            border: '1px solid rgba(139, 92, 246, 0.2)',
-            borderRadius: '20px',
-            fontSize: '0.85rem',
-            fontWeight: viewMode === 'mobile' ? '600' : '400',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            boxShadow: viewMode === 'mobile' ? '0 4px 12px rgba(139, 92, 246, 0.15)' : 'none'
-          }}
-          onClick={() => setViewMode('mobile')}
-        >
-          Mobile
-        </button>
+          ))}
+        </div>
       </div>
     </>
   );
@@ -970,7 +1294,7 @@ const ProductShowcaseDemo = () => {
     const interval = setInterval(() => {
       const nextIndex = (activeProduct + 1) % products.length;
       changeProduct(nextIndex);
-    }, 4200); // Adjusted to account for animation delays (5000 - 800ms total animation time)
+    }, 4200); // Adjusted to account for animation delays
     
     return () => clearInterval(interval);
   }, [activeProduct]);
@@ -1260,6 +1584,7 @@ const Button = styled.button\`
   padding: 0.8rem 1.5rem;
   border-radius: 2rem;
   font-weight: 600;
+  marginTop: '20px';
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1284,7 +1609,7 @@ const ProductShowcase = () => {
     const interval = setInterval(() => {
       const nextIndex = 
         (activeProduct + 1) % products.length;
-      setActiveProduct(nextIndex);
+      changeProduct(nextIndex);
     }, 5000);
     
     return () => clearInterval(interval);
@@ -1391,16 +1716,14 @@ export default ProductShowcase;`}
             </CodeHeader>
             <RainbowCode 
               language="jsx" 
-              code={`import React, { 
-  useState 
-} from 'react';
+              code={`import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div\`
   width: 100%;
   height: 100vh;
-  background: #0f0f13;
-  color: white;
+  background: #FAFAFA;
+  color: #333;
   
   @media (max-width: 768px) {
     height: auto;
@@ -1413,12 +1736,11 @@ const Header = styled.header\`
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  border-bottom: 
-    1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid #EAEAEA;
   position: sticky;
   top: 0;
-  background: rgba(15,15,19,0.8);
-  backdrop-filter: blur(10px);
+  background: white;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
   z-index: 10;
   
   @media (max-width: 768px) {
@@ -1432,10 +1754,7 @@ const Logo = styled.div\`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  
-  span {
-    color: #ff5470;
-  }
+  color: #222;
 \`;
 
 const Nav = styled.nav\`
@@ -1451,27 +1770,27 @@ const NavItem = styled.div\`
   cursor: pointer;
   position: relative;
   color: \${props => 
-    props.active 
-      ? '#ff5470' 
-      : 'rgba(255,255,255,0.7)'};
+    props.active ? '#222' : '#777'};
   font-weight: \${props => 
-    props.active ? '600' : '400'};
-  transition: all 0.2s ease;
+    props.active ? '600' : '500'};
+  transition: all 0.3s ease;
+  padding: 6px 0;
   
   &::after {
     content: '';
     position: absolute;
     left: 0;
-    bottom: -4px;
+    bottom: 0;
     width: \${props => 
       props.active ? '100%' : '0'};
     height: 2px;
-    background: #ff5470;
+    background: #222;
     transition: width 0.3s ease;
   }
   
   &:hover {
-    color: white;
+    color: \${props => 
+      props.active ? '#222' : '#444'};
     
     &::after {
       width: 100%;
@@ -1479,49 +1798,51 @@ const NavItem = styled.div\`
   }
 \`;
 
-const ProjectGrid = styled.div\`
-  display: grid;
-  grid-template-columns: 
-    repeat(
-      auto-fill, 
-      minmax(300px, 1fr)
-    );
-  gap: 1.5rem;
-  padding: 2rem;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
+const ShapeElement = styled.div\`
+  position: absolute;
+  width: \${props => props.size};
+  height: \${props => 
+    props.type === 'circle' 
+      ? props.size 
+      : props.type === 'square' 
+        ? props.size 
+        : 'calc(' + props.size + '/2)'};
+  background: \${props => props.color};
+  border-radius: \${props => 
+    props.type === 'circle' ? '50%' : '4px'};
+  clip-path: \${props => 
+    props.type === 'triangle' 
+      ? 'polygon(50% 0%, 0% 100%, 100% 100%)' 
+      : 'none'};
+  z-index: 1;
 \`;
 
 const ProjectCard = styled.div\`
-  height: 200px;
+  height: 170px;
   border-radius: 12px;
-  background: \${props => 
-    props.background};
-  position: relative;
   overflow: hidden;
   cursor: pointer;
-  transition: 
-    transform 0.3s ease, 
-    box-shadow 0.3s ease;
+  background: white;
+  border: 1px solid #EAEAEA;
+  transition: all 0.4s ease;
+  position: relative;
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 
-      0 15px 30px rgba(0,0,0,0.3);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
   }
 \`;
 
-const PortfolioWebsite = () => {
+const Portfolio = () => {
   const [activeSection, setActiveSection] = 
     useState('work');
+  const [shapesVisible, setShapesVisible] = 
+    useState(true);
   
   return (
     <Container>
       <Header>
-        <Logo><span>◆</span> Portfolio</Logo>
+        <Logo>◮ Portfolio</Logo>
         <Nav>
           <NavItem 
             active={activeSection === 'work'} 
@@ -1552,13 +1873,36 @@ const PortfolioWebsite = () => {
         </Nav>
       </Header>
       
+      {/* Background shapes */}
+      <ShapeElement 
+        size="60px" 
+        top="15%" 
+        left="10%" 
+        type="circle" 
+        color="#FFE8D2" 
+      />
+      <ShapeElement 
+        size="40px" 
+        top="70%" 
+        left="8%" 
+        type="square" 
+        color="#D1E9FF" 
+      />
+      <ShapeElement 
+        size="30px" 
+        top="40%" 
+        left="85%" 
+        type="circle" 
+        color="#E4FFED" 
+      />
+      
       {/* Content would be conditionally 
           rendered here */}
     </Container>
   );
 };
 
-export default PortfolioWebsite;`} 
+export default Portfolio;`} 
             />
           </CodeSnippetContainer>
           <DemoContainer>

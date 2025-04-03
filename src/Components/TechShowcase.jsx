@@ -67,18 +67,6 @@ const Title = styled.h1`
   color: var(--text-primary);
   position: relative;
   
-  &:after {
-    content: "";
-    position: absolute;
-    width: 80px;
-    height: 4px;
-    background: #ff5470;
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 2px;
-  }
-
   @media (max-width: 768px) {
     font-size: 2.5rem;
   }
