@@ -303,10 +303,10 @@ const ContactUs = () => {
 
   return (
     <ContactWrapper>
-      <Title>Get a Quote</Title>
+      <Title>Discuss Your Vision</Title>
       <Subtitle>
-        Ready to bring your idea to life? Fill out the form below and our team will get back 
-        to you with a detailed quote tailored to your specific needs.
+        Ready to bring your idea to life? Fill out the form below and our team will analyze your requirements
+        to provide a detailed timeline estimate tailored to your specific project needs.
       </Subtitle>
       
       <FormContainer>
@@ -421,7 +421,7 @@ const ContactUs = () => {
               ))}
             </InputGroup>
             
-            <SubmitButton type="submit">Submit Request</SubmitButton>
+            <SubmitButton type="submit">Get Your Timeline Estimate</SubmitButton>
             
             {submitted && (
               <SuccessMessage>

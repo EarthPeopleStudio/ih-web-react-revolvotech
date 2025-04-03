@@ -110,7 +110,7 @@ const AboutUs = () => {
       <Subtitle>Welcome to Revolvo Tech</Subtitle>
       
       <Paragraph>
-        At Revolvo Tech, we are passionate about turning ideas into innovative software solutions. Based in Islamabad, Pakistan and operating remotely from Tampere, Findland, we offer comprehensive software development services and create cutting-edge products that empower businesses and individuals around the world.
+        At Revolvo Tech, we are passionate about turning ideas into innovative software solutions. Based in Islamabad, Pakistan and operating remotely from Tampere, Finland, we offer comprehensive software development services and create cutting-edge products that empower businesses and individuals around the world.
       </Paragraph>
 
       <Section>

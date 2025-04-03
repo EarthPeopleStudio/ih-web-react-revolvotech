@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import logoImg from "../assets/Revolvo.png";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { commonStyles } from "../themes";
+import { PathContext } from "../App";
 
 const NavbarWrapper = styled.div`
   display: flex;
@@ -187,8 +188,6 @@ const NavButton = styled(Link)`
       box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
     }
   }
-  
-  animation: pulse 2s infinite ease-in-out;
 
   @media (max-width: 768px) {
     margin-left: 0;
@@ -219,6 +218,8 @@ const MenuButton = styled.button`
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const currentPath = useContext(PathContext);
+  const isContactPage = currentPath === "/contact-us";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -270,7 +271,7 @@ const Navbar = () => {
         <StyledLink to="/pricing" onClick={closeMenu}>Pricing</StyledLink>
         <StyledLink to="/testimonials" onClick={closeMenu}>Testimonials</StyledLink>
         <StyledLink to="/tech-showcase" onClick={closeMenu}>Tech Showcase</StyledLink>
-        <NavButton to="/contact-us" onClick={closeMenu}>Get Started</NavButton>
+        <NavButton to="/contact-us" onClick={closeMenu} isContactPage={isContactPage}>Get Started</NavButton>
       </NavMenu>
     </NavbarWrapper>
   );

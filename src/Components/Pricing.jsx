@@ -1366,7 +1366,7 @@ const Pricing = () => {
       
       <InfoSection>
         <HoursExplanation>
-          <HoursTitle>Working Hours Calculation</HoursTitle>
+          <HoursTitle>Working Hours Calculation & Flexible Billing</HoursTitle>
           <p>
             Our standard pricing is based on 176 working hours per month (8-hour workday × 22 working days).
             The actual number of working hours may vary depending on the specific month:
@@ -1375,9 +1375,16 @@ const Pricing = () => {
             <li>Months with fewer than 22 working days (like February) will be billed less</li>
             <li>Months with more than 22 working days will be billed accordingly</li>
           </ul>
+          
+          <p style={{ marginTop: '15px' }}>Each of our monthly plans includes these 176 working hours, providing you with dedicated development resources to advance your project.</p>
+          
+          <p>For projects estimated to be completed in less than a month, we only charge for the actual number of hours worked, rather than billing for a full month. This flexible approach ensures you only pay for the development time your project actually requires.</p>
+          
           <HoursNote>
-            We always calculate the exact working days in each month, excluding weekends and standard holidays.
+            * We always calculate the exact working days in each month, excluding weekends and standard holidays.
             Your invoice will reflect the precise number of working hours for that billing period.
+            <br/><br/>
+            * The 176 hours are distributed across your team members as needed. For smaller projects, we can also provide partial-month billing based on actual hours utilized.
           </HoursNote>
           <div style={{ 
             marginTop: '15px', 

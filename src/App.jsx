@@ -1,6 +1,6 @@
-import React from "react";
+import React, { createContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import ContactBanner from "./Components/ContactBanner";
 import Footer from "./Components/Footer";
 import HeroImage from "./Components/HeroImage";
@@ -15,11 +15,14 @@ import CookiePolicy from "./Components/CookiePolicy";
 import AboutUs from "./Components/AboutUs";
 import OurWork from "./Components/OurWork";
 import Projects from "./Components/Projects";
-import TechShowcaseSimple from "./Components/TechShowcaseSimple";
+import TechShowcase from "./Components/TechShowcase";
 import Pricing from "./Components/Pricing";
 import ContactUs from "./Components/ContactUs";
 import Testimonials from "./Components/Testimonials";
 import darkTheme, { themeToVars } from "./themes";
+
+// Create a context for the current path
+export const PathContext = createContext('/');
 
 const AppWrapper = styled.div`
   ${() => themeToVars(darkTheme)}
@@ -32,9 +35,17 @@ const ContentWrapper = styled.div`
   z-index: 1;
 `;
 
-function App() {
+// This component is needed to access location inside Router
+const AppContent = () => {
+  const location = useLocation();
+  const [currentPath, setCurrentPath] = useState(location.pathname);
+  
+  useEffect(() => {
+    setCurrentPath(location.pathname);
+  }, [location]);
+
   return (
-    <Router>
+    <PathContext.Provider value={currentPath}>
       <AppWrapper>
         <MatrixRain />
         <ContentWrapper>
@@ -46,9 +57,9 @@ function App() {
               element={
                 <>
                   <HeroImage id="home" />
-                  <Services id="services" />
+                  {/* <Services id="services" />
                   <Portfolio id="projects" />
-                  <Stacks id="stacks" />
+                  <Stacks id="stacks" /> */}
                 </>
               }
             />
@@ -72,7 +83,7 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             
             {/* Tech Showcase Page */}
-            <Route path="/tech-showcase" element={<TechShowcaseSimple />} />
+            <Route path="/tech-showcase" element={<TechShowcase />} />
             
             {/* Pricing Page */}
             <Route path="/pricing" element={<Pricing />} />
@@ -86,6 +97,14 @@ function App() {
           <Footer />
         </ContentWrapper>
       </AppWrapper>
+    </PathContext.Provider>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
