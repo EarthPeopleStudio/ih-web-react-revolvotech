@@ -194,16 +194,16 @@ const Footer = () => {
         <FooterSection>
           <FooterTitle>Contact</FooterTitle>
           <ContactInfo>
-            Väinämöisenkatu 11
+            Innovaatiokatu 25
             <br />
-            33540 Tampere
+            00510 Helsinki
             <br />
             Finland
           </ContactInfo>
           <ContactInfo>
-            hey@revolvo.tech
+            hi@revolvo.tech
             <br />
-            +358 41 7408087
+            +358 45 6790231
           </ContactInfo>
         </FooterSection>
       </FooterContent>

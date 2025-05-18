@@ -458,9 +458,9 @@ const ContactUs = () => {
           
           <InfoCard>
             <InfoTitle>Contact Information</InfoTitle>
-            <InfoItem>Email: hey@revolvo.tech</InfoItem>
-            <InfoItem>Phone: +358 41 7408087</InfoItem>
-            <InfoItem>Location: Väinämöisenkatu 11, 33540 Tampere, Finland</InfoItem>
+            <InfoItem>Email: hi@revolvo.tech</InfoItem>
+            <InfoItem>Phone: +358 45 6790231</InfoItem>
+            <InfoItem>Location: Innovaatiokatu 25, 00510 Helsinki, Finland</InfoItem>
           </InfoCard>
         </InfoSection>
       </FormContainer>
