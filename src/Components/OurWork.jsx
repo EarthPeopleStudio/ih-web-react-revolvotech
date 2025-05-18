@@ -253,7 +253,7 @@ const OurWork = () => {
           <Paragraph>
             Ready to see what we can do for you? Contact us today to discuss your project, or explore our case studies for more in-depth insights into our work.
           </Paragraph>
-          <ContactLink href="mailto:hey@revolvo.tech">hey@revolvo.tech</ContactLink>
+          <ContactLink href="mailto:hi@revolvo.tech">hi@revolvo.tech</ContactLink>
         </ContactCTA>
       </Section>
 
