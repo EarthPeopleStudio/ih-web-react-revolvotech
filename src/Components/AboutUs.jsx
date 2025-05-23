@@ -160,7 +160,7 @@ const AboutUs = () => {
       <Section>
         <SectionTitle>Get in Touch</SectionTitle>
         <Paragraph>
-          Ready to transform your ideas into reality? Contact us today at <ContactLink href="mailto:hi@revolvo.tech">hi@revolvo.tech</ContactLink> to learn more about our services and products.
+          Ready to transform your ideas into reality? Contact us today at <ContactLink href="mailto:hey@revolvo.tech">hey@revolvo.tech</ContactLink> to learn more about our services and products.
         </Paragraph>
       </Section>
 

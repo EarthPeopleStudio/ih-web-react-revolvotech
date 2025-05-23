@@ -255,7 +255,7 @@ const PrivacyPolicy = () => {
         <Paragraph>
           Website: revolvo.tech
           <br />
-          General Inquiries: hi@revolvo.tech
+          General Inquiries: hey@revolvo.tech
           <br />
           User Support: help@revolvo.tech
           <br />
