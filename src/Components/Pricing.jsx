@@ -113,69 +113,53 @@ const PricingGrid = styled.div`
 const PricingCard = styled.div`
   background: var(--card-bg);
   border-radius: 20px;
-  padding: 40px 35px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  border: 1px solid var(--border-color);
-  height: 100%;
   position: relative;
+  border: 1px solid rgba(248, 248, 248, 0.3);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), 0 0 30px rgba(248, 248, 248, 0.1);
+  
   ${props => props.featured && `
-    border: 1px solid rgba(255, 84, 112, 0.3);
     transform: scale(1.05);
+    border: 2px solid #f8f8f8;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(248, 248, 248, 0.2);
     z-index: 2;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 84, 112, 0.1);
     
     &:before {
-      content: "";
+      content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
       height: 6px;
-      background: #ff5470;
-      border-radius: 0 0 3px 3px;
-    }
-    
-    &:after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at top right, rgba(255, 84, 112, 0.1), transparent 70%);
-      pointer-events: none;
-    }
-    
-    @media (max-width: 900px) {
-      transform: scale(1);
-      margin: 40px 0;
+      background: #f8f8f8;
     }
   `}
-
+  
   &:hover {
-    transform: translateY(-15px);
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+    transform: ${props => props.featured ? 'translateY(-10px) scale(1.05)' : 'translateY(-10px)'};
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(248, 248, 248, ${props => props.featured ? '0.2' : '0.1'});
     border-color: rgba(255, 255, 255, 0.15);
   }
   
   &:before {
     content: "";
     position: absolute;
-    bottom: 0;
+    top: 0;
     right: 0;
-    width: 150px;
-    height: 150px;
-    background: radial-gradient(circle at bottom right, rgba(40, 40, 40, 0.3), transparent 70%);
-    pointer-events: none;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    background: radial-gradient(circle at top right, rgba(248, 248, 248, 0.1), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.6s ease-in-out;
   }
   
-  @media (max-width: 900px) {
-    padding: 30px 25px;
+  &:hover:before {
+    opacity: 1;
   }
 `;
 
@@ -194,7 +178,7 @@ const PlanName = styled.h2`
     left: 0;
     width: 40px;
     height: 3px;
-    background: #ff5470;
+    background: #f8f8f8;
     border-radius: 2px;
   }
 `;
@@ -203,14 +187,14 @@ const FeatureBadge = styled.span`
   position: absolute;
   top: -10px;
   right: -25px;
-  background: #ff5470;
-  color: white;
+  background: #f8f8f8;
+  color: black;
   font-size: 0.75rem;
   padding: 6px 14px;
   border-radius: 20px;
   font-weight: 700;
   transform: rotate(12deg);
-  box-shadow: 0 5px 15px rgba(255, 84, 112, 0.4);
+  box-shadow: 0 5px 15px rgba(248, 248, 248, 0.4);
   letter-spacing: 0.5px;
   text-transform: uppercase;
   
@@ -295,100 +279,157 @@ const FeatureItem = styled.li`
 
   &:before {
     content: "✓";
-    color: #ff5470;
+    color: #f8f8f8;
     margin-right: 12px;
     font-weight: bold;
     min-width: 20px;
     display: inline-flex;
     justify-content: center;
     font-size: 0.8rem;
+    text-shadow: 0 0 6px rgba(248, 248, 248, 0.6);
   }
 `;
 
 const CrossedFeatureItem = styled(FeatureItem)`
   &:before {
     content: "✕";
-    color: #ff6b6b;
+    color: #f8f8f8;
+    text-shadow: 0 0 6px rgba(248, 248, 248, 0.6);
   }
 `;
 
 const SelectButton = styled(Link)`
-  padding: 16px 0;
-  width: 100%;
+  background: #f8f8f8;
+  color: black;
   border: none;
-  border-radius: 12px;
-  background: var(--button-bg);
-  color: var(--button-text);
+  border-radius: 8px;
+  padding: 15px 30px;
   font-weight: 600;
-  font-size: 1.05rem;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.4s ease;
-  margin-top: auto;
-  box-shadow: var(--button-glow);
-  position: relative;
-  overflow: hidden;
-  letter-spacing: 0.5px;
-  text-align: center;
+  transition: all 0.3s ease;
   text-decoration: none;
-  display: block;
-
+  display: inline-block;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  
   &:hover {
-    background: var(--button-hover-bg);
-    box-shadow: var(--button-hover-glow);
     transform: translateY(-3px);
-  }
-  
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent
-    );
-    transition: 0.5s;
-  }
-  
-  &:hover:before {
-    left: 100%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   }
 `;
 
 const CustomTierWrapper = styled.div`
-  margin-top: 80px;
-  padding: 50px;
-  background: linear-gradient(to bottom right, var(--card-bg), rgba(20, 20, 20, 0.95));
+  background: var(--dark-card-bg);
+  border: 1px solid rgba(248, 248, 248, 0.2);
   border-radius: 20px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  padding: 0;
+  margin-top: 80px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(248, 248, 248, 0.15);
+  overflow: hidden;
+  transition: all 0.3s ease;
   
-  @media (max-width: 768px) {
-    padding: 30px 20px;
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: #f8f8f8;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 0 15px rgba(248, 248, 248, 0.5);
+    z-index: 3;
+  }
+  
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8), rgba(40, 40, 40, 0.9));
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  &:hover:after {
+    opacity: 1;
   }
 `;
 
 const CustomTierTitle = styled.h2`
   font-size: 2.2rem;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin-bottom: ${props => props.isOpen ? '30px' : '0'};
   color: var(--text-primary);
   display: flex;
   align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 40px;
+  border-radius: 20px 20px 0 0;
+  background: transparent;
+  position: relative;
+  z-index: 2;
   
-  &:before {
-    content: "";
-    display: inline-block;
-    width: 30px;
-    height: 4px;
-    background: #ff5470;
-    margin-right: 15px;
-    border-radius: 4px;
+  &:hover {
+    .icon-container {
+      box-shadow: 0 0 15px rgba(248, 248, 248, 0.4);
+      background: rgba(248, 248, 248, 0.1);
+    }
   }
+  
+  .icon-container {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+    background: transparent;
+    border: 2px solid #f8f8f8;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .icon {
+    position: relative;
+    width: 14px;
+    height: 2px;
+    background: #f8f8f8;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    
+    &:before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 2px;
+      background: #f8f8f8;
+      transform: ${props => props.isOpen ? 'rotate(0deg)' : 'rotate(90deg)'};
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+  }
+`;
+
+const CustomTierContent = styled.div`
+  max-height: ${props => props.isOpen ? '2000px' : '0'};
+  opacity: ${props => props.isOpen ? '1' : '0'};
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  padding: ${props => props.isOpen ? '0 40px 40px' : '0 40px'};
+  position: relative;
+  z-index: 2;
+  
+  /* Separate transition for max-height to make collapse smoother */
+  transition-property: max-height, opacity, padding;
+  transition-duration: ${props => props.isOpen ? '0.6s' : '0.4s'}, 0.4s, 0.3s;
+  transition-delay: 0s, ${props => props.isOpen ? '0s' : '0.1s'}, 0s;
 `;
 
 const ResourceGrid = styled.div`
@@ -422,7 +463,7 @@ const ResourceTitle = styled.h3`
   font-size: 1.2rem;
   margin-bottom: 15px;
   color: var(--text-primary);
-  border-left: 3px solid #ff5470;
+  border-left: 3px solid #f8f8f8;
   padding-left: 10px;
 `;
 
@@ -524,26 +565,22 @@ const TotalPrice = styled.p`
 `;
 
 const ContactButton = styled(Link)`
-  padding: 16px 40px;
-  border: none;
-  border-radius: 30px;
-  background: var(--button-bg);
-  color: var(--button-text);
+  background: #f8f8f8;
+  color: black;
+  padding: 15px 30px;
+  border-radius: 8px;
   font-weight: 600;
   font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  display: block;
-  margin: 40px auto 0;
-  min-width: 220px;
-  box-shadow: var(--button-glow);
-  text-align: center;
+  display: inline-block;
   text-decoration: none;
-
+  margin-top: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  
   &:hover {
-    background: var(--button-hover-bg);
-    transform: translateY(-5px);
-    box-shadow: var(--button-hover-glow);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -607,7 +644,7 @@ const DiscountHours = styled.div`
 
 const DiscountPercent = styled.div`
   font-size: 1.1rem;
-  color: #ff5470;
+  color: #f8f8f8;
   font-weight: 600;
 `;
 
@@ -618,8 +655,8 @@ const DiscountText = styled.p`
 `;
 
 const CountdownContainer = styled.div`
-  background: linear-gradient(45deg, rgba(25, 25, 25, 0.9), rgba(40, 40, 40, 0.9));
-  border: 1px solid rgba(255, 84, 112, 0.3);
+  background: linear-gradient(45deg, rgba(220, 220, 220, 0.08), rgba(240, 240, 240, 0.12));
+  border: 1px solid rgba(248, 248, 248, 0.2);
   border-radius: 20px;
   padding: 35px;
   margin-bottom: 50px;
@@ -628,7 +665,7 @@ const CountdownContainer = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 84, 112, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(248, 248, 248, 0.15);
   overflow: hidden;
   transform: perspective(1000px) rotateX(2deg);
   
@@ -639,9 +676,9 @@ const CountdownContainer = styled.div`
     left: 0;
     right: 0;
     height: 6px;
-    background: linear-gradient(90deg, #ff5470, #ff7eb3);
+    background: #f8f8f8;
     border-radius: 0 0 4px 4px;
-    box-shadow: 0 0 15px rgba(255, 84, 112, 0.5);
+    box-shadow: 0 0 15px rgba(248, 248, 248, 0.5);
   }
   
   &:after {
@@ -651,7 +688,7 @@ const CountdownContainer = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at top right, rgba(255, 84, 112, 0.2), transparent 70%);
+    background: radial-gradient(circle at top right, rgba(248, 248, 248, 0.12), transparent 70%);
     pointer-events: none;
   }
   
@@ -662,7 +699,7 @@ const CountdownContainer = styled.div`
 `;
 
 const CountdownHeader = styled.h3`
-  color: white;
+  color: #f8f8f8;
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 20px;
@@ -676,7 +713,7 @@ const CountdownHeader = styled.h3`
 `;
 
 const CountdownUrgency = styled.p`
-  color: var(--text-secondary);
+  color: rgba(248, 248, 248, 0.9);
   font-size: 1.2rem;
   text-align: center;
   margin-top: 25px;
@@ -720,8 +757,8 @@ const CountdownUnit = styled.div`
 `;
 
 const CountdownNumber = styled.div`
-  background: rgba(0, 0, 0, 0.5);
-  color: #ff5470;
+  background: rgba(20, 20, 20, 0.7);
+  color: #f8f8f8;
   font-size: 2.4rem;
   font-weight: 800;
   border-radius: 12px;
@@ -730,20 +767,11 @@ const CountdownNumber = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(248, 248, 248, 0.1);
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(248, 248, 248, 0.15);
   letter-spacing: 1px;
-  clip-path: polygon(
-    5% 0%, 
-    95% 0%, 
-    100% 5%, 
-    100% 95%, 
-    95% 100%, 
-    5% 100%, 
-    0% 95%, 
-    0% 5%
-  );
+  clip-path: polygon(5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%, 0 5%);
   
   &:before {
     content: "";
@@ -752,7 +780,7 @@ const CountdownNumber = styled.div`
     left: 0;
     right: 0;
     height: 1px;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(248, 248, 248, 0.1);
   }
   
   @media (max-width: 768px) {
@@ -763,7 +791,7 @@ const CountdownNumber = styled.div`
 `;
 
 const CountdownLabel = styled.div`
-  color: var(--text-secondary);
+  color: rgba(248, 248, 248, 0.8);
   font-size: 0.9rem;
   margin-top: 8px;
   text-transform: uppercase;
@@ -771,44 +799,23 @@ const CountdownLabel = styled.div`
 `;
 
 const CountdownButton = styled(Link)`
-  background: linear-gradient(90deg, #ff5470, #ff7eb3);
-  color: white;
-  font-weight: 700;
-  padding: 14px 28px;
-  border-radius: 50px;
-  text-decoration: none;
-  display: inline-block;
-  margin-top: 25px;
+  background: #f8f8f8;
+  color: black;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
-  z-index: 1;
-  border: none;
-  box-shadow: 0 8px 20px rgba(255, 84, 112, 0.3);
+  display: inline-block;
+  text-decoration: none;
   text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  clip-path: polygon(
-    5% 0%, 
-    95% 0%, 
-    100% 30%, 
-    100% 70%, 
-    95% 100%, 
-    5% 100%, 
-    0% 70%, 
-    0% 30%
-  );
+  margin-top: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   
   &:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 15px 30px rgba(255, 84, 112, 0.5);
-  }
-  
-  &:active {
-    transform: translateY(1px);
-  }
-  
-  @media (max-width: 768px) {
-    padding: 12px 24px;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -816,11 +823,11 @@ const PulsingDot = styled.span`
   display: inline-block;
   width: 12px;
   height: 12px;
-  background-color: #ff5470;
+  background-color: #f8f8f8;
   border-radius: 50%;
   margin-right: 12px;
   position: relative;
-  box-shadow: 0 0 10px rgba(255, 84, 112, 0.6);
+  box-shadow: 0 0 10px rgba(248, 248, 248, 0.6);
   
   &:before {
     content: '';
@@ -829,7 +836,7 @@ const PulsingDot = styled.span`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #ff5470;
+    background-color: #f8f8f8;
     border-radius: 50%;
     animation: pulse-dot 1.5s infinite;
     opacity: 0.8;
@@ -852,7 +859,7 @@ const PulsingDot = styled.span`
 `;
 
 const CountdownHighlight = styled.span`
-  color: #ff5470;
+  color: #f8f8f8;
   font-weight: 600;
   margin: 0 6px;
   letter-spacing: 0.5px;
@@ -887,41 +894,45 @@ const BillingOption = styled.span`
   transition: all 0.3s ease;
 `;
 
-const ToggleSwitch = styled.div`
-  width: 46px;
-  height: 24px;
-  background: ${props => props.isOn ? '#ff5470' : 'rgba(255, 255, 255, 0.1)'};
-  border-radius: 12px;
-  position: relative;
-  margin: 0 20px;
+const ToggleSwitch = styled.button`
+  width: 55px;
+  height: 30px;
+  background: ${props => props.isOn ? 'rgba(248, 248, 248, 0.2)' : 'rgba(248, 248, 248, 0.1)'};
+  border-radius: 20px;
+  border: 1px solid rgba(248, 248, 248, 0.3);
+  margin: 0 12px;
   cursor: pointer;
+  position: relative;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   
-  &:after {
-    content: '';
+  &:before {
+    content: "";
     position: absolute;
-    width: 18px;
-    height: 18px;
-    border-radius: 9px;
-    background: white;
+    left: ${props => props.isOn ? '27px' : '4px'};
     top: 3px;
-    left: ${props => props.isOn ? '25px' : '3px'};
+    width: 22px;
+    height: 22px;
+    background: #f8f8f8;
+    border-radius: 50%;
     transition: all 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  &:hover {
+    background: ${props => props.isOn ? 'rgba(248, 248, 248, 0.25)' : 'rgba(248, 248, 248, 0.15)'};
   }
 `;
 
-const SaveBadge = styled.div`
-  background: linear-gradient(to right, #ff5470, #ff3a5c);
-  color: white;
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 4px;
+const SaveBadge = styled.span`
   position: absolute;
-  right: 15px;
-  box-shadow: 0 2px 6px rgba(255, 84, 112, 0.3);
+  top: -12px;
+  right: -12px;
+  background: #f8f8f8;
+  color: black;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 `;
 
 const StrikethroughPrice = styled.span`
@@ -1034,6 +1045,7 @@ const Pricing = () => {
   const [customResources, setCustomResources] = useState(resources);
   const [isAnnual, setIsAnnual] = useState(false);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isCustomTeamOpen, setIsCustomTeamOpen] = useState(false);
   
   useEffect(() => {
     const calculateCountdown = () => {
@@ -1092,17 +1104,20 @@ const Pricing = () => {
   };
   
   const getMonthlyPrice = (price) => {
-    const discountedPrice = isAnnual ? Math.floor(price * 0.88) : price;
-    return discountedPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const priceWithTax = price * 1.16; // Adding 16% sales tax
+    const discountedPrice = isAnnual ? Math.floor(priceWithTax * 0.88) : priceWithTax;
+    return Math.round(discountedPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   const getAnnualTotal = (price) => {
-    const annualPrice = Math.floor(price * 0.88 * 12);
+    const priceWithTax = price * 1.16; // Adding 16% sales tax
+    const annualPrice = Math.floor(priceWithTax * 0.88 * 12);
     return annualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
   const getSavingsAmount = (price) => {
-    const savings = Math.floor(price * 0.12 * 12);
+    const priceWithTax = price * 1.16; // Adding 16% sales tax
+    const savings = Math.floor(priceWithTax * 0.12 * 12);
     return savings.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
@@ -1112,13 +1127,13 @@ const Pricing = () => {
     const keyframes = `
       @keyframes pulse {
         0% {
-          box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+          box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
         }
         50% {
-          box-shadow: 0 0 18px rgba(255, 105, 180, 0.4), 0 0 10px rgba(255, 105, 180, 0.3);
+          box-shadow: 0 0 18px rgba(248, 248, 248, 0.4), 0 0 10px rgba(248, 248, 248, 0.3);
         }
         100% {
-          box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+          box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
         }
       }
     `;
@@ -1184,11 +1199,12 @@ const Pricing = () => {
           
           <PriceContainer>
             {isAnnual && <StrikethroughPrice>$1,584</StrikethroughPrice>}
-            <Price>${getMonthlyPrice(1584)}</Price>
+            <Price>${getMonthlyPrice(1584)}<sup>*</sup></Price>
             <PriceDescription>
               per month {isAnnual && `billed annually ($${getAnnualTotal(1584)})`}
             </PriceDescription>
             {isAnnual && <PriceDescription>You save ${getSavingsAmount(1584)}</PriceDescription>}
+            <PriceDescription style={{ fontSize: '0.8rem', opacity: '0.8' }}>* Inclusive of sales tax</PriceDescription>
           </PriceContainer>
           
           <FeatureList>
@@ -1200,7 +1216,7 @@ const Pricing = () => {
             <FeatureItem>Basic Q/A testing</FeatureItem>
             <FeatureItem>Access to company Slack channel</FeatureItem>
             <FeatureItem>176 working hours per month*</FeatureItem>
-            <FeatureItem>30% downpayment + 15% Sales Tax</FeatureItem>
+            <FeatureItem>30% downpayment + 16% Sales Tax</FeatureItem>
             <FeatureItem>24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
@@ -1218,16 +1234,17 @@ const Pricing = () => {
           
           <PriceContainer>
             {isAnnual && <StrikethroughPrice>$3,168</StrikethroughPrice>}
-            <Price>${getMonthlyPrice(3168)}</Price>
+            <Price>${getMonthlyPrice(3168)}<sup>*</sup></Price>
             <PriceDescription>
               per month {isAnnual && `billed annually ($${getAnnualTotal(3168)})`}
             </PriceDescription>
             {isAnnual && <PriceDescription>You save ${getSavingsAmount(3168)}</PriceDescription>}
+            <PriceDescription style={{ fontSize: '0.8rem', opacity: '0.8' }}>* Inclusive of sales tax</PriceDescription>
           </PriceContainer>
           
           <FeatureList>
-            <FeatureItem>Veteran Engineer with 5-7+ years experience</FeatureItem>
-            <FeatureItem>Veteran UI/UX Engineer with 5-7+ years experience</FeatureItem>
+            <FeatureItem>Expert Engineer with 5-7+ years experience</FeatureItem>
+            <FeatureItem>Expert UI/UX Engineer with 5-7+ years experience</FeatureItem>
             <FeatureItem>Technical Project Manager (full-time)</FeatureItem>
             <FeatureItem>Weekly scrum meetings with builds</FeatureItem>
             <FeatureItem>Up to 2 iterations per week</FeatureItem>
@@ -1235,28 +1252,29 @@ const Pricing = () => {
             <FeatureItem>Priority access to company Slack channel</FeatureItem>
             <FeatureItem>Technical Product Manager with business insights</FeatureItem>
             <FeatureItem>176 working hours per month*</FeatureItem>
-            <FeatureItem>25% downpayment + 15% Sales Tax</FeatureItem>
+            <FeatureItem>25% downpayment + 16% Sales Tax</FeatureItem>
             <FeatureItem>24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
           <SelectButton 
             to="/contact-us" 
             style={{
-              background: 'var(--highlight)',
-              boxShadow: '0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2)',
+              background: '#f8f8f8',
+              color: 'black',
+              boxShadow: '0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2)',
               position: 'relative',
               overflow: 'hidden',
               animation: 'pulse 2s infinite ease-in-out'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--highlightHover)';
+              e.currentTarget.style.background = '#f8f8f8';
               e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
-              e.currentTarget.style.boxShadow = '0 0 25px rgba(255, 105, 180, 0.6), 0 0 15px rgba(255, 105, 180, 0.4)';
+              e.currentTarget.style.boxShadow = '0 0 25px rgba(248, 248, 248, 0.6), 0 0 15px rgba(248, 248, 248, 0.4)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'var(--highlight)';
+              e.currentTarget.style.background = '#f8f8f8';
               e.currentTarget.style.transform = '';
-              e.currentTarget.style.boxShadow = '0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2)';
+              e.currentTarget.style.boxShadow = '0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2)';
             }}
           >
             Get Started
@@ -1270,13 +1288,14 @@ const Pricing = () => {
           </PlanDescription>
           
           <PriceContainer>
-            <CustomPrice>Custom</CustomPrice>
+            <CustomPrice>Custom<sup>*</sup></CustomPrice>
             <PriceDescription>tailored to your specific needs</PriceDescription>
+            <PriceDescription style={{ fontSize: '0.8rem', opacity: '0.8', marginTop: '5px' }}>* Inclusive of sales tax</PriceDescription>
           </PriceContainer>
           
           <FeatureList>
             <FeatureItem>Custom team composition</FeatureItem>
-            <FeatureItem>Mix of intermediate and veteran resources</FeatureItem>
+            <FeatureItem>Mix of Proficient and Expert resources</FeatureItem>
             <FeatureItem>Dedicated Technical Project Manager</FeatureItem>
             <FeatureItem>Dedicated Technical Product Manager</FeatureItem>
             <FeatureItem>Flexible iteration cycles</FeatureItem>
@@ -1284,7 +1303,7 @@ const Pricing = () => {
             <FeatureItem>Dedicated Slack channel</FeatureItem>
             <FeatureItem>176 working hours per month*</FeatureItem>
             <FeatureItem>Priority support and consulting</FeatureItem>
-            <FeatureItem>25% downpayment + 15% Sales Tax</FeatureItem>
+            <FeatureItem>25% downpayment + 16% Sales Tax</FeatureItem>
             <FeatureItem>24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
@@ -1293,75 +1312,82 @@ const Pricing = () => {
       </PricingGrid>
       
       <CustomTierWrapper>
-        <CustomTierTitle>Build Your Custom Team</CustomTierTitle>
+        <CustomTierTitle isOpen={isCustomTeamOpen} onClick={() => setIsCustomTeamOpen(!isCustomTeamOpen)}>
+          <div className="icon-container">
+            <div className="icon"></div>
+          </div>
+          Build Your Custom Team
+        </CustomTierTitle>
         
-        <p style={{ 
-          color: 'var(--text-secondary)', 
-          marginBottom: '30px', 
-          fontSize: '1.05rem', 
-          maxWidth: '900px', 
-          lineHeight: '1.7' 
-        }}>
-          Craft your perfect development team by selecting the exact resources you need. 
-          Mix and match different specialties and experience levels to create a tailored solution 
-          that precisely fits your project requirements and budget.
-        </p>
-        
-        <ResourceGrid>
-          {customResources.map(resource => (
-            <ResourceCard key={resource.id}>
-              <ResourceTitle>{resource.name}</ResourceTitle>
-              <ExperienceSelect>
-                {resource.flatRate ? (
-                  <ExperienceOption selected={true}>
-                    ${resource.flatRate}/h (fixed rate)
-                  </ExperienceOption>
-                ) : (
-                  <>
-                    <ExperienceOption 
-                      selected={resource.experience === "intermediate"}
-                      onClick={() => resource.experience !== "intermediate" && toggleExperience(resource.id)}
-                    >
-                      Intermediate (${resource.specialRates ? "4.5" : "3"}/h)
-                    </ExperienceOption>
-                    <ExperienceOption 
-                      selected={resource.experience === "veteran"}
-                      onClick={() => resource.experience !== "veteran" && toggleExperience(resource.id)}
-                    >
-                      Veteran (${resource.specialRates ? "9" : "6"}/h)
-                    </ExperienceOption>
-                  </>
-                )}
-              </ExperienceSelect>
-              <ResourceControls>
-                <ControlButton onClick={() => updateResourceCount(resource.id, -1)}>−</ControlButton>
-                <ResourceCount>{resource.count}</ResourceCount>
-                <ControlButton add onClick={() => updateResourceCount(resource.id, 1)}>+</ControlButton>
-              </ResourceControls>
-            </ResourceCard>
-          ))}
-        </ResourceGrid>
-        
-        <div style={{ 
-          fontSize: '0.95rem', 
-          color: 'var(--text-secondary)', 
-          padding: '10px 15px', 
-          background: 'rgba(255,255,255,0.03)', 
-          borderRadius: '8px',
-          marginBottom: '30px' 
-        }}>
-          <p>
-            <strong>Note:</strong> All team members follow our standard working hours calculation.
-            The monthly cost will vary based on the actual number of working days in each month.
+        <CustomTierContent isOpen={isCustomTeamOpen}>
+          <p style={{ 
+            color: 'var(--text-secondary)', 
+            marginBottom: '30px', 
+            fontSize: '1.05rem', 
+            maxWidth: '900px', 
+            lineHeight: '1.7' 
+          }}>
+            Craft your perfect development team by selecting the exact resources you need. 
+            Mix and match different specialties and experience levels to create a tailored solution 
+            that precisely fits your project requirements and budget.
           </p>
-        </div>
-        
-        <TotalContainer>
-          <TotalText>Estimated Monthly Total</TotalText>
-          <TotalPrice>${calculateTotal().toLocaleString()}</TotalPrice>
-        </TotalContainer>
-        
-        <ContactButton to="/contact-us">Contact Us for Details</ContactButton>
+          
+          <ResourceGrid>
+            {customResources.map(resource => (
+              <ResourceCard key={resource.id}>
+                <ResourceTitle>{resource.name}</ResourceTitle>
+                <ExperienceSelect>
+                  {resource.flatRate ? (
+                    <ExperienceOption selected={true}>
+                      ${resource.flatRate}/h (fixed rate)
+                    </ExperienceOption>
+                  ) : (
+                    <>
+                      <ExperienceOption 
+                        selected={resource.experience === "intermediate"}
+                        onClick={() => resource.experience !== "intermediate" && toggleExperience(resource.id)}
+                      >
+                        Proficient<br/>(${resource.specialRates ? "4.5" : "3"}/h)
+                      </ExperienceOption>
+                      <ExperienceOption 
+                        selected={resource.experience === "veteran"}
+                        onClick={() => resource.experience !== "veteran" && toggleExperience(resource.id)}
+                      >
+                        Expert<br/>(${resource.specialRates ? "9" : "6"}/h)
+                      </ExperienceOption>
+                    </>
+                  )}
+                </ExperienceSelect>
+                <ResourceControls>
+                  <ControlButton onClick={() => updateResourceCount(resource.id, -1)}>−</ControlButton>
+                  <ResourceCount>{resource.count}</ResourceCount>
+                  <ControlButton add onClick={() => updateResourceCount(resource.id, 1)}>+</ControlButton>
+                </ResourceControls>
+              </ResourceCard>
+            ))}
+          </ResourceGrid>
+          
+          <div style={{ 
+            fontSize: '0.95rem', 
+            color: 'var(--text-secondary)', 
+            padding: '10px 15px', 
+            background: 'rgba(255,255,255,0.03)', 
+            borderRadius: '8px',
+            marginBottom: '30px' 
+          }}>
+            <p>
+              <strong>Note:</strong> All team members follow our standard working hours calculation.
+              The monthly cost will vary based on the actual number of working days in each month.
+            </p>
+          </div>
+          
+          <TotalContainer>
+            <TotalText>Estimated Monthly Total</TotalText>
+            <TotalPrice>${calculateTotal().toLocaleString()}</TotalPrice>
+          </TotalContainer>
+          
+          <ContactButton to="/contact-us">Contact Us for Details</ContactButton>
+        </CustomTierContent>
       </CustomTierWrapper>
       
       <InfoSection>
@@ -1401,7 +1427,7 @@ const Pricing = () => {
           <InfoTitle>Important Notes</InfoTitle>
           <FeatureList>
             <FeatureItem>A 25-30% downpayment is required before project initiation for both monthly and annual payment plans</FeatureItem>
-            <FeatureItem>All prices are subject to 15% Sales Tax</FeatureItem>
+            <FeatureItem>All prices are subject to 16% Sales Tax</FeatureItem>
             <FeatureItem>Additional hours beyond the monthly calculation will be billed at 2× the standard hourly rate</FeatureItem>
             <FeatureItem>Our rates will increase by 10-15% starting January 1, 2026</FeatureItem>
             <FeatureItem>Annual packages purchased before January 1, 2026 12:00 AM PST will remain valid for a full year from purchase date</FeatureItem>

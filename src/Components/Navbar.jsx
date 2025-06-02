@@ -144,11 +144,18 @@ const NavButton = styled(Link)`
   display: inline-block;
   text-align: center;
   font-size: 0.95rem;
-  background: var(--highlight);
-  box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+  background: #f8f8f8;
+  color: black;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 600;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   position: relative;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  
+  /* Pulsing animation */
+  animation: pulse 2s infinite ease-in-out;
   
   &:before {
     content: '';
@@ -159,13 +166,14 @@ const NavButton = styled(Link)`
     bottom: 0;
     background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transform: translateX(-100%);
-    transition: transform 0.8s ease;
+    transition: transform 0.6s ease;
   }
   
   &:hover {
-    background: var(--highlightHover);
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 0 25px rgba(255, 105, 180, 0.6), 0 0 15px rgba(255, 105, 180, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    color: #f0f0f0;
+    background: #1a1a1a;
     
     &:before {
       transform: translateX(100%);
@@ -174,18 +182,17 @@ const NavButton = styled(Link)`
   
   &:active {
     transform: translateY(1px) scale(0.98);
-    box-shadow: 0 0 15px rgba(255, 105, 180, 0.4), 0 0 8px rgba(255, 105, 180, 0.3);
   }
   
   @keyframes pulse {
     0% {
-      box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+      box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
     }
     50% {
-      box-shadow: 0 0 18px rgba(255, 105, 180, 0.4), 0 0 10px rgba(255, 105, 180, 0.3);
+      box-shadow: 0 0 18px rgba(248, 248, 248, 0.4), 0 0 10px rgba(248, 248, 248, 0.3);
     }
     100% {
-      box-shadow: 0 0 15px rgba(255, 105, 180, 0.3), 0 0 8px rgba(255, 105, 180, 0.2);
+      box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
     }
   }
 
