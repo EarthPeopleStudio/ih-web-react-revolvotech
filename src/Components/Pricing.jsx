@@ -1121,6 +1121,11 @@ const Pricing = () => {
     return savings.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
+  const getMonthlyPriceWithTax = (price) => {
+    const priceWithTax = price * 1.16; // Adding 16% sales tax
+    return Math.round(priceWithTax).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   // Add keyframes for pulse animation
   useEffect(() => {
     const styleSheet = document.styleSheets[0];
@@ -1198,7 +1203,7 @@ const Pricing = () => {
           </PlanDescription>
           
           <PriceContainer>
-            {isAnnual && <StrikethroughPrice>$1,584</StrikethroughPrice>}
+            {isAnnual && <StrikethroughPrice>${getMonthlyPriceWithTax(1584)}</StrikethroughPrice>}
             <Price>${getMonthlyPrice(1584)}<sup>*</sup></Price>
             <PriceDescription>
               per month {isAnnual && `billed annually ($${getAnnualTotal(1584)})`}
@@ -1233,7 +1238,7 @@ const Pricing = () => {
           </PlanDescription>
           
           <PriceContainer>
-            {isAnnual && <StrikethroughPrice>$3,168</StrikethroughPrice>}
+            {isAnnual && <StrikethroughPrice>${getMonthlyPriceWithTax(3168)}</StrikethroughPrice>}
             <Price>${getMonthlyPrice(3168)}<sup>*</sup></Price>
             <PriceDescription>
               per month {isAnnual && `billed annually ($${getAnnualTotal(3168)})`}

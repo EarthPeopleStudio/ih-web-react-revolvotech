@@ -14,7 +14,8 @@ import TermsOfService from "./Components/TermsOfService";
 import CookiePolicy from "./Components/CookiePolicy";
 import AboutUs from "./Components/AboutUs";
 import OurWork from "./Components/OurWork";
-import Projects from "./Components/Projects";
+import Projects from "./pages/Projects";
+import HivekeyProject from "./pages/HivekeyProject";
 import TechShowcase from "./Components/TechShowcase";
 import Pricing from "./Components/Pricing";
 import ContactUs from "./Components/ContactUs";
@@ -81,6 +82,9 @@ const AppContent = () => {
             
             {/* Projects Page */}
             <Route path="/projects" element={<Projects />} />
+            
+            {/* Individual Project Pages */}
+            <Route path="/projects/hivekey" element={<HivekeyProject />} />
             
             {/* Tech Showcase Page */}
             <Route path="/tech-showcase" element={<TechShowcase />} />

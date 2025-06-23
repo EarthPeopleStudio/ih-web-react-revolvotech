@@ -156,16 +156,16 @@ const Footer = () => {
             drive business growth and user engagement.
           </CompanyDescription>
           <SocialLinks>
-            <SocialIcon href="#">
+            <SocialIcon href="https://github.com/RevolvoTech" target="_blank" rel="noopener noreferrer">
               <FaGithub />
             </SocialIcon>
-            <SocialIcon href="#">
+            <SocialIcon href="https://x.com/revolvotech" target="_blank" rel="noopener noreferrer">
               <FaTwitter />
             </SocialIcon>
-            <SocialIcon href="#">
+            <SocialIcon href="https://www.linkedin.com/company/revolvotech/" target="_blank" rel="noopener noreferrer">
               <FaLinkedin />
             </SocialIcon>
-            <SocialIcon href="#">
+            <SocialIcon href="https://www.instagram.com/revolvotech/" target="_blank" rel="noopener noreferrer">
               <FaInstagram />
             </SocialIcon>
           </SocialLinks>
