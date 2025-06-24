@@ -20,6 +20,7 @@ import TechShowcase from "./Components/TechShowcase";
 import Pricing from "./Components/Pricing";
 import ContactUs from "./Components/ContactUs";
 import Testimonials from "./Components/Testimonials";
+import BlogSection from "./Components/BlogSection";
 import darkTheme, { themeToVars } from "./themes";
 import { AnimationProvider } from './Components/AnimationContext';
 
@@ -98,6 +99,9 @@ const AppContent = () => {
             
             {/* Contact Us Page */}
             <Route path="/contact-us" element={<ContactUs />} />
+            
+            {/* Blog Page */}
+            <Route path="/blog" element={<BlogSection />} />
           </Routes>
           <Footer />
         </ContentWrapper>

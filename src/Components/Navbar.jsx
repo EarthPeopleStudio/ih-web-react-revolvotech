@@ -319,6 +319,16 @@ const Navbar = () => {
             Tech Showcase
           </StyledLink>
         </li>
+        <li>
+          <StyledLink 
+            to="/blog"
+            onMouseEnter={() => handleButtonHover(true)}
+            onMouseLeave={() => handleButtonHover(false)}
+            onClick={closeMenu}
+          >
+            Blog
+          </StyledLink>
+        </li>
         <NavButton 
           to="/contact-us"
           onClick={closeMenu}

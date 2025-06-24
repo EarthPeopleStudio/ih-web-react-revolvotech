@@ -1,8 +1,30 @@
-import React, { useRef, Suspense, useState } from 'react';
+import React, { useRef, Suspense, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, OrbitControls, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
 import { useAnimation } from './AnimationContext';
+
+// Add a hook to detect mobile devices and screen size
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Check on mount
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return isMobile;
+}
 
 function Model({ url }) {
   const modelRef = useRef();
@@ -13,6 +35,12 @@ function Model({ url }) {
   const prevAnimationRef = useRef(currentAnimation);
   const headBoneRef = useRef(null);
   const [xPosition, setXPosition] = useState(0.28125);
+  const isMobile = useIsMobile();
+
+  // Don't process any effects if on mobile
+  if (isMobile) {
+    return null;
+  }
 
   // Screen size detection
   React.useEffect(() => {
@@ -58,7 +86,7 @@ function Model({ url }) {
   React.useEffect(() => {
     if (actions[DEFAULT_ANIMATION]) {
       actions[DEFAULT_ANIMATION].reset().play();
-      actions[DEFAULT_ANIMATION].setLoop(THREE.LoopRepeat);
+      actions[DEFAULT_ANIMATION].setLoop(THREE.LoopPingPong);
       actions[DEFAULT_ANIMATION].setEffectiveTimeScale(1);
     } else {
       console.warn(`Default animation "${DEFAULT_ANIMATION}" not found, checking for available animations...`);
@@ -68,7 +96,7 @@ function Model({ url }) {
         const fallbackAnimation = availableAnimations[0];
         console.warn(`Using "${fallbackAnimation}" as fallback animation`);
         actions[fallbackAnimation].reset().play();
-        actions[fallbackAnimation].setLoop(THREE.LoopRepeat);
+        actions[fallbackAnimation].setLoop(THREE.LoopPingPong);
         actions[fallbackAnimation].setEffectiveTimeScale(1);
       }
     }
@@ -83,28 +111,49 @@ function Model({ url }) {
         y: headBoneRef.current.rotation.y
       } : null;
 
-      // Stop the previous animation
-      if (actions[prevAnimationRef.current]) {
-        actions[prevAnimationRef.current].fadeOut(0.5);
-      }
-
-      // Start the new animation or fall back to default
+      const previousAction = actions[prevAnimationRef.current];
       const targetAnimation = actions[currentAnimation] ? currentAnimation : DEFAULT_ANIMATION;
-      
-      if (actions[targetAnimation]) {
-        actions[targetAnimation].reset().fadeIn(0.5).play();
-        actions[targetAnimation].setLoop(THREE.LoopRepeat);
-        actions[targetAnimation].setEffectiveTimeScale(1);
+      const newAction = actions[targetAnimation];
 
-        // Restore head rotation after a frame
+      if (newAction) {
+        // If we have a previous action, handle the transition more smoothly
+        if (previousAction && previousAction !== newAction) {
+          // For ping-pong animations, let them complete their cycle before transitioning
+          if (previousAction.loop === THREE.LoopPingPong && previousAction.isRunning()) {
+            // Check if we're in the middle of a ping-pong cycle
+            const normalizedTime = (previousAction.time % previousAction.getClip().duration) / previousAction.getClip().duration;
+            
+            // If we're not near the start/end of the cycle, wait for a smoother transition point
+            if (normalizedTime > 0.1 && normalizedTime < 0.9) {
+              // Gradually fade out over a longer period
+              previousAction.fadeOut(1.2);
+            } else {
+              // Quick fade if we're at a good transition point
+              previousAction.fadeOut(0.5);
+            }
+          } else {
+            // Standard fade out for non-ping-pong animations
+            previousAction.fadeOut(0.5);
+          }
+        }
+
+        // Start the new animation with appropriate settings
+        newAction.reset().fadeIn(0.8).play();
+        newAction.setLoop(THREE.LoopPingPong);
+        newAction.setEffectiveTimeScale(1);
+
+        // Restore head rotation after the animation has started
         if (currentRotation && headBoneRef.current) {
-          requestAnimationFrame(() => {
-            headBoneRef.current.rotation.x = currentRotation.x;
-            headBoneRef.current.rotation.y = currentRotation.y;
-          });
+          // Delay the restoration to allow the new animation to settle
+          setTimeout(() => {
+            if (headBoneRef.current) {
+              headBoneRef.current.rotation.x = currentRotation.x;
+              headBoneRef.current.rotation.y = currentRotation.y;
+            }
+          }, 100);
         }
       } else {
-        console.error(`Neither requested animation "${currentAnimation}" nor default animation "${DEFAULT_ANIMATION}" found`);
+        console.error(`Animation "${targetAnimation}" not found`);
       }
 
       prevAnimationRef.current = currentAnimation;
@@ -126,80 +175,81 @@ function Model({ url }) {
         // Only modify colors if the material supports it, avoid cloning to prevent corruption
         if (child.material.color) {
           switch(name) {
-            case 'Object_143': // Metal Lining
-              child.material.color.setHex(0x4A5568); // Lighter steel blue-gray
-              if (child.material.emissive) {
-                child.material.emissive.setHex(0x2D3748);
-                child.material.emissiveIntensity = 0.3;
-              }
-              if (child.material.roughness !== undefined) child.material.roughness = 0.2;
-              if (child.material.metalness !== undefined) child.material.metalness = 0.8;
+            case 'Object_143': // Metal Lining (Dark Chrome)
+              child.material.color.setHex(0x4A5568);
+              if (child.material.emissive) child.material.emissive.setHex(0x000000);
+              if (child.material.roughness !== undefined) child.material.roughness = 0.1;
+              if (child.material.metalness !== undefined) child.material.metalness = 0.95;
               break;
               
             case 'Object_144': // Hat (Top)
-              child.material.color.setHex(0x2B6CB0); // Rich blue instead of dark gray
+              child.material.color.setHex(0x1e293b); // Deep, dark blue
               break;
               
             case 'Object_145': // Jacket (Outside)
-              child.material.color.setHex(0x553C9A); // Rich purple instead of very dark purple
+              child.material.color.setHex(0x0f172a); // Near-black, dark blue-gray
               break;
               
             case 'Object_146': // Belt
-              child.material.color.setHex(0x1A202C); // Darker but not pure black
+              child.material.color.setHex(0x1A202C); // Keep dark
               break;
               
-            case 'Object_147': // Face/Head Metal
-              child.material.color.setHex(0x718096); // Lighter, more appealing gray
-              if (child.material.roughness !== undefined) child.material.roughness = 0.3;
-              if (child.material.metalness !== undefined) child.material.metalness = 0.8;
+            case 'Object_147': // Face/Head Metal (Dark Chrome)
+              child.material.color.setHex(0x6b7280);
+              if (child.material.roughness !== undefined) child.material.roughness = 0.1;
+              if (child.material.metalness !== undefined) child.material.metalness = 0.95;
               break;
               
             case 'Object_148': // Jacket (Inside)
-              child.material.color.setHex(0xC53030); // Brighter, more vibrant red
-              if (child.material.roughness !== undefined) child.material.roughness = 0.3;
+              child.material.color.setHex(0x0ea5e9); // Electric Blue instead of hot pink
+              if (child.material.roughness !== undefined) child.material.roughness = 0.5;
               if (child.material.metalness !== undefined) child.material.metalness = 0.2;
               break;
               
-            case 'Object_149': // Jacket Lining (Top)
-              child.material.color.setHex(0x805AD5); // Brighter purple/violet
+            case 'Object_149': // Jacket Lining (Top) - Neon Pink
+              child.material.color.setHex(0xf59e0b); // Gold highlights for premium feel
+              if (child.material.emissive) {
+                child.material.emissive.setHex(0xf59e0b);
+                child.material.emissiveIntensity = 0.5;
+              }
               break;
               
             case 'Object_150': // Scarf Inside
-              child.material.color.setHex(0x744210); // Warmer brown tone
+              child.material.color.setHex(0x333333); // Dark neutral
               break;
               
-            case 'Object_151': // Sides, Belt Buckle, Hands
-              child.material.color.setHex(0x4A5568); // Consistent steel blue-gray
-              if (child.material.roughness !== undefined) child.material.roughness = 0.3;
-              if (child.material.metalness !== undefined) child.material.metalness = 0.8;
+            case 'Object_151': // Sides, Belt Buckle, Hands (Dark Chrome)
+              child.material.color.setHex(0x6b7280); // Warmer gunmetal
+              if (child.material.roughness !== undefined) child.material.roughness = 0.1;
+              if (child.material.metalness !== undefined) child.material.metalness = 0.95;
               break;
               
             case 'Object_152': // Hat (Inside)
-              child.material.color.setHex(0x38A169); // Vibrant green instead of muted green
+              child.material.color.setHex(0x1A202C); // Dark neutral
               break;
               
-            case 'Object_153': // Eyes
-              child.material.color.setHex(0x00E5C8); // Brighter cyan/turquoise
+            case 'Object_153': // Eyes - Intense Neon Cyan
+              child.material.color.setHex(0x3b82f6); // Bright electric blue
               if (child.material.emissive) {
-                child.material.emissive.setHex(0x00E5C8);
-                child.material.emissiveIntensity = 1.2;
+                child.material.emissive.setHex(0x3b82f6);
+                child.material.emissiveIntensity = 3.0; // Increased intensity
               }
-              if (child.material.roughness !== undefined) child.material.roughness = 0.1;
-              if (child.material.metalness !== undefined) child.material.metalness = 0.9;
+              if (child.material.roughness !== undefined) child.material.roughness = 0;
+              if (child.material.metalness !== undefined) child.material.metalness = 1;
               break;
               
             case 'Object_154': // Shoes
-              child.material.color.setHex(0x822727); // Brighter burgundy/maroon
-              if (child.material.roughness !== undefined) child.material.roughness = 0.4;
+              child.material.color.setHex(0x1A202C); // Keep dark
+              if (child.material.roughness !== undefined) child.material.roughness = 0.2;
               if (child.material.metalness !== undefined) child.material.metalness = 0.1;
               break;
               
-            case 'Object_155': // Scarf (Top)
-              child.material.color.setHex(0xDD6B20); // Vibrant orange
+            case 'Object_155': // Scarf (Top) - Neon Pink
+              child.material.color.setHex(0xd97706); // Amber-600
               break;
               
-            case 'Object_156': // Scarf (Bottom)
-              child.material.color.setHex(0xC05621); // Deeper orange for contrast
+            case 'Object_156': // Scarf (Bottom) - Deeper Neon Pink
+              child.material.color.setHex(0xb45309); // Amber-700
               break;
               
             default:
@@ -217,11 +267,11 @@ function Model({ url }) {
   useFrame(() => {
     if (modelRef.current) {
       // Adjust rotation sensitivity based on cursor position
-      const rotationMultiplier = mouseRef.current.x > 0 ? 0.25 : 0.5; // 25% on right side, 50% on left side
-      const targetRotationY = mouseRef.current.x * Math.PI * 0.6 * rotationMultiplier; // Doubled horizontal sensitivity
+      const rotationMultiplier = mouseRef.current.x > 0 ? 0.25 : 0.65; // 25% on right side, 65% on left side
+      const targetRotationY = mouseRef.current.x * Math.PI * 0.6 * rotationMultiplier; // Horizontal sensitivity
       
-      // Reduce look up sensitivity by 50% while keeping look down sensitivity
-      const verticalSensitivity = mouseRef.current.y < 0 ? 0.1125 : 0.225; // 50% reduced for look up, normal for look down
+      // Reduced look up by 50% (from 0.45 to 0.225) while keeping look down the same
+      const verticalSensitivity = mouseRef.current.y < 0 ? 0.225 : 0.075; // Reduced look up by 50%, keeping look down the same
       const targetRotationX = -mouseRef.current.y * Math.PI * verticalSensitivity;
       
       modelRef.current.rotation.y += (targetRotationY - modelRef.current.rotation.y) * 0.1;
@@ -241,6 +291,12 @@ function Model({ url }) {
 }
 
 function LoadingScreen() {
+  const isMobile = useIsMobile();
+  
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <div style={{
       position: 'absolute',
@@ -257,13 +313,21 @@ function LoadingScreen() {
 }
 
 const Model3D = ({ modelUrl }) => {
+  const isMobile = useIsMobile();
+
+  // If on mobile, return null or a placeholder
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <div 
       style={{ 
         width: '100%', 
         height: '100%',
         background: '#000000',
-        position: 'relative'
+        position: 'relative',
+        display: isMobile ? 'none' : 'block' // Add display none as backup
       }}
     >
       <Canvas
@@ -278,16 +342,22 @@ const Model3D = ({ modelUrl }) => {
       >
         <color attach="background" args={['#000000']} />
         <Suspense fallback={null}>
-          <ambientLight intensity={0.8} /> {/* Reduced ambient light intensity */}
+          <ambientLight intensity={0.6} /> {/* Lower ambient light for more contrast */}
           <directionalLight
             position={[5, 5, 5]}
-            intensity={1.2}
+            intensity={1.0} /* Reduced for more contrast */
             castShadow
           />
           <directionalLight
             position={[-5, 5, -5]}
-            intensity={0.8}
+            intensity={0.5} /* Reduced for more contrast */
             castShadow
+          />
+          {/* Cyberpunk-themed rim light */}
+          <directionalLight
+            position={[0, 3, -5]}
+            intensity={2.0} // Stronger intensity
+            color="#FF00FF"  // Magenta color
           />
           <Model url={modelUrl} />
           <OrbitControls 
