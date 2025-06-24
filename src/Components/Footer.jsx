@@ -1,7 +1,7 @@
 // Footer.js
 import React from "react";
 import styled from "styled-components";
-import logoImg from "../assets/revolvo-logo.png";
+import logoImg from "../assets/Revolvo.png";
 import { FaGithub, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { commonStyles } from "../themes";

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import HiveKeyImage from "../assets/hivekey.png";
-import FreshCleaningLuxeImage from "../assets/fresh-cleaning-luxe-logo.png";
+import HiveKeyImage from "../assets/HiveKey.png";
+import FreshCleaningLuxeImage from "../assets/Fresh Cleaning Luxe_ProjectLogo.png";
 
 const ProjectsWrapper = styled.div`
   padding: 120px 8% 80px;
