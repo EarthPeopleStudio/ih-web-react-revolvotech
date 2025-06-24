@@ -7,14 +7,66 @@ import hiveKeyOptions from "../assets/hivekey_options.png";
 import windowsLogo from "../assets/windows-11-icon-seeklogo.png";
 import playstoreLogo from "../assets/google-play-store-logo-png-transparent.png";
 
-const HivekeyProject = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const contentRef = useRef(null);
+const ShufflingLetter = ({ char, animate, startDelay }) => {
+  const [displayChar, setDisplayChar] = useState('');
+  const finalChar = char === ' ' ? '\u00A0' : char;
+  const intervalRef = useRef(null);
+  const timeoutRef = useRef(null);
+
+  const shuffleChars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789@*#$%&?!';
+  const shuffleDuration = 600;
+  const shuffleInterval = 50;
 
   useEffect(() => {
+    if (animate) {
+      timeoutRef.current = setTimeout(() => {
+        let elapsed = 0;
+        intervalRef.current = setInterval(() => {
+          const randomIndex = Math.floor(Math.random() * shuffleChars.length);
+          setDisplayChar(shuffleChars[randomIndex]);
+          elapsed += shuffleInterval;
+          if (elapsed >= shuffleDuration) {
+            clearInterval(intervalRef.current);
+            setDisplayChar(finalChar);
+          }
+        }, shuffleInterval);
+      }, startDelay);
+    }
+    return () => {
+      clearTimeout(timeoutRef.current);
+      clearInterval(intervalRef.current);
+    };
+  }, [animate, startDelay, finalChar]);
+
+  return (
+    <span
+      className={`animated-letter ${animate ? 'animate-in' : ''}`}
+      style={{ animationDelay: `${startDelay / 1000}s` }}
+    >
+      {displayChar || '\u00A0'}
+    </span>
+  );
+};
+
+const HivekeyProject = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [animateTitle, setAnimateTitle] = useState(false);
+  const contentRef = useRef(null);
+
+  // Function to generate a slightly random delay
+  const getRandomDelay = (index, baseDelay = 0.03) => {
+    const randomOffset = Math.random() * 0.02; // Random offset between 0 and 0.02s
+    return (index * baseDelay + randomOffset).toFixed(3);
+  };
+
+  useEffect(() => {
+    // Trigger animation immediately after mount
+    requestAnimationFrame(() => {
+      setAnimateTitle(true);
+    });
+
     // This scroll listener handles the title fade-out directly.
     const handleScroll = () => {
-      // A very small threshold makes the animation feel instant.
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -42,11 +94,20 @@ const HivekeyProject = () => {
     };
   }, []);
 
+  const title = "Unbreakable Passwords, Effortlessly.";
+
   return (
     <div className="hivekey-page">
       <div className={`title-container ${isScrolled ? "is-fading-out" : ""}`}>
           <h1>
-            Unbreakable Passwords, Effortlessly.
+            {title.split("").map((char, index) => (
+              <ShufflingLetter
+                key={index}
+                char={char}
+                animate={animateTitle}
+                startDelay={index * 80}
+              />
+            ))}
           </h1>
       </div>
 
