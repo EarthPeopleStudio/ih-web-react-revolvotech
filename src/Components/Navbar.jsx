@@ -6,16 +6,17 @@ import { IoClose } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { commonStyles } from "../themes";
 import { PathContext } from "../App";
+import { useAnimation } from "./AnimationContext";
 
 const NavbarWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: var(--text-primary);
-  background: ${(props) => (props.scrolled ? "var(--dark-card-bg)" : "transparent")};
-  backdrop-filter: ${(props) => (props.scrolled ? "blur(10px)" : "none")};
+  background: ${(props) => (props.$scrolled ? "var(--dark-card-bg)" : "transparent")};
+  backdrop-filter: ${(props) => (props.$scrolled ? "blur(10px)" : "none")};
   -webkit-backdrop-filter: ${(props) =>
-    props.scrolled ? "blur(10px)" : "none"};
+    props.$scrolled ? "blur(10px)" : "none"};
   height: 80px;
   margin: 0;
   padding: 0 8%;
@@ -24,7 +25,7 @@ const NavbarWrapper = styled.div`
   top: 0;
   z-index: var(--z-index-header);
   border-bottom: ${(props) =>
-    props.scrolled ? "1px solid var(--border-color)" : "none"};
+    props.$scrolled ? "1px solid var(--border-color)" : "none"};
   box-sizing: border-box;
   transition: all var(--transition-normal);
 `;
@@ -64,7 +65,7 @@ const NavMenu = styled.ul`
     position: fixed;
     flex-direction: column;
     top: 0;
-    right: ${(props) => (props.isOpen ? "0" : "-100%")};
+    right: ${(props) => (props.$isOpen ? "0" : "-100%")};
     width: 70%;
     height: 100vh;
     background: var(--dark-card-bg);
@@ -225,8 +226,12 @@ const MenuButton = styled.button`
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const currentPath = useContext(PathContext);
-  const isContactPage = currentPath === "/contact-us";
+  const { currentPath } = useContext(PathContext);
+  const { setCurrentAnimation } = useAnimation();
+
+  const handleButtonHover = (isHovered) => {
+    setCurrentAnimation(isHovered ? 'Shrug' : 'Grin');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -263,22 +268,66 @@ const Navbar = () => {
   };
 
   return (
-    <NavbarWrapper scrolled={scrolled}>
+    <NavbarWrapper $scrolled={scrolled}>
       <Logo to="/">
-        <LogoImg src={logoImg} alt="Revolvo" />
+        <LogoImg src={logoImg} alt="Revolvo Logo" />
       </Logo>
 
       <MenuButton onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? <IoClose /> : <HiMenuAlt3 />}
+        {isOpen ? <IoClose size={28} /> : <HiMenuAlt3 size={28} />}
       </MenuButton>
 
-      <NavMenu isOpen={isOpen}>
+      <NavMenu $isOpen={isOpen}>
         <StyledLink to="/" onClick={closeMenu}>Home</StyledLink>
-        <StyledLink to="/projects" onClick={closeMenu}>Projects</StyledLink>
-        <StyledLink to="/pricing" onClick={closeMenu}>Pricing</StyledLink>
-        <StyledLink to="/testimonials" onClick={closeMenu}>Testimonials</StyledLink>
-        <StyledLink to="/tech-showcase" onClick={closeMenu}>Tech Showcase</StyledLink>
-        <NavButton to="/contact-us" onClick={closeMenu} isContactPage={isContactPage}>Get Started</NavButton>
+        <li>
+          <StyledLink 
+            to="/projects"
+            onMouseEnter={() => handleButtonHover(true)}
+            onMouseLeave={() => handleButtonHover(false)}
+            onClick={closeMenu}
+          >
+            Projects
+          </StyledLink>
+        </li>
+        <li>
+          <StyledLink 
+            to="/pricing"
+            onMouseEnter={() => handleButtonHover(true)}
+            onMouseLeave={() => handleButtonHover(false)}
+            onClick={closeMenu}
+          >
+            Pricing
+          </StyledLink>
+        </li>
+        <li>
+          <StyledLink 
+            to="/testimonials"
+            onMouseEnter={() => handleButtonHover(true)}
+            onMouseLeave={() => handleButtonHover(false)}
+            onClick={closeMenu}
+          >
+            Testimonials
+          </StyledLink>
+        </li>
+        <li>
+          <StyledLink 
+            to="/tech-showcase"
+            onMouseEnter={() => handleButtonHover(true)}
+            onMouseLeave={() => handleButtonHover(false)}
+            onClick={closeMenu}
+          >
+            Tech Showcase
+          </StyledLink>
+        </li>
+        <NavButton 
+          to="/contact-us"
+          onClick={closeMenu}
+          isContactPage={currentPath === "/contact-us" ? true : false}
+          onMouseEnter={() => handleButtonHover(true)}
+          onMouseLeave={() => handleButtonHover(false)}
+        >
+          Get Started
+        </NavButton>
       </NavMenu>
     </NavbarWrapper>
   );

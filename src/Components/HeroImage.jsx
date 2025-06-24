@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import AnimatedHero from "./AnimatedHero";
 import { Link } from "react-router-dom";
+import AnimatedHero from "./AnimatedHero";
+import { useAnimation } from "./AnimationContext";
 
 const HeroWrapper = styled.div`
   display: flex;
@@ -12,6 +13,7 @@ const HeroWrapper = styled.div`
   min-height: 90vh;
   position: relative;
   overflow: hidden;
+  background: var(--dark-bg);
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -81,15 +83,6 @@ const ButtonSection = styled.div`
   }
 `;
 
-const Button = styled.button`
-  padding: 15px 35px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1.1rem;
-  transition: all 0.3s ease;
-  cursor: pointer;
-`;
-
 const PortfolioBtn = styled(Link)`
   background: var(--button-bg);
   border: none;
@@ -130,28 +123,64 @@ const PricingBtn = styled(Link)`
   }
 `;
 
+const ModelSection = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  min-height: 500px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    min-height: 400px;
+  }
+`;
+
 const HeroImage = () => {
+  const { setCurrentAnimation } = useAnimation();
+
+  const handleButtonHover = (isHovered) => {
+    setCurrentAnimation(isHovered ? 'Kakatte koi' : 'Grin');
+  };
+
   return (
     <HeroWrapper>
       <ContentWrapper>
         <HeroText>
-          Building Tomorrow's
+          Crafting Digital
           <br />
-          Digital World
+          Magic That
           <br />
-          <span>Together</span>
+          <span>Inspires</span>
         </HeroText>
         <HeroDescription>
-          From web apps to games, we bring creative ideas to life. Our passion
-          is crafting digital experiences that make a difference. Let's create
-          something amazing.
+          We transform bold visions into stunning digital realities. From immersive games 
+          to cutting-edge web apps, we craft experiences that captivate, engage, and leave 
+          lasting impressions. Ready to make your mark?
         </HeroDescription>
         <ButtonSection>
-          <PortfolioBtn to="/projects">View Portfolio</PortfolioBtn>
-          <PricingBtn to="/pricing">Check Pricing</PricingBtn>
+          <PortfolioBtn 
+            to="/projects"
+            onMouseEnter={() => handleButtonHover(true)}
+            onMouseLeave={() => handleButtonHover(false)}
+          >
+            View Portfolio
+          </PortfolioBtn>
+          <PricingBtn 
+            to="/pricing"
+            onMouseEnter={() => handleButtonHover(true)}
+            onMouseLeave={() => handleButtonHover(false)}
+          >
+            Check Pricing
+          </PricingBtn>
         </ButtonSection>
       </ContentWrapper>
-      <AnimatedHero />
+      <ModelSection>
+        <AnimatedHero />
+      </ModelSection>
     </HeroWrapper>
   );
 };

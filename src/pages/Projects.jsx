@@ -247,7 +247,7 @@ const EmptyStateText = styled.p`
 const projectsData = [
   {
     id: 1,
-    title: "Hivekey",
+    title: "HiveKey",
     description: "Unbreakable passwords, effortlessly. HiveKey uses a complex, uncrackable algorithm to generate unique, robust passwords from your key phrase and service name.",
     imageUrl: HiveKeyImage,
     tags: ["Security", "Cryptography", "Cross-Platform", "Password Generator"],

@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-three/drei": "^9.77.0",
+    "@react-three/fiber": "^8.13.0",
+    "@types/three": "^0.177.0",
     "@wavesurfer/react": "^1.0.10",
     "face-api.js": "^0.20.0",
     "framer-motion": "^12.6.3",
@@ -22,6 +25,7 @@
     "react-router-dom": "^7.4.0",
     "react-syntax-highlighter": "^5.8.0",
     "styled-components": "^6.1.16",
+    "three": "^0.153.0",
     "tone": "^15.0.4",
     "wavesurfer.js": "^7.9.4"
   },

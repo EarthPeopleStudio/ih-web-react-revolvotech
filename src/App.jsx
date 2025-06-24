@@ -21,6 +21,7 @@ import Pricing from "./Components/Pricing";
 import ContactUs from "./Components/ContactUs";
 import Testimonials from "./Components/Testimonials";
 import darkTheme, { themeToVars } from "./themes";
+import { AnimationProvider } from './Components/AnimationContext';
 
 // Create a context for the current path
 export const PathContext = createContext('/');
@@ -107,9 +108,11 @@ const AppContent = () => {
 
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <AnimationProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AnimationProvider>
   );
 }
 
