@@ -23,7 +23,7 @@ const CodeShowcaseItem = styled.div`
   &:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 84, 112, 0.3);
+    border: 1px solid rgba(255, 235, 59, 0.3);
   }
 `;
 
@@ -47,7 +47,7 @@ const CodeShowcaseTitle = styled.h3`
   
   svg {
     margin-right: 10px;
-    color: #ff5470;
+    color: #FFEB3B;
   }
 `;
 
@@ -76,36 +76,44 @@ const CodeSnippetContainer = styled.div`
   border-radius: 12px;
   overflow: hidden;
   background: #1a1a1a;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border: 1px solid rgba(255, 235, 59, 0.4);
+    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  }
 `;
 
 const CodeHeader = styled.div`
-  background: #252525;
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.08), rgba(251, 182, 4, 0.05));
   padding: 12px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.8rem;
   color: #e0e0e0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
 `;
 
 const CodeFileName = styled.span`
   display: flex;
   align-items: center;
   font-weight: 500;
+  color: #FFEB3B;
 `;
 
 const CodeLanguage = styled.span`
-  background: rgba(255, 84, 112, 0.2);
-  padding: 3px 10px;
-  border-radius: 4px;
-  color: #ff5470;
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.2), rgba(251, 182, 4, 0.15));
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: #FFEB3B;
   font-weight: 600;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  border: 1px solid rgba(255, 235, 59, 0.3);
 `;
 
 const PreBlock = styled.pre`
@@ -149,17 +157,23 @@ const PreBlock = styled.pre`
 `;
 
 const DemoContainer = styled.div`
-  background: #1a1a1a;
+  background: rgba(25, 25, 25, 0.8);
   border-radius: 12px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 235, 59, 0.2);
   overflow: hidden;
   position: relative;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border: 1px solid rgba(255, 235, 59, 0.4);
+    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  }
   
   &:before {
     content: '';
@@ -167,8 +181,8 @@ const DemoContainer = styled.div`
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: linear-gradient(to right, #ff5470, #ff8a5b);
+    height: 3px;
+    background: linear-gradient(to right, #FFEB3B, #00d4ff);
     z-index: 2;
   }
 `;
@@ -272,13 +286,13 @@ let ghosts = [
   { 
     x: 15, 
     y: 15, 
-    color: '#FF0000', 
+            color: '#FFEB3B', 
     direction: 'left' 
   },  // Red ghost
   { 
     x: 14, 
     y: 15, 
-    color: '#FFB8FF', 
+            color: '#00d4ff', 
     direction: 'up' 
   },    // Pink ghost
   { 
@@ -290,7 +304,7 @@ let ghosts = [
   { 
     x: 15, 
     y: 14, 
-    color: '#FFB852', 
+            color: '#fbb604', 
     direction: 'down' 
   }   // Orange ghost
 ];
@@ -580,7 +594,7 @@ function drawBall() {
     ballRadius, 
     0, Math.PI * 2
   );
-  ctx.fillStyle = '#ff5470';
+        ctx.fillStyle = '#FFEB3B';
   ctx.fill();
   ctx.closePath();
 }

@@ -21,14 +21,33 @@ const SectionHeader = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   font-weight: 800;
   margin-bottom: 30px;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-align: center;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
 
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 `;
 
@@ -61,8 +80,8 @@ const BlogCard = styled.div`
   
   &:hover {
     transform: translateY(-10px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 25px 50px rgba(251, 182, 4, 0.2);
+    border-color: rgba(251, 182, 4, 0.2);
   }
 `;
 
@@ -126,12 +145,18 @@ const BlogMeta = styled.div`
 
 const CategoryBadge = styled.span`
   background: var(--card-bg);
-  color: var(--text-primary);
+  color: #FFEB3B;
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 500;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(251, 182, 4, 0.3);
+  transition: all 0.3s ease;
+
+  ${BlogCard}:hover & {
+    border-color: rgba(251, 182, 4, 0.5);
+    box-shadow: 0 0 15px rgba(251, 182, 4, 0.2);
+  }
 `;
 
 const BlogDate = styled.span`
@@ -145,6 +170,11 @@ const BlogTitle = styled.h3`
   font-weight: 700;
   margin-bottom: 15px;
   line-height: 1.4;
+  transition: all 0.3s ease;
+
+  ${BlogCard}:hover & {
+    color: #fbb604;
+  }
 `;
 
 const BlogExcerpt = styled.p`
@@ -174,11 +204,12 @@ const ReadTime = styled.span`
 
 const ReadMoreButton = styled.div`
   margin-top: 20px;
-  color: var(--text-primary);
+  color: #FFEB3B;
   font-size: 1rem;
   font-weight: 500;
   display: flex;
   align-items: center;
+  transition: all 0.3s ease;
   
   &:after {
     content: "→";
@@ -187,6 +218,8 @@ const ReadMoreButton = styled.div`
   }
   
   ${BlogCard}:hover & {
+    color: #fbb604;
+    
     &:after {
       transform: translateX(5px);
     }
@@ -200,6 +233,12 @@ const NewsletterSection = styled.div`
   padding: 50px;
   text-align: center;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: rgba(251, 182, 4, 0.2);
+    box-shadow: 0 25px 50px rgba(251, 182, 4, 0.2);
+  }
   
   @media (max-width: 768px) {
     padding: 30px 20px;
@@ -211,6 +250,20 @@ const NewsletterTitle = styled.h3`
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 15px;
+  position: relative;
+  display: inline-block;
+  
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(to right, #FFEB3B, #fbb604);
+    border-radius: 2px;
+  }
 `;
 
 const NewsletterText = styled.p`
@@ -221,8 +274,8 @@ const NewsletterText = styled.p`
 `;
 
 const NewsletterButton = styled.button`
-  background: #f8f8f8;
-  color: black;
+  background: linear-gradient(135deg, #FFEB3B 0%, #fbb604 100%);
+  color: #000;
   border: none;
   border-radius: 8px;
   padding: 15px 30px;
@@ -230,11 +283,11 @@ const NewsletterButton = styled.button`
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px rgba(251, 182, 4, 0.2);
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(251, 182, 4, 0.3);
   }
 `;
 

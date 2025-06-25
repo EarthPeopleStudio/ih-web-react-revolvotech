@@ -572,8 +572,8 @@ const PacManGame = () => {
           onClick={handleStartRestart}
           style={{
             padding: '8px 16px',
-            background: '#ff5470',
-            color: 'white',
+            background: 'linear-gradient(135deg, #FFEB3B, #fbb604)',
+            color: '#000',
             border: 'none',
             borderRadius: '4px',
             cursor: 'pointer'

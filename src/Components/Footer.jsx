@@ -4,14 +4,14 @@ import styled from "styled-components";
 import logoImg from "../assets/revolvo-logo.png";
 import { FaGithub, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { commonStyles } from "../themes";
+import { designSystem } from "../themes";
 
 const FooterContainer = styled.footer`
-  color: var(--text-primary);
-  padding: var(--spacing-section) 8% var(--spacing-xl);
+  color: ${designSystem.colors.text.primary};
+  padding: ${designSystem.spacing.huge} 8% ${designSystem.spacing.xl};
   position: relative;
   overflow: hidden;
-  background: var(--dark-card-bg);
+  background: ${designSystem.colors.background.secondary};
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
@@ -22,34 +22,35 @@ const FooterContainer = styled.footer`
     left: 0;
     right: 0;
     height: 1px;
-    background: var(--border-color);
+    background: ${designSystem.colors.border.primary};
   }
 `;
 
 const FooterContent = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 60px;
+  gap: ${designSystem.spacing.xxxl};
   max-width: 1400px;
   margin: 0 auto;
 
-  @media (max-width: 968px) {
+  @media (max-width: ${designSystem.breakpoints.laptop}) {
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    gap: ${designSystem.spacing.xl};
   }
 
-  @media (max-width: 576px) {
+  @media (max-width: ${designSystem.breakpoints.mobile}) {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: ${designSystem.spacing.xl};
   }
 `;
 
 const FooterSection = styled.div`
-  ${commonStyles.flexColumn}
+  display: flex;
+  flex-direction: column;
 `;
 
 const CompanySection = styled(FooterSection)`
-  @media (max-width: 968px) {
+  @media (max-width: ${designSystem.breakpoints.laptop}) {
     grid-column: 1 / -1;
   }
 `;
@@ -57,90 +58,97 @@ const CompanySection = styled(FooterSection)`
 const Logo = styled.img`
   width: 45px;
   height: 45px;
-  margin-bottom: var(--spacing-md);
+  margin-bottom: ${designSystem.spacing.md};
 `;
 
 const CompanyDescription = styled.p`
-  ${commonStyles.bodyText}
-  margin-bottom: var(--spacing-lg);
+  font-size: ${designSystem.typography.scale.body.fontSize};
+  color: ${designSystem.colors.text.secondary};
+  line-height: ${designSystem.typography.scale.body.lineHeight};
+  margin-bottom: ${designSystem.spacing.lg};
   max-width: 400px;
 `;
 
 const SocialLinks = styled.div`
-  ${commonStyles.flexRow}
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-xs);
+  display: flex;
+  gap: ${designSystem.spacing.md};
+  margin-top: ${designSystem.spacing.xs};
 `;
 
 const SocialIcon = styled.a`
-  color: var(--text-primary);
-  font-size: var(--font-size-lg);
-  transition: all var(--transition-normal);
+  color: ${designSystem.colors.text.primary};
+  font-size: ${designSystem.typography.scale.h6.fontSize};
+  transition: ${designSystem.effects.animations.transition};
 
   &:hover {
     transform: translateY(-3px);
-    color: var(--text-secondary);
+    color: ${designSystem.colors.primary.gold};
+    filter: drop-shadow(0 2px 8px rgba(255, 235, 59, 0.3));
   }
 `;
 
 const FooterTitle = styled.h3`
-  font-size: var(--font-size-lg);
-  margin-bottom: var(--spacing-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-primary);
+  font-size: ${designSystem.typography.scale.h6.fontSize};
+  margin-bottom: ${designSystem.spacing.lg};
+  font-weight: ${designSystem.typography.scale.h6.fontWeight};
+  color: ${designSystem.colors.text.primary};
 `;
 
 const FooterLink = styled.a`
-  color: var(--text-secondary);
+  color: ${designSystem.colors.text.secondary};
   text-decoration: none;
-  margin-bottom: var(--spacing-sm);
-  transition: all var(--transition-normal);
+  margin-bottom: ${designSystem.spacing.sm};
+  transition: ${designSystem.effects.animations.transition};
   cursor: pointer;
+  font-size: ${designSystem.typography.scale.body.fontSize};
 
   &:hover {
-    color: var(--text-primary);
+    color: ${designSystem.colors.primary.gold};
     transform: translateX(5px);
   }
 `;
 
 const ContactInfo = styled.div`
-  color: var(--text-secondary);
-  margin-bottom: var(--spacing-sm);
-  line-height: var(--line-height-relaxed);
+  color: ${designSystem.colors.text.secondary};
+  margin-bottom: ${designSystem.spacing.sm};
+  line-height: ${designSystem.typography.scale.bodyLarge.lineHeight};
+  font-size: ${designSystem.typography.scale.body.fontSize};
 `;
 
 const BottomBar = styled.div`
-  margin-top: 60px;
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--border-color);
-  ${commonStyles.flexBetween}
+  margin-top: ${designSystem.spacing.xxxl};
+  padding-top: ${designSystem.spacing.md};
+  border-top: 1px solid ${designSystem.colors.border.primary};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  @media (max-width: 576px) {
+  @media (max-width: ${designSystem.breakpoints.mobile}) {
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: ${designSystem.spacing.md};
     text-align: center;
   }
 `;
 
 const Copyright = styled.p`
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
+  color: ${designSystem.colors.text.secondary};
+  font-size: ${designSystem.typography.scale.small.fontSize};
 `;
 
 const BottomLinks = styled.div`
-  ${commonStyles.flexRow}
-  gap: 30px;
+  display: flex;
+  gap: ${designSystem.spacing.lg};
 `;
 
 const BottomLink = styled(Link)`
-  color: var(--text-secondary);
+  color: ${designSystem.colors.text.secondary};
   text-decoration: none;
-  font-size: var(--font-size-sm);
-  transition: color var(--transition-normal);
+  font-size: ${designSystem.typography.scale.small.fontSize};
+  transition: ${designSystem.effects.animations.transition};
   cursor: pointer;
 
   &:hover {
-    color: var(--text-primary);
+    color: ${designSystem.colors.primary.gold};
   }
 `;
 

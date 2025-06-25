@@ -4,7 +4,7 @@ import logoImg from "../assets/revolvo-logo.png";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import { Link } from "react-router-dom";
-import { commonStyles } from "../themes";
+import { designSystem } from "../themes";
 import { PathContext } from "../App";
 import { useAnimation } from "./AnimationContext";
 
@@ -12,8 +12,8 @@ const NavbarWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--text-primary);
-  background: ${(props) => (props.$scrolled ? "var(--dark-card-bg)" : "transparent")};
+  color: ${designSystem.colors.text.primary};
+  background: ${(props) => (props.$scrolled ? designSystem.colors.background.secondary : "transparent")};
   backdrop-filter: ${(props) => (props.$scrolled ? "blur(10px)" : "none")};
   -webkit-backdrop-filter: ${(props) =>
     props.$scrolled ? "blur(10px)" : "none"};
@@ -23,17 +23,19 @@ const NavbarWrapper = styled.div`
   position: fixed;
   width: 100%;
   top: 0;
-  z-index: var(--z-index-header);
+  z-index: 1000;
   border-bottom: ${(props) =>
-    props.$scrolled ? "1px solid var(--border-color)" : "none"};
+    props.$scrolled ? `1px solid ${designSystem.colors.border.primary}` : "none"};
+  box-shadow: ${(props) =>
+    props.$scrolled ? `0 4px 20px rgba(255, 235, 59, 0.1)` : "none"};
   box-sizing: border-box;
-  transition: all var(--transition-normal);
+  transition: ${designSystem.effects.animations.transition};
 `;
 
 const Logo = styled(Link)`
   display: flex;
   align-items: center;
-  transition: transform var(--transition-normal);
+  transition: ${designSystem.effects.animations.transition};
   opacity: 0.95;
   
   &:hover {
@@ -47,7 +49,7 @@ const LogoImg = styled.img`
   height: 45px;
   object-fit: contain;
 
-  @media (max-width: 768px) {
+  @media (max-width: ${designSystem.breakpoints.tablet}) {
     width: 40px;
     height: 40px;
   }
@@ -56,25 +58,25 @@ const LogoImg = styled.img`
 const NavMenu = styled.ul`
   list-style-type: none;
   display: flex;
-  gap: 48px;
+  gap: ${designSystem.spacing.xxxl};
   align-items: center;
   margin: 0;
   padding: 0;
 
-  @media (max-width: 768px) {
+  @media (max-width: ${designSystem.breakpoints.tablet}) {
     position: fixed;
     flex-direction: column;
     top: 0;
     right: ${(props) => (props.$isOpen ? "0" : "-100%")};
     width: 70%;
     height: 100vh;
-    background: var(--dark-card-bg);
+    background: ${designSystem.colors.background.secondary};
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     padding: 100px 40px;
-    transition: var(--transition-normal);
-    gap: 40px;
-    border-left: 1px solid var(--border-color);
+    transition: ${designSystem.effects.animations.transition};
+    gap: ${designSystem.spacing.xl};
+    border-left: 1px solid ${designSystem.colors.border.primary};
   }
 `;
 
@@ -110,13 +112,13 @@ const NavLinks = styled.a`
 
 const StyledLink = styled(Link)`
   text-decoration: none;
-  color: var(--text-secondary);
+  color: ${designSystem.colors.text.secondary};
   cursor: pointer;
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-md);
+  font-weight: 500;
+  font-size: ${designSystem.typography.scale.body.fontSize};
   position: relative;
   padding: 5px 0;
-  transition: color var(--transition-normal);
+  transition: ${designSystem.effects.animations.transition};
 
   &:after {
     content: "";
@@ -125,13 +127,13 @@ const StyledLink = styled(Link)`
     height: 2px;
     bottom: -2px;
     left: 0;
-    background: var(--text-primary);
-    transition: width var(--transition-normal);
+    background: ${designSystem.colors.primary.gold};
+    transition: ${designSystem.effects.animations.transition};
     border-radius: 2px;
   }
 
   &:hover {
-    color: var(--text-primary);
+    color: ${designSystem.colors.text.primary};
     &:after {
       width: 100%;
     }
@@ -139,24 +141,24 @@ const StyledLink = styled(Link)`
 `;
 
 const NavButton = styled(Link)`
-  ${commonStyles.button}
-  margin-left: 20px;
+  margin-left: ${designSystem.spacing.lg};
   text-decoration: none;
   display: inline-block;
   text-align: center;
-  font-size: 0.95rem;
-  background: #f8f8f8;
-  color: black;
-  border-radius: 8px;
-  padding: 12px 20px;
-  font-weight: 600;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  font-size: ${designSystem.typography.scale.button.fontSize};
+  background: linear-gradient(135deg, #fbb604, #f99b04, #d39404);
+  color: ${designSystem.colors.neutral.black};
+  border-radius: 12px;
+  padding: ${designSystem.spacing.md} ${designSystem.spacing.lg};
+  font-weight: ${designSystem.typography.scale.button.fontWeight};
+  letter-spacing: ${designSystem.typography.scale.button.letterSpacing};
+  box-shadow: ${designSystem.effects.shadows.glow};
   position: relative;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: ${designSystem.effects.animations.transitionSmooth};
   
   /* Pulsing animation */
-  animation: pulse 2s infinite ease-in-out;
+  animation: pulseGold 2s infinite ease-in-out;
   
   &:before {
     content: '';
@@ -165,16 +167,15 @@ const NavButton = styled(Link)`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     transform: translateX(-100%);
     transition: transform 0.6s ease;
   }
   
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    color: #f0f0f0;
-    background: #1a1a1a;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: ${designSystem.effects.shadows.glowHover};
+    filter: brightness(1.1);
     
     &:before {
       transform: translateX(100%);
@@ -185,19 +186,19 @@ const NavButton = styled(Link)`
     transform: translateY(1px) scale(0.98);
   }
   
-  @keyframes pulse {
+  @keyframes pulseGold {
     0% {
-      box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
+      box-shadow: ${designSystem.effects.shadows.glow};
     }
     50% {
-      box-shadow: 0 0 18px rgba(248, 248, 248, 0.4), 0 0 10px rgba(248, 248, 248, 0.3);
+      box-shadow: ${designSystem.effects.shadows.glowHover};
     }
     100% {
-      box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
+      box-shadow: ${designSystem.effects.shadows.glow};
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${designSystem.breakpoints.tablet}) {
     margin-left: 0;
   }
 `;
@@ -206,19 +207,19 @@ const MenuButton = styled.button`
   display: none;
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: ${designSystem.colors.text.secondary};
   font-size: 1.8rem;
   cursor: pointer;
   z-index: 1001;
   padding: 0;
   margin: 0;
-  transition: color var(--transition-normal);
+  transition: ${designSystem.effects.animations.transition};
 
   &:hover {
-    color: var(--text-primary);
+    color: ${designSystem.colors.text.primary};
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${designSystem.breakpoints.tablet}) {
     display: block;
   }
 `;

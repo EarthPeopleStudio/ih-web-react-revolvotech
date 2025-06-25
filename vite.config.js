@@ -10,10 +10,10 @@ export default defineConfig({
       name: 'configure-csp',
       configureServer(server) {
         server.middlewares.use((req, res, next) => {
-          // Add CSP headers to allow Web3Forms API
+          // Add CSP headers
           res.setHeader(
             'Content-Security-Policy',
-            "default-src 'self'; connect-src 'self' https://api.web3forms.com https://*.web3forms.com; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https:; frame-src 'self' https://calendly.com;"
+            "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.googletagmanager.com; connect-src 'self' https://api.web3forms.com https://*.web3forms.com https://www.google-analytics.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://calendly.com;"
           );
           next();
         });
@@ -24,7 +24,7 @@ export default defineConfig({
   server: {
     headers: {
       "Content-Security-Policy":
-        "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' https://assets.calendly.com; frame-src 'self' https://calendly.com;",
+        "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.googletagmanager.com; connect-src 'self' https://api.web3forms.com https://*.web3forms.com https://www.google-analytics.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src 'self' https://calendly.com;"
     },
   },
   build: {

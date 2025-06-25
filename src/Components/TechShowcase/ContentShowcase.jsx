@@ -2,22 +2,186 @@ import React, { useState, useEffect } from 'react';
 import { AiOutlineAudit, AiOutlineFileSearch, AiOutlineTag, AiOutlineRise, AiOutlineBarChart, AiOutlineLineChart, AiOutlineCheck } from 'react-icons/ai';
 import { MdTrendingUp, MdContentCopy } from 'react-icons/md';
 import { BsLightbulb, BsGraphUp } from 'react-icons/bs';
+import styled from 'styled-components';
 
-// Import styled components
-import {
-  CodeShowcaseGrid,
-  CodeShowcaseItem,
-  CodeShowcaseHeader,
-  CodeShowcaseTitle,
-  CodeShowcaseDescription,
-  CodeDemoContainer,
-  CodeSnippetContainer,
-  CodeHeader,
-  CodeFileName,
-  CodeLanguage,
-  DemoContainer,
-  PreBlock
-} from '../StyledComponents';
+// Import styled components with updated colors
+const CodeShowcaseGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  margin-bottom: 60px;
+`;
+
+const CodeShowcaseItem = styled.div`
+  background: rgba(18, 18, 18, 0.95);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(255, 235, 59, 0.1);
+    border: 1px solid rgba(255, 235, 59, 0.4);
+  }
+`;
+
+const CodeShowcaseHeader = styled.div`
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.05), rgba(251, 182, 4, 0.03));
+`;
+
+const CodeShowcaseTitle = styled.h3`
+  margin: 0;
+  font-size: 1.5rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  
+  svg {
+    margin-right: 10px;
+    color: #FFEB3B;
+  }
+`;
+
+const CodeShowcaseDescription = styled.p`
+  padding: 16px 28px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(255, 235, 59, 0.1);
+  margin: 0;
+`;
+
+const CodeDemoContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px 28px 28px;
+  
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CodeSnippetContainer = styled.div`
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(25, 25, 25, 0.8);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border: 1px solid rgba(255, 235, 59, 0.4);
+    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  }
+`;
+
+const CodeHeader = styled.div`
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.08), rgba(251, 182, 4, 0.05));
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #e0e0e0;
+  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+`;
+
+const CodeFileName = styled.span`
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #FFEB3B;
+`;
+
+const CodeLanguage = styled.span`
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.2), rgba(251, 182, 4, 0.15));
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: #FFEB3B;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(255, 235, 59, 0.3);
+`;
+
+const DemoContainer = styled.div`
+  background: rgba(25, 25, 25, 0.8);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border: 1px solid rgba(255, 235, 59, 0.4);
+    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  }
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, #FFEB3B, #00d4ff);
+    z-index: 2;
+  }
+`;
+
+const PreBlock = styled.pre`
+  margin: 0;
+  padding: 18px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-height: 350px;
+  color: #ffffff;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+  
+  /* Set all code to white */
+  .keyword, .string, .comment, .function, .variable, .operator, .number {
+    color: #ffffff;
+  }
+`;
 
 // Main ContentShowcase Component
 const ContentShowcase = () => {
@@ -601,8 +765,8 @@ const SEOAnalyzerDemo = () => {
             padding: '10px 16px',
             background: isAnalyzing 
               ? 'rgba(80, 80, 120, 0.5)' 
-              : 'linear-gradient(135deg, #ff5470, #ff66c4)',
-            color: '#fff',
+              : 'linear-gradient(135deg, #FFEB3B, #fbb604)',
+            color: isAnalyzing ? '#fff' : '#000',
             border: 'none',
             borderRadius: '6px',
             fontWeight: '600',
@@ -739,7 +903,7 @@ const SEOAnalyzerDemo = () => {
             <div style={{
               fontSize: '0.9rem',
               fontWeight: '600',
-              color: '#ff66c4',
+              color: '#FFEB3B',
               marginBottom: '10px',
               display: 'flex',
               alignItems: 'center',
@@ -1251,14 +1415,14 @@ const HeadlineGeneratorDemo = () => {
                 style={{
                   padding: '4px 8px',
                   background: 'rgba(255, 255, 255, 0.08)',
-                  border: '1px solid rgba(255, 84, 112, 0.3)',
+                  border: '1px solid rgba(255, 235, 59, 0.3)',
                   borderRadius: '4px',
                   color: 'rgba(255, 255, 255, 0.9)',
                   fontSize: '0.75rem',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease'
                 }}
-                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 84, 112, 0.2)'}
+                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 235, 59, 0.2)'}
                 onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'}
               >
                 {sample.topic}
@@ -1279,18 +1443,18 @@ const HeadlineGeneratorDemo = () => {
               style={{
                 padding: '8px 12px',
                 background: category === cat 
-                  ? 'linear-gradient(135deg, #ff5470, #ff66c4)' 
+                  ? 'linear-gradient(135deg, #FFEB3B, #fbb604)' 
                   : 'rgba(255, 255, 255, 0.08)',
                 border: 'none',
                 borderRadius: '6px',
-                color: '#fff',
+                color: category === cat ? '#000' : '#fff',
                 fontSize: '0.85rem',
                 fontWeight: category === cat ? '600' : '400',
                 cursor: 'pointer',
                 flex: 1,
                 textTransform: 'capitalize',
                 transition: 'all 0.2s ease',
-                boxShadow: category === cat ? '0 2px 10px rgba(255, 84, 112, 0.2)' : 'none'
+                boxShadow: category === cat ? '0 2px 10px rgba(255, 235, 59, 0.2)' : 'none'
               }}
             >
               {cat}
@@ -1359,8 +1523,8 @@ const HeadlineGeneratorDemo = () => {
             padding: '12px 16px',
             background: isGenerating || !topic || !subject || !action
               ? 'rgba(80, 80, 120, 0.5)'
-              : 'linear-gradient(135deg, #ff5470, #ff66c4)',
-            color: '#fff',
+              : 'linear-gradient(135deg, #FFEB3B, #fbb604)',
+            color: isGenerating || !topic || !subject || !action ? '#fff' : '#000',
             border: 'none',
             borderRadius: '6px',
             fontWeight: '600',
@@ -1370,7 +1534,7 @@ const HeadlineGeneratorDemo = () => {
             justifyContent: 'center',
             gap: '8px',
             transition: 'all 0.2s ease',
-            boxShadow: isGenerating || !topic || !subject || !action ? 'none' : '0 2px 10px rgba(255, 84, 112, 0.2)'
+            boxShadow: isGenerating || !topic || !subject || !action ? 'none' : '0 2px 10px rgba(255, 235, 59, 0.2)'
           }}
         >
           {isGenerating ? (
@@ -1460,16 +1624,16 @@ const HeadlineGeneratorDemo = () => {
                     alignItems: 'center',
                     gap: '4px'
                   }}>
-                    <BsGraphUp size={12} color="#ff66c4" />
-                    Engagement Score: <span style={{ fontWeight: '600', color: '#ff66c4' }}>{headline.score}</span>
+                    <BsGraphUp size={12} color="#FFEB3B" />
+                    Engagement Score: <span style={{ fontWeight: '600', color: '#FFEB3B' }}>{headline.score}</span>
                   </div>
                   
                   <div style={{
                     borderRadius: '20px',
                     padding: '2px 8px',
-                    background: 'rgba(255, 102, 196, 0.1)',
+                    background: 'rgba(255, 235, 59, 0.1)',
                     fontSize: '0.7rem',
-                    color: '#ff66c4',
+                    color: '#FFEB3B',
                     fontWeight: '600',
                     textTransform: 'capitalize'
                   }}>
@@ -1482,8 +1646,8 @@ const HeadlineGeneratorDemo = () => {
                 onClick={() => copyHeadline(index)}
                 style={{
                   background: 'transparent',
-                  border: copiedIndex === index ? 'none' : '1px solid rgba(255, 84, 112, 0.3)',
-                  color: copiedIndex === index ? '#4caf50' : '#ff5470',
+                  border: copiedIndex === index ? 'none' : '1px solid rgba(255, 235, 59, 0.3)',
+                  color: copiedIndex === index ? '#4caf50' : '#FFEB3B',
                   padding: '8px',
                   borderRadius: '4px',
                   cursor: 'pointer',
@@ -1494,7 +1658,7 @@ const HeadlineGeneratorDemo = () => {
                 }}
                 onMouseOver={(e) => {
                   if (copiedIndex !== index) {
-                    e.currentTarget.style.background = 'rgba(255, 84, 112, 0.1)';
+                    e.currentTarget.style.background = 'rgba(255, 235, 59, 0.1)';
                   }
                 }}
                 onMouseOut={(e) => {

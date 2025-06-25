@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { FaCheck, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const PricingWrapper = styled.div`
   padding: 120px 8% 80px;
   color: var(--text-primary);
   min-height: 100vh;
   position: relative;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   
   @media (max-width: 768px) {
@@ -20,26 +21,50 @@ const PricingWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   font-weight: 800;
   margin-bottom: 30px;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-align: center;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
 
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 `;
 
 const Subtitle = styled.p`
   color: var(--text-secondary);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 1.8;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
   max-width: 800px;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+  }
 `;
 
 const HoursExplanation = styled.div`
@@ -99,33 +124,37 @@ const AdvantageText = styled.p`
 
 const PricingGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 50px;
-  margin-bottom: 100px;
-  margin-top: 40px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-bottom: 80px;
+  position: relative;
+  z-index: 1;
 
-  @media (max-width: 900px) {
-    grid-template-columns: 1fr;
-    gap: 70px;
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
   }
 `;
 
 const PricingCard = styled.div`
-  background: var(--card-bg);
-  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(25, 25, 25, 0.95), rgba(35, 35, 35, 0.95));
+  border-radius: 24px;
   padding: 40px;
   display: flex;
   flex-direction: column;
   position: relative;
-  border: 1px solid rgba(248, 248, 248, 0.3);
-  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   overflow: hidden;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), 0 0 30px rgba(248, 248, 248, 0.1);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
   
   ${props => props.featured && `
+    background: linear-gradient(145deg, rgba(30, 30, 30, 0.98), rgba(40, 40, 40, 0.98));
     transform: scale(1.05);
-    border: 2px solid #f8f8f8;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(248, 248, 248, 0.2);
+    border: 2px solid #fbb604;
+    box-shadow: 
+      0 20px 60px rgba(251, 182, 4, 0.15),
+      0 0 0 1px rgba(251, 182, 4, 0.1);
     z-index: 2;
     
     &:before {
@@ -135,14 +164,14 @@ const PricingCard = styled.div`
       left: 0;
       right: 0;
       height: 6px;
-      background: #f8f8f8;
+      background: linear-gradient(135deg, #fbb604, #f99b04);
     }
   `}
   
   &:hover {
     transform: ${props => props.featured ? 'translateY(-10px) scale(1.05)' : 'translateY(-10px)'};
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(248, 248, 248, ${props => props.featured ? '0.2' : '0.1'});
-    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 25px 60px rgba(251, 182, 4, 0.2);
+    border-color: rgba(251, 182, 4, 0.5);
   }
   
   &:before {
@@ -153,9 +182,9 @@ const PricingCard = styled.div`
     bottom: 0;
     left: 0;
     z-index: -1;
-    background: radial-gradient(circle at top right, rgba(248, 248, 248, 0.1), transparent 70%);
+    background: linear-gradient(135deg, rgba(251, 182, 4, 0.05), transparent);
     opacity: 0;
-    transition: opacity 0.6s ease-in-out;
+    transition: opacity 0.4s ease;
   }
   
   &:hover:before {
@@ -164,10 +193,10 @@ const PricingCard = styled.div`
 `;
 
 const PlanName = styled.h2`
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 700;
   margin-bottom: 16px;
-  color: var(--text-primary);
+  color: #fbb604;
   position: relative;
   display: inline-block;
   
@@ -178,23 +207,23 @@ const PlanName = styled.h2`
     left: 0;
     width: 40px;
     height: 3px;
-    background: #f8f8f8;
+    background: linear-gradient(135deg, #fbb604, #f99b04);
     border-radius: 2px;
   }
 `;
 
 const FeatureBadge = styled.span`
   position: absolute;
-  top: -10px;
-  right: -25px;
-  background: #f8f8f8;
-  color: black;
-  font-size: 0.75rem;
-  padding: 6px 14px;
+  top: -12px;
+  right: -30px;
+  background: linear-gradient(135deg, #fbb604, #f99b04);
+  color: #000;
+  font-size: 0.8rem;
+  padding: 8px 16px;
   border-radius: 20px;
   font-weight: 700;
   transform: rotate(12deg);
-  box-shadow: 0 5px 15px rgba(248, 248, 248, 0.4);
+  box-shadow: 0 5px 15px rgba(251, 182, 4, 0.4);
   letter-spacing: 0.5px;
   text-transform: uppercase;
   
@@ -215,39 +244,61 @@ const FeatureBadge = styled.span`
 
 const PlanDescription = styled.p`
   color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.5;
-  margin-bottom: 25px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
   flex-grow: 0;
+  opacity: 0.9;
 `;
 
 const PriceContainer = styled.div`
-  margin-bottom: 25px;
+  margin-bottom: 30px;
   margin-top: 0;
+  text-align: left;
+`;
+
+const StrikethroughPrice = styled.div`
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  text-decoration: line-through;
+  opacity: 0.7;
+  margin-bottom: 5px;
 `;
 
 const Price = styled.div`
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 0;
-  line-height: 1.1;
+  margin-bottom: 5px;
+  line-height: 1;
+  
+  sup {
+    font-size: 1rem;
+    top: -1.5em;
+    margin-left: 2px;
+  }
 `;
 
 const PriceDescription = styled.p`
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin-bottom: 2px;
   margin-top: 2px;
+  opacity: 0.9;
 `;
 
 const CustomPrice = styled.div`
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 0;
-  line-height: 1.1;
-  margin-top: 0;
+  margin-bottom: 5px;
+  line-height: 1;
+  
+  sup {
+    font-size: 1rem;
+    top: -1.5em;
+    margin-left: 2px;
+  }
 `;
 
 const FeatureList = styled.ul`
@@ -258,77 +309,84 @@ const FeatureList = styled.ul`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  gap: 12px;
 `;
 
 const FeatureItem = styled.li`
   color: var(--text-secondary);
   padding: 8px 0;
-  font-size: 0.95rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 1rem;
   display: flex;
   align-items: center;
+  gap: 12px;
+  line-height: 1.5;
 
-  &:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-  }
-  
-  &:first-child {
-    padding-top: 0;
-  }
-
-  &:before {
-    content: "✓";
-    color: #f8f8f8;
-    margin-right: 12px;
-    font-weight: bold;
-    min-width: 20px;
-    display: inline-flex;
-    justify-content: center;
-    font-size: 0.8rem;
-    text-shadow: 0 0 6px rgba(248, 248, 248, 0.6);
+  svg {
+    color: #fbb604;
+    font-size: 1.1rem;
+    flex-shrink: 0;
   }
 `;
 
 const CrossedFeatureItem = styled(FeatureItem)`
-  &:before {
-    content: "✕";
-    color: #f8f8f8;
-    text-shadow: 0 0 6px rgba(248, 248, 248, 0.6);
+  opacity: 0.6;
+  text-decoration: line-through;
+  
+  svg {
+    color: var(--text-secondary);
   }
 `;
 
 const SelectButton = styled(Link)`
-  background: #f8f8f8;
-  color: black;
+  background: linear-gradient(135deg, #fbb604, #f99b04, #d39404);
+  color: #000;
   border: none;
-  border-radius: 8px;
-  padding: 15px 30px;
+  border-radius: 16px;
+  padding: 18px 32px;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   text-decoration: none;
   display: inline-block;
   text-align: center;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 25px rgba(251, 182, 4, 0.3), 0 0 20px rgba(251, 182, 4, 0.1);
+  position: relative;
+  overflow: hidden;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 35px rgba(251, 182, 4, 0.4), 0 0 30px rgba(251, 182, 4, 0.2);
+    filter: brightness(1.1);
+    
+    &:before {
+      left: 100%;
+    }
   }
 `;
 
 const CustomTierWrapper = styled.div`
-  background: var(--dark-card-bg);
-  border: 1px solid rgba(248, 248, 248, 0.2);
+  background: rgba(25, 25, 25, 0.6);
+  border: 1px solid rgba(251, 182, 4, 0.2);
   border-radius: 20px;
   padding: 0;
   margin-top: 80px;
   position: relative;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(248, 248, 248, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
   
   &:before {
     content: "";
@@ -337,9 +395,9 @@ const CustomTierWrapper = styled.div`
     left: 0;
     right: 0;
     height: 6px;
-    background: #f8f8f8;
+    background: linear-gradient(135deg, #fbb604, #f99b04);
     border-radius: 0 0 4px 4px;
-    box-shadow: 0 0 15px rgba(248, 248, 248, 0.5);
+    box-shadow: 0 0 15px rgba(251, 182, 4, 0.5);
     z-index: 3;
   }
   
@@ -379,8 +437,8 @@ const CustomTierTitle = styled.h2`
   
   &:hover {
     .icon-container {
-      box-shadow: 0 0 15px rgba(248, 248, 248, 0.4);
-      background: rgba(248, 248, 248, 0.1);
+      box-shadow: 0 0 15px rgba(251, 182, 4, 0.4);
+      background: rgba(251, 182, 4, 0.1);
     }
   }
   
@@ -392,7 +450,7 @@ const CustomTierTitle = styled.h2`
     height: 30px;
     margin-right: 15px;
     background: transparent;
-    border: 2px solid #f8f8f8;
+    border: 2px solid #fbb604;
     border-radius: 50%;
     position: relative;
     transition: all 0.3s ease;
@@ -402,7 +460,7 @@ const CustomTierTitle = styled.h2`
     position: relative;
     width: 14px;
     height: 2px;
-    background: #f8f8f8;
+    background: #fbb604;
     transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
     
     &:before {
@@ -410,7 +468,7 @@ const CustomTierTitle = styled.h2`
       position: absolute;
       width: 14px;
       height: 2px;
-      background: #f8f8f8;
+      background: #fbb604;
       transform: ${props => props.isOpen ? 'rotate(0deg)' : 'rotate(90deg)'};
       transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     }
@@ -463,7 +521,7 @@ const ResourceTitle = styled.h3`
   font-size: 1.2rem;
   margin-bottom: 15px;
   color: var(--text-primary);
-  border-left: 3px solid #f8f8f8;
+  border-left: 3px solid #fbb604;
   padding-left: 10px;
 `;
 
@@ -565,22 +623,40 @@ const TotalPrice = styled.p`
 `;
 
 const ContactButton = styled(Link)`
-  background: #f8f8f8;
-  color: black;
-  padding: 15px 30px;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #fbb604, #f99b04, #d39404);
+  color: #000;
+  padding: 16px 32px;
+  border-radius: 12px;
   font-weight: 600;
   font-size: 1.1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   display: inline-block;
   text-decoration: none;
   margin-top: 30px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 25px rgba(251, 182, 4, 0.3), 0 0 20px rgba(251, 182, 4, 0.1);
+  position: relative;
+  overflow: hidden;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 35px rgba(251, 182, 4, 0.4), 0 0 30px rgba(251, 182, 4, 0.2);
+    filter: brightness(1.1);
+    
+    &:before {
+      left: 100%;
+    }
   }
 `;
 
@@ -655,8 +731,8 @@ const DiscountText = styled.p`
 `;
 
 const CountdownContainer = styled.div`
-  background: linear-gradient(45deg, rgba(220, 220, 220, 0.08), rgba(240, 240, 240, 0.12));
-  border: 1px solid rgba(248, 248, 248, 0.2);
+  background: linear-gradient(45deg, rgba(251, 182, 4, 0.08), rgba(249, 155, 4, 0.12));
+  border: 1px solid rgba(251, 182, 4, 0.2);
   border-radius: 20px;
   padding: 35px;
   margin-bottom: 50px;
@@ -665,9 +741,10 @@ const CountdownContainer = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px rgba(248, 248, 248, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   transform: perspective(1000px) rotateX(2deg);
+  backdrop-filter: blur(10px);
   
   &:before {
     content: "";
@@ -676,9 +753,9 @@ const CountdownContainer = styled.div`
     left: 0;
     right: 0;
     height: 6px;
-    background: #f8f8f8;
+    background: linear-gradient(135deg, #fbb604, #f99b04);
     border-radius: 0 0 4px 4px;
-    box-shadow: 0 0 15px rgba(248, 248, 248, 0.5);
+    box-shadow: 0 0 15px rgba(251, 182, 4, 0.5);
   }
   
   &:after {
@@ -699,7 +776,7 @@ const CountdownContainer = styled.div`
 `;
 
 const CountdownHeader = styled.h3`
-  color: #f8f8f8;
+  color: #fbb604;
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 20px;
@@ -870,148 +947,245 @@ const BillingToggleContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 60px;
-  background: linear-gradient(to right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
-  border: 1px solid var(--border-color);
-  padding: 15px 25px;
-  border-radius: 16px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   position: relative;
-  width: 50%;
-  margin-left: auto;
-  margin-right: auto;
-  
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+  gap: 20px;
 `;
 
 const BillingOption = styled.span`
   font-size: 1.1rem;
-  color: ${props => props.active ? 'var(--text-primary)' : 'var(--text-secondary)'};
+  color: ${props => props.active ? '#fbb604' : 'var(--text-secondary)'};
   font-weight: ${props => props.active ? '600' : '400'};
-  min-width: 90px;
-  text-align: center;
   transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    color: ${props => !props.active && '#fbb604'};
+  }
 `;
 
-const ToggleSwitch = styled.button`
-  width: 55px;
-  height: 30px;
-  background: ${props => props.isOn ? 'rgba(248, 248, 248, 0.2)' : 'rgba(248, 248, 248, 0.1)'};
-  border-radius: 20px;
-  border: 1px solid rgba(248, 248, 248, 0.3);
-  margin: 0 12px;
-  cursor: pointer;
+const ToggleSwitch = styled.div`
+  width: 56px;
+  height: 28px;
+  background: ${props => props.isOn ? 'linear-gradient(135deg, #fbb604, #f99b04)' : 'rgba(255, 255, 255, 0.1)'};
+  border-radius: 14px;
   position: relative;
+  cursor: pointer;
   transition: all 0.3s ease;
   
   &:before {
-    content: "";
+    content: '';
     position: absolute;
-    left: ${props => props.isOn ? '27px' : '4px'};
-    top: 3px;
-    width: 22px;
-    height: 22px;
-    background: #f8f8f8;
+    width: 24px;
+    height: 24px;
+    background: white;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    top: 2px;
+    left: ${props => props.isOn ? '30px' : '2px'};
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
   
   &:hover {
-    background: ${props => props.isOn ? 'rgba(248, 248, 248, 0.25)' : 'rgba(248, 248, 248, 0.15)'};
+    &:before {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
   }
 `;
 
 const SaveBadge = styled.span`
   position: absolute;
-  top: -12px;
-  right: -12px;
-  background: #f8f8f8;
-  color: black;
-  font-size: 0.7rem;
-  padding: 4px 8px;
+  right: -80px;
+  background: linear-gradient(135deg, #fbb604, #f99b04);
+  color: #000;
+  padding: 4px 12px;
   border-radius: 12px;
-  font-weight: 700;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-`;
-
-const StrikethroughPrice = styled.span`
-  text-decoration: line-through;
-  color: var(--text-secondary);
-  opacity: 0.7;
-  margin-right: 10px;
-  font-size: 1.5rem;
-`;
-
-const Tooltip = styled.div`
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  cursor: help;
-  
-  &:hover .tooltip-content {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const TooltipIcon = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--text-secondary);
-  font-size: 10px;
-  margin-left: 8px;
-  font-weight: bold;
-`;
-
-const TooltipContent = styled.div`
-  visibility: hidden;
-  position: absolute;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  width: 250px;
-  background: #1e1e1e;
-  color: #f5f5f5;
-  padding: 12px 16px;
-  border-radius: 8px;
   font-size: 0.85rem;
-  line-height: 1.4;
-  z-index: 100;
-  opacity: 0;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+  animation: pulse 2s infinite;
   
-  @media (max-width: 768px) {
-    width: 220px;
-    left: auto;
-    right: 0;
-    transform: translateY(10px);
-  }
-  
-  &:after {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #1e1e1e transparent transparent transparent;
-    
-    @media (max-width: 768px) {
-      left: auto;
-      right: 20px;
-      margin-left: 0;
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
     }
   }
+`;
+
+const ComparisonSection = styled.div`
+  margin-top: 100px;
+  margin-bottom: 80px;
+`;
+
+const ComparisonTitle = styled.h2`
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #fbb604;
+`;
+
+const ComparisonTable = styled.div`
+  background: rgba(25, 25, 25, 0.6);
+  border-radius: 24px;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+`;
+
+const TableHeader = styled.div`
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  padding: 25px;
+  background: rgba(251, 182, 4, 0.1);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const TableHeaderCell = styled.div`
+  color: #fbb604;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  
+  &:first-child {
+    text-align: left;
+  }
+`;
+
+const TableRow = styled.div`
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  padding: 20px 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: center;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 15px;
+    text-align: center;
+    
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  }
+`;
+
+const FeatureCell = styled.div`
+  color: var(--text-secondary);
+  font-size: 1rem;
+  
+  @media (max-width: 768px) {
+    font-weight: 600;
+    color: #fbb604;
+    margin-bottom: 10px;
+  }
+`;
+
+const ValueCell = styled.div`
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  
+  svg {
+    color: ${props => props.included ? '#fbb604' : 'var(--text-secondary)'};
+    font-size: 1.2rem;
+  }
+  
+  @media (max-width: 768px) {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 10px;
+    
+    &:before {
+      content: attr(data-label);
+      display: block;
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: var(--text-secondary);
+    }
+  }
+`;
+
+const FAQSection = styled.div`
+  margin-top: 100px;
+  margin-bottom: 80px;
+`;
+
+const FAQTitle = styled.h2`
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #fbb604;
+`;
+
+const FAQGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const FAQItem = styled.div`
+  background: rgba(25, 25, 25, 0.6);
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+`;
+
+const FAQQuestion = styled.div`
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(251, 182, 4, 0.05);
+  }
+  
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    padding-right: 20px;
+  }
+  
+  svg {
+    color: #fbb604;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  }
+`;
+
+const FAQAnswer = styled.div`
+  padding: ${props => props.isOpen ? '0 25px 25px' : '0 25px'};
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-height: ${props => props.isOpen ? '500px' : '0'};
+  opacity: ${props => props.isOpen ? '1' : '0'};
+  transition: all 0.3s ease;
+  overflow: hidden;
 `;
 
 const resources = [
@@ -1046,6 +1220,7 @@ const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(false);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isCustomTeamOpen, setIsCustomTeamOpen] = useState(false);
+  const [openFAQ, setOpenFAQ] = useState(null);
   
   useEffect(() => {
     const calculateCountdown = () => {
@@ -1150,6 +1325,37 @@ const Pricing = () => {
     }
   }, []);
 
+  const faqs = [
+    {
+      question: "What's included in the working hours?",
+      answer: "Our standard working hours are 176 hours per month, based on 8 hours per day, 22 days per month. This includes development, meetings, planning, and any project-related activities."
+    },
+    {
+      question: "Can I upgrade or downgrade my plan?",
+      answer: "Yes, you can change your plan at any time. We'll prorate the charges and adjust your billing accordingly. Please note that downgrading might require adjusting the team composition."
+    },
+    {
+      question: "Do you offer custom team compositions?",
+      answer: "Absolutely! Our Tailored Enterprise plan allows you to build a custom team that perfectly matches your project needs. Contact us to discuss your specific requirements."
+    },
+    {
+      question: "What's your payment structure?",
+      answer: "We require a downpayment (25-30% depending on the plan) followed by monthly payments. All prices include 16% sales tax. Annual plans receive a 12% discount."
+    },
+    {
+      question: "How do project iterations work?",
+      answer: "Iterations vary by plan. Essential Launch has limited iterations, Growth Partnership includes up to 2 iterations per week, and Enterprise plans offer flexible iteration cycles based on your needs."
+    },
+    {
+      question: "What happens if I need more resources?",
+      answer: "You can easily scale your team up or down based on project demands. Contact your project manager to discuss resource adjustments, and we'll accommodate your needs quickly."
+    }
+  ];
+
+  const toggleFAQ = (index) => {
+    setOpenFAQ(openFAQ === index ? null : index);
+  };
+
   return (
     <PricingWrapper>
       <Title>Our Pricing</Title>
@@ -1189,9 +1395,9 @@ const Pricing = () => {
       </CountdownContainer>
       
       <BillingToggleContainer>
-        <BillingOption active={!isAnnual}>Monthly</BillingOption>
+        <BillingOption active={!isAnnual} onClick={() => setIsAnnual(false)}>Monthly</BillingOption>
         <ToggleSwitch isOn={isAnnual} onClick={() => setIsAnnual(!isAnnual)} />
-        <BillingOption active={isAnnual}>Annually</BillingOption>
+        <BillingOption active={isAnnual} onClick={() => setIsAnnual(true)}>Annually</BillingOption>
         {isAnnual && <SaveBadge>Save 12%</SaveBadge>}
       </BillingToggleContainer>
       
@@ -1213,16 +1419,16 @@ const Pricing = () => {
           </PriceContainer>
           
           <FeatureList>
-            <FeatureItem>Low-No Code Developer with 2-3 years experience</FeatureItem>
-            <FeatureItem>UI/UX Designer with 2-3 years experience</FeatureItem>
-            <FeatureItem>Technical Project Manager (part-time)</FeatureItem>
-            <CrossedFeatureItem>No iterations from initial requirements</CrossedFeatureItem>
-            <FeatureItem>Bi-weekly meetings (every 2 weeks)</FeatureItem>
-            <FeatureItem>Basic Q/A testing</FeatureItem>
-            <FeatureItem>Access to company Slack channel</FeatureItem>
-            <FeatureItem>176 working hours per month*</FeatureItem>
-            <FeatureItem>30% downpayment + 16% Sales Tax</FeatureItem>
-            <FeatureItem>24/7 online availability in your time zone</FeatureItem>
+            <FeatureItem><FaCheck />Low-No Code Developer with 2-3 years experience</FeatureItem>
+            <FeatureItem><FaCheck />UI/UX Designer with 2-3 years experience</FeatureItem>
+            <FeatureItem><FaCheck />Technical Project Manager (part-time)</FeatureItem>
+            <FeatureItem><FaCheck />Basic requirements gathering & planning</FeatureItem>
+            <FeatureItem><FaCheck />Bi-weekly progress meetings</FeatureItem>
+            <FeatureItem><FaCheck />Basic Q/A testing & bug fixes</FeatureItem>
+            <FeatureItem><FaCheck />Access to company Slack channel</FeatureItem>
+            <FeatureItem><FaCheck />176 working hours per month*</FeatureItem>
+            <FeatureItem><FaCheck />30% downpayment + 16% Sales Tax</FeatureItem>
+            <FeatureItem><FaCheck />24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
           <SelectButton to="/contact-us">Get Started</SelectButton>
@@ -1231,7 +1437,7 @@ const Pricing = () => {
         <PricingCard featured>
           <PlanName>
             Growth Partnership
-            <FeatureBadge>POPULAR</FeatureBadge>
+            <FeatureBadge>MOST POPULAR</FeatureBadge>
           </PlanName>
           <PlanDescription>
             Ideal for businesses ready to build high-quality, market-competitive products that scale.
@@ -1248,40 +1454,20 @@ const Pricing = () => {
           </PriceContainer>
           
           <FeatureList>
-            <FeatureItem>Expert Engineer with 5-7+ years experience</FeatureItem>
-            <FeatureItem>Expert UI/UX Engineer with 5-7+ years experience</FeatureItem>
-            <FeatureItem>Technical Project Manager (full-time)</FeatureItem>
-            <FeatureItem>Weekly scrum meetings with builds</FeatureItem>
-            <FeatureItem>Up to 2 iterations per week</FeatureItem>
-            <FeatureItem>Thorough Q/A Testing</FeatureItem>
-            <FeatureItem>Priority access to company Slack channel</FeatureItem>
-            <FeatureItem>Technical Product Manager with business insights</FeatureItem>
-            <FeatureItem>176 working hours per month*</FeatureItem>
-            <FeatureItem>25% downpayment + 16% Sales Tax</FeatureItem>
-            <FeatureItem>24/7 online availability in your time zone</FeatureItem>
+            <FeatureItem><FaCheck />Senior Engineer with 5-7+ years experience</FeatureItem>
+            <FeatureItem><FaCheck />Senior UI/UX Engineer with 5-7+ years experience</FeatureItem>
+            <FeatureItem><FaCheck />Technical Project Manager (full-time)</FeatureItem>
+            <FeatureItem><FaCheck />Weekly sprints with iterative builds</FeatureItem>
+            <FeatureItem><FaCheck />Up to 3 iterations per sprint</FeatureItem>
+            <FeatureItem><FaCheck />Comprehensive Q/A Testing & CI/CD</FeatureItem>
+            <FeatureItem><FaCheck />Priority Slack channel & support</FeatureItem>
+            <FeatureItem><FaCheck />Technical Product Manager with business insights</FeatureItem>
+            <FeatureItem><FaCheck />176 working hours per month*</FeatureItem>
+            <FeatureItem><FaCheck />25% downpayment + 16% Sales Tax</FeatureItem>
+            <FeatureItem><FaCheck />24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
-          <SelectButton 
-            to="/contact-us" 
-            style={{
-              background: '#f8f8f8',
-              color: 'black',
-              boxShadow: '0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2)',
-              position: 'relative',
-              overflow: 'hidden',
-              animation: 'pulse 2s infinite ease-in-out'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#f8f8f8';
-              e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
-              e.currentTarget.style.boxShadow = '0 0 25px rgba(248, 248, 248, 0.6), 0 0 15px rgba(248, 248, 248, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#f8f8f8';
-              e.currentTarget.style.transform = '';
-              e.currentTarget.style.boxShadow = '0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2)';
-            }}
-          >
+          <SelectButton to="/contact-us">
             Get Started
           </SelectButton>
         </PricingCard>
@@ -1299,17 +1485,17 @@ const Pricing = () => {
           </PriceContainer>
           
           <FeatureList>
-            <FeatureItem>Custom team composition</FeatureItem>
-            <FeatureItem>Mix of Proficient and Expert resources</FeatureItem>
-            <FeatureItem>Dedicated Technical Project Manager</FeatureItem>
-            <FeatureItem>Dedicated Technical Product Manager</FeatureItem>
-            <FeatureItem>Flexible iteration cycles</FeatureItem>
-            <FeatureItem>Comprehensive QA and testing</FeatureItem>
-            <FeatureItem>Dedicated Slack channel</FeatureItem>
-            <FeatureItem>176 working hours per month*</FeatureItem>
-            <FeatureItem>Priority support and consulting</FeatureItem>
-            <FeatureItem>25% downpayment + 16% Sales Tax</FeatureItem>
-            <FeatureItem>24/7 online availability in your time zone</FeatureItem>
+            <FeatureItem><FaCheck />Custom team composition & size</FeatureItem>
+            <FeatureItem><FaCheck />Mix of Senior and Lead Engineers</FeatureItem>
+            <FeatureItem><FaCheck />Dedicated Technical Project Manager</FeatureItem>
+            <FeatureItem><FaCheck />Dedicated Technical Product Manager</FeatureItem>
+            <FeatureItem><FaCheck />Flexible sprint cycles & iterations</FeatureItem>
+            <FeatureItem><FaCheck />Enterprise-grade QA & security testing</FeatureItem>
+            <FeatureItem><FaCheck />Dedicated Slack workspace</FeatureItem>
+            <FeatureItem><FaCheck />176 working hours per month*</FeatureItem>
+            <FeatureItem><FaCheck />Priority support & strategic consulting</FeatureItem>
+            <FeatureItem><FaCheck />25% downpayment + 16% Sales Tax</FeatureItem>
+            <FeatureItem><FaCheck />24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
           <SelectButton to="/contact-us">Contact Us</SelectButton>
@@ -1391,7 +1577,9 @@ const Pricing = () => {
             <TotalPrice>${calculateTotal().toLocaleString()}</TotalPrice>
           </TotalContainer>
           
-          <ContactButton to="/contact-us">Contact Us for Details</ContactButton>
+          <div style={{ textAlign: 'center' }}>
+            <ContactButton to="/contact-us">Contact Us for Details</ContactButton>
+          </div>
         </CustomTierContent>
       </CustomTierWrapper>
       
@@ -1431,18 +1619,97 @@ const Pricing = () => {
         <InfoBlock>
           <InfoTitle>Important Notes</InfoTitle>
           <FeatureList>
-            <FeatureItem>A 25-30% downpayment is required before project initiation for both monthly and annual payment plans</FeatureItem>
+            <FeatureItem>A 25-30% downpayment is required before project initiation</FeatureItem>
             <FeatureItem>All prices are subject to 16% Sales Tax</FeatureItem>
-            <FeatureItem>Additional hours beyond the monthly calculation will be billed at 2× the standard hourly rate</FeatureItem>
-            <FeatureItem>Our rates will increase by 10-15% starting January 1, 2026</FeatureItem>
-            <FeatureItem>Annual packages purchased before January 1, 2026 12:00 AM PST will remain valid for a full year from purchase date</FeatureItem>
-            <FeatureItem>We can utilize existing assets (templates, code libraries, etc.) where appropriate to save time and costs, subject to consultation</FeatureItem>
-            <FeatureItem>Custom quotes available for specialized technology stacks or industry-specific requirements</FeatureItem>
-            <FeatureItem>All prices are in USD and exclude any third-party service costs</FeatureItem>
-            <FeatureItem>All packages include 24/7 availability within your time zone</FeatureItem>
+            <FeatureItem>Additional hours beyond 176/month are billed at 2× the standard rate</FeatureItem>
+            <FeatureItem>10-15% rate increase effective January 1, 2026</FeatureItem>
+            <FeatureItem>Annual plans purchased before Jan 1, 2026 are price-locked for 12 months</FeatureItem>
+            <FeatureItem>We leverage existing assets to optimize costs where appropriate</FeatureItem>
+            <FeatureItem>Custom quotes available for specialized tech stacks</FeatureItem>
+            <FeatureItem>Prices in USD, excluding third-party service costs</FeatureItem>
+            <FeatureItem>All packages include 24/7 availability in your timezone</FeatureItem>
+            <FeatureItem>Flexible payment terms available for long-term contracts</FeatureItem>
           </FeatureList>
         </InfoBlock>
       </InfoSection>
+
+      <ComparisonSection>
+        <ComparisonTitle>Plan Comparison</ComparisonTitle>
+        <ComparisonTable>
+          <TableHeader>
+            <TableHeaderCell>Feature</TableHeaderCell>
+            <TableHeaderCell>Essential Launch</TableHeaderCell>
+            <TableHeaderCell>Growth Partnership</TableHeaderCell>
+            <TableHeaderCell>Tailored Enterprise</TableHeaderCell>
+          </TableHeader>
+          
+          <TableRow>
+            <FeatureCell>Team Experience Level</FeatureCell>
+            <ValueCell data-label="Essential Launch">2-3 years</ValueCell>
+            <ValueCell data-label="Growth Partnership">5-7+ years</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Custom Mix</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Project Management</FeatureCell>
+            <ValueCell data-label="Essential Launch">Part-time</ValueCell>
+            <ValueCell data-label="Growth Partnership">Full-time</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Dedicated</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Meeting Frequency</FeatureCell>
+            <ValueCell data-label="Essential Launch">Bi-weekly</ValueCell>
+            <ValueCell data-label="Growth Partnership">Weekly</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Custom</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Iterations</FeatureCell>
+            <ValueCell data-label="Essential Launch">Limited</ValueCell>
+            <ValueCell data-label="Growth Partnership">2 per week</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Flexible</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>QA Testing</FeatureCell>
+            <ValueCell data-label="Essential Launch">Basic</ValueCell>
+            <ValueCell data-label="Growth Partnership">Thorough</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Comprehensive</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Support Level</FeatureCell>
+            <ValueCell data-label="Essential Launch">Standard</ValueCell>
+            <ValueCell data-label="Growth Partnership">Priority</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Dedicated</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Downpayment</FeatureCell>
+            <ValueCell data-label="Essential Launch">30%</ValueCell>
+            <ValueCell data-label="Growth Partnership">25%</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">25%</ValueCell>
+          </TableRow>
+        </ComparisonTable>
+      </ComparisonSection>
+
+      <FAQSection>
+        <FAQTitle>Frequently Asked Questions</FAQTitle>
+        <FAQGrid>
+          {faqs.map((faq, index) => (
+            <FAQItem key={index}>
+              <FAQQuestion isOpen={openFAQ === index} onClick={() => toggleFAQ(index)}>
+                <h3>{faq.question}</h3>
+                {openFAQ === index ? <FaChevronUp /> : <FaChevronDown />}
+              </FAQQuestion>
+              <FAQAnswer isOpen={openFAQ === index}>
+                {faq.answer}
+              </FAQAnswer>
+            </FAQItem>
+          ))}
+        </FAQGrid>
+      </FAQSection>
     </PricingWrapper>
   );
 };

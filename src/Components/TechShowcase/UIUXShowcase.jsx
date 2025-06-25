@@ -3,6 +3,7 @@ import Lottie from "lottie-react";
 import dogAnimation from "../../assets/animations/dog.json";
 import cupAnimation from "../../assets/animations/cup.json";
 import { AiOutlineCode } from 'react-icons/ai';
+import styled from 'styled-components';
 
 // Import styled components
 import {
@@ -20,6 +21,8 @@ import {
   PreBlock,
   RainbowCode
 } from '../StyledComponents';
+
+
 
 // CSS Animation Demo Component
 const CSSAnimationDemo = () => {
@@ -43,8 +46,8 @@ const CSSAnimationDemo = () => {
   
   const buttonStyle = {
     padding: '14px 28px',
-    background: isAnimating ? (currentAnimation === 'neon' ? '#121212' : '#E83B6C') : '#ff5470',
-    color: 'white',
+    background: isAnimating ? (currentAnimation === 'neon' ? '#121212' : '#fbb604') : '#FFEB3B',
+    color: isAnimating ? 'white' : '#000',
     border: 'none',
     borderRadius: '8px',
     fontWeight: '700',
@@ -55,11 +58,11 @@ const CSSAnimationDemo = () => {
     transition: 'all 0.3s ease',
     transform: isAnimating && currentAnimation !== 'bounce' && currentAnimation !== 'float' && currentAnimation !== 'shake' && currentAnimation !== 'glitch' ? 'translateY(-3px)' : 'translateY(0)',
     boxShadow: isAnimating && currentAnimation !== 'neon' 
-      ? '0 8px 20px rgba(255, 84, 112, 0.4)' 
-      : '0 4px 10px rgba(255, 84, 112, 0.2)',
+      ? '0 8px 20px rgba(255, 235, 59, 0.4)' 
+      : '0 4px 10px rgba(255, 235, 59, 0.2)',
     animation: getAnimation(),
     textShadow: isAnimating && (currentAnimation === 'glitch' || currentAnimation === 'neon') 
-      ? (currentAnimation === 'glitch' ? '-2px 0 #00fffc, 2px 2px #fc00ff' : 'none')
+      ? (currentAnimation === 'glitch' ? '-2px 0 #00d4ff, 2px 2px #FFEB3B' : 'none')
       : 'none'
   };
   
@@ -73,9 +76,9 @@ const CSSAnimationDemo = () => {
   
   const animSelectBtnStyle = (active) => ({
     padding: '10px 14px',
-    background: active ? 'rgba(255, 84, 112, 0.2)' : 'rgba(30, 30, 30, 0.5)',
-    color: active ? '#ff5470' : 'rgba(255, 255, 255, 0.7)',
-    border: `1px solid ${active ? '#ff5470' : 'rgba(255, 255, 255, 0.1)'}`,
+    background: active ? 'rgba(255, 235, 59, 0.2)' : 'rgba(30, 30, 30, 0.5)',
+    color: active ? '#FFEB3B' : 'rgba(255, 255, 255, 0.7)',
+    border: `1px solid ${active ? '#FFEB3B' : 'rgba(255, 255, 255, 0.1)'}`,
     borderRadius: '6px',
     fontSize: '0.9rem',
     fontWeight: active ? '600' : '400',
@@ -89,15 +92,15 @@ const CSSAnimationDemo = () => {
           @keyframes pulse {
             0% {
               transform: scale(1);
-              box-shadow: 0 0 0 0 rgba(255, 84, 112, 0.6);
+              box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.6);
             }
             70% {
               transform: scale(1.08);
-              box-shadow: 0 0 0 15px rgba(255, 84, 112, 0);
+              box-shadow: 0 0 0 15px rgba(255, 235, 59, 0);
             }
             100% {
               transform: scale(1);
-              box-shadow: 0 0 0 0 rgba(255, 84, 112, 0);
+              box-shadow: 0 0 0 0 rgba(255, 235, 59, 0);
             }
           }
           
@@ -146,12 +149,12 @@ const CSSAnimationDemo = () => {
           
           @keyframes neon {
             0%, 100% {
-              text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff5470, 0 0 20px #ff5470, 0 0 25px #ff5470;
-              box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff5470, 0 0 20px #ff5470;
+              text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #FFEB3B, 0 0 20px #FFEB3B, 0 0 25px #FFEB3B;
+              box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #FFEB3B, 0 0 20px #FFEB3B;
             }
             50% {
-              text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 7px #ff5470, 0 0 10px #ff5470, 0 0 12px #ff5470;
-              box-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 7px #ff5470, 0 0 10px #ff5470;
+              text-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 7px #FFEB3B, 0 0 10px #FFEB3B, 0 0 12px #FFEB3B;
+              box-shadow: 0 0 2px #fff, 0 0 5px #fff, 0 0 7px #FFEB3B, 0 0 10px #FFEB3B;
             }
           }
           
@@ -210,8 +213,8 @@ const LottieAnimationDemo = () => {
   
   const buttonStyle = {
     padding: '10px 20px',
-    background: '#ff5470',
-    color: 'white',
+    background: 'linear-gradient(135deg, #FFEB3B, #fbb604)',
+    color: '#000',
     border: 'none',
     borderRadius: '6px',
     fontWeight: '600',
@@ -269,7 +272,7 @@ const LottieAnimationDemo = () => {
               position: 'absolute',
               width: '110%',
               height: '110%',
-              background: 'radial-gradient(circle, rgba(152, 175, 244, 0.35) 0%, rgba(152, 175, 244, 0.15) 50%, rgba(152, 175, 244, 0) 65%)',
+              background: 'radial-gradient(circle, rgba(0, 212, 255, 0.35) 0%, rgba(0, 212, 255, 0.15) 50%, rgba(0, 212, 255, 0) 65%)',
               borderRadius: '50%',
               filter: 'blur(8px)',
               zIndex: -1,
@@ -319,7 +322,7 @@ const LottieAnimationDemo = () => {
               position: 'absolute',
               width: '110%',
               height: '110%',
-              background: 'radial-gradient(circle, rgba(254, 164, 148, 0.35) 0%, rgba(254, 164, 148, 0.15) 50%, rgba(254, 164, 148, 0) 65%)',
+              background: 'radial-gradient(circle, rgba(255, 235, 59, 0.35) 0%, rgba(255, 235, 59, 0.15) 50%, rgba(255, 235, 59, 0) 65%)',
               borderRadius: '50%',
               filter: 'blur(8px)',
               zIndex: -1,
@@ -356,7 +359,7 @@ const LottieAnimationDemo = () => {
 
 // Color Palette Demo
 const ColorPaletteDemo = () => {
-  const [baseColor, setBaseColor] = useState('#ff5470');
+  const [baseColor, setBaseColor] = useState('#FFEB3B');
   const [colorScheme, setColorScheme] = useState([]);
   const [colorSchemeType, setColorSchemeType] = useState('splitComplementary');
   const [copiedColor, setCopiedColor] = useState(null);
@@ -531,8 +534,8 @@ const ColorPaletteDemo = () => {
   // Reusable button style with hover effect
   const buttonStyle = {
     padding: '8px 12px',
-    background: '#ff5470',
-    color: 'white',
+    background: 'linear-gradient(135deg, #FFEB3B, #fbb604)',
+    color: '#000',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
@@ -685,16 +688,16 @@ const ColorPaletteDemo = () => {
             style={{
               ...buttonStyle,
               marginTop: 0,
-              background: 'linear-gradient(135deg, #ff3e6d, #ff5470)',
+              background: 'linear-gradient(135deg, #FFEB3B, #fbb604)',
               fontSize: '0.75rem',
               padding: '6px 10px',
-              boxShadow: '0 3px 10px rgba(255, 62, 109, 0.3)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 3px 10px rgba(255, 235, 59, 0.3)',
+              border: '1px solid rgba(255, 235, 59, 0.2)',
               transition: 'all 0.2s ease',
               transform: 'translateY(0)',
               ':hover': {
                 transform: 'translateY(-2px)',
-                boxShadow: '0 5px 15px rgba(255, 62, 109, 0.4)',
+                boxShadow: '0 5px 15px rgba(255, 235, 59, 0.4)',
               }
             }}
             onClick={() => {
@@ -796,7 +799,7 @@ const ColorPaletteDemo = () => {
           borderRadius: '8px',
           fontSize: '0.8rem',
           color: 'rgba(255, 255, 255, 0.7)',
-          borderLeft: '3px solid #ff5470',
+                      borderLeft: '3px solid #FFEB3B',
           textAlign: 'left',
           display: colorScheme.length > 0 ? 'block' : 'none'
         }}>
@@ -1189,8 +1192,8 @@ export default
   background: 
     linear-gradient(
       45deg, 
-      #ff5470, 
-      #ff7eb3
+      #FFEB3B, 
+      #fbb604
     );
   color: white;
 }
@@ -1199,14 +1202,14 @@ export default
   animation: 
     shake 0.8s ease-in-out 
     infinite;
-  background: #ff5470;
+  background: #FFEB3B;
   color: white;
 }
 
 .btn.bounce {
   animation: 
     bounce 2s ease infinite;
-  background: #ff5470;
+  background: #FFEB3B;
   color: white;
 }
 
@@ -1214,7 +1217,7 @@ export default
   animation: 
     float 3s ease-in-out 
     infinite;
-  background: #ff5470;
+  background: #FFEB3B;
   color: white;
 }
 
@@ -1235,7 +1238,7 @@ export default
     infinite;
   background-color: #121212;
   color: #fff;
-  border: 2px solid #ff5470;
+  border: 2px solid #FFEB3B;
 }
 
 .btn.morph {
@@ -1245,8 +1248,8 @@ export default
   background: 
     linear-gradient(
       45deg, 
-      #ff5470, 
-      #e83b6c
+      #FFEB3B, 
+      #fbb604
     );
   color: white;
 }
@@ -1304,11 +1307,11 @@ export default
   background: 
     linear-gradient(
       45deg,
-      #ff5470,
-      #ff8b3d,
-      #4973ff,
+      #FFEB3B,
+      #fbb604,
+      #00d4ff,
       #49c5ff,
-      #ff5470
+      #FFEB3B
     );
   background-size: 400% 400%;
   animation: 
@@ -1330,7 +1333,7 @@ export default
 
 /* Ripple Effect */
 .btn.ripple {
-  background: #4973ff;
+  background: #00d4ff;
   color: white;
   overflow: hidden;
   position: relative;
@@ -1350,10 +1353,10 @@ export default
 @keyframes ripple {
   0% {
     transform: scale(0);
-    opacity: 0.8;
+    opacity: 0.6;
   }
   100% {
-    transform: scale(2);
+    transform: scale(1.8);
     opacity: 0;
   }
 }
@@ -1364,19 +1367,19 @@ export default
     transform: scale(1);
     box-shadow: 
       0 0 0 0 
-      rgba(255, 84, 112, 0.6);
+      rgba(255, 235, 59, 0.6);
   }
   70% {
-    transform: scale(1.08);
+    transform: scale(1.05);
     box-shadow: 
-      0 0 0 15px 
-      rgba(255, 84, 112, 0);
+      0 0 0 10px 
+      rgba(255, 235, 59, 0);
   }
   100% {
     transform: scale(1);
     box-shadow: 
       0 0 0 0 
-      rgba(255, 84, 112, 0);
+      rgba(255, 235, 59, 0);
   }
 }
 
@@ -1387,13 +1390,13 @@ export default
   }
   10%, 30%, 50%, 70%, 90% { 
     transform: 
-      translateX(-6px) 
-      rotate(-2deg); 
+      translateX(-5px) 
+      rotate(-1deg); 
   }
   20%, 40%, 60%, 80% { 
     transform: 
-      translateX(6px) 
-      rotate(2deg); 
+      translateX(5px) 
+      rotate(1deg); 
   }
 }
 
@@ -1404,11 +1407,11 @@ export default
   }
   40% { 
     transform: 
-      translateY(-25px) scale(1.1); 
+      translateY(-20px) scale(1.08); 
   }
   60% { 
     transform: 
-      translateY(-15px) scale(1.05); 
+      translateY(-12px) scale(1.04); 
   }
 }
 
@@ -1419,7 +1422,7 @@ export default
   }
   25% { 
     transform: 
-      translateY(-12px) rotate(3deg); 
+      translateY(-8px) rotate(2deg); 
   }
   50% { 
     transform: 
@@ -1427,7 +1430,7 @@ export default
   }
   75% { 
     transform: 
-      translateY(12px) rotate(-3deg); 
+      translateY(8px) rotate(-2deg); 
   }
   100% { 
     transform: 
@@ -1438,23 +1441,23 @@ export default
 @keyframes glitch {
   0%, 100% { 
     transform: translate(0); 
-    text-shadow: -2px 0 #00fffc, 2px 2px #fc00ff;
+    text-shadow: -1.5px 0 #00fffc, 1.5px 1.5px #fc00ff;
   }
   20% { 
-    transform: translate(-5px, 5px); 
-    text-shadow: 2px 0 #00fffc, -2px -2px #fc00ff;
+    transform: translate(-4px, 4px); 
+    text-shadow: 1.5px 0 #00fffc, -1.5px -1.5px #fc00ff;
   }
   40% { 
-    transform: translate(5px, -5px); 
-    text-shadow: -2px 0 #00fffc, 2px 2px #fc00ff;
+    transform: translate(4px, -4px); 
+    text-shadow: -1.5px 0 #00fffc, 1.5px 1.5px #fc00ff;
   }
   60% { 
-    transform: translate(-5px, 5px); 
-    text-shadow: 2px 0 #fc00ff, -2px -2px #00fffc;
+    transform: translate(-4px, 4px); 
+    text-shadow: 1.5px 0 #fc00ff, -1.5px -1.5px #00fffc;
   }
   80% { 
-    transform: translate(5px, -5px); 
-    text-shadow: -2px 0 #fc00ff, 2px 2px #00fffc;
+    transform: translate(4px, -4px); 
+    text-shadow: -1.5px 0 #fc00ff, 1.5px 1.5px #00fffc;
   }
 }`}
             </PreBlock>
@@ -1541,25 +1544,25 @@ const ImprovedCSSAnimationDemo = () => {
   };
   
   const getButtonBackground = () => {
-    if (!isAnimating) return '#ff5470';
+    if (!isAnimating) return '#FFEB3B';
     
     switch(currentAnimation) {
       case 'neon': return '#121212';
       case 'glitch': return '#222222';
-      case 'liquid': return '#4973ff';
-      case 'gradient': return 'linear-gradient(45deg, #ff5470, #ff8b3d, #4973ff, #49c5ff, #ff5470)';
-      case 'morph': return 'linear-gradient(45deg, #ff5470, #e83b6c)';
-      case 'pulse': return 'linear-gradient(45deg, #ff5470, #ff7eb3)';
-      case 'ripple': return '#4973ff';
-      default: return '#ff5470';
+              case 'liquid': return '#00d4ff';
+        case 'gradient': return 'linear-gradient(45deg, #FFEB3B, #fbb604, #00d4ff, #49c5ff, #FFEB3B)';
+        case 'morph': return 'linear-gradient(45deg, #FFEB3B, #fbb604)';
+                case 'pulse': return 'linear-gradient(45deg, #FFEB3B, #fbb604)';
+          case 'ripple': return '#00d4ff';
+          default: return '#FFEB3B';
     }
   };
   
   const buttonStyle = {
     padding: '14px 28px',
     background: getButtonBackground(),
-    color: 'white',
-    border: currentAnimation === 'neon' ? '2px solid #ff5470' : 'none',
+    color: isAnimating ? 'white' : '#000',
+    border: 'none',
     borderRadius: '8px',
     fontWeight: '700',
     fontSize: '1rem',
@@ -1569,13 +1572,12 @@ const ImprovedCSSAnimationDemo = () => {
     transition: 'all 0.3s ease',
     transform: isAnimating && currentAnimation !== 'bounce' && currentAnimation !== 'float' && currentAnimation !== 'shake' && currentAnimation !== 'glitch' ? 'translateY(-3px)' : 'translateY(0)',
     boxShadow: isAnimating && currentAnimation !== 'neon' 
-      ? '0 6px 15px rgba(255, 84, 112, 0.3)' 
-      : '0 4px 8px rgba(255, 84, 112, 0.15)',
-    animation: currentAnimation === 'gradient' && isAnimating ? 'gradient 8s linear infinite' : getAnimation(),
+      ? '0 8px 20px rgba(255, 235, 59, 0.4)' 
+      : '0 4px 10px rgba(255, 235, 59, 0.2)',
+    animation: getAnimation(),
     textShadow: isAnimating && (currentAnimation === 'glitch' || currentAnimation === 'neon') 
-      ? (currentAnimation === 'glitch' ? '-2px 0 #00fffc, 2px 2px #fc00ff' : 'none')
-      : 'none',
-    backgroundSize: currentAnimation === 'gradient' && isAnimating ? '400% 400%' : '100% 100%'
+      ? (currentAnimation === 'glitch' ? '-2px 0 #00d4ff, 2px 2px #FFEB3B' : 'none')
+      : 'none'
   };
   
   const animationPreviewStyle = {
@@ -1605,11 +1607,11 @@ const ImprovedCSSAnimationDemo = () => {
     width: '100%'
   };
   
-  const animSelectBtnStyle = (active, hover) => ({
-    padding: '10px 8px',
-    background: hover ? 'rgba(255, 84, 112, 0.3)' : active ? 'rgba(255, 84, 112, 0.2)' : 'rgba(30, 30, 30, 0.5)',
-    color: active || hover ? '#ff5470' : 'rgba(255, 255, 255, 0.7)',
-    border: `1px solid ${active ? '#ff5470' : hover ? 'rgba(255, 84, 112, 0.5)' : 'rgba(255, 255, 255, 0.1)'}`,
+      const animSelectBtnStyle = (active, hover) => ({
+      padding: '10px 8px',
+      background: hover ? 'rgba(255, 235, 59, 0.3)' : active ? 'rgba(255, 235, 59, 0.2)' : 'rgba(30, 30, 30, 0.5)',
+      color: active || hover ? '#FFEB3B' : 'rgba(255, 255, 255, 0.7)',
+          border: `1px solid ${active ? '#FFEB3B' : hover ? 'rgba(255, 235, 59, 0.5)' : 'rgba(255, 255, 255, 0.1)'}`,
     borderRadius: '6px',
     fontSize: '0.9rem',
     fontWeight: active ? '600' : '400',
@@ -1640,15 +1642,15 @@ const ImprovedCSSAnimationDemo = () => {
           @keyframes pulse {
             0% {
               transform: scale(1);
-              box-shadow: 0 0 0 0 rgba(255, 84, 112, 0.5);
+              box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.5);
             }
             70% {
               transform: scale(1.05);
-              box-shadow: 0 0 0 10px rgba(255, 84, 112, 0);
+              box-shadow: 0 0 0 10px rgba(255, 235, 59, 0);
             }
             100% {
               transform: scale(1);
-              box-shadow: 0 0 0 0 rgba(255, 84, 112, 0);
+              box-shadow: 0 0 0 0 rgba(255, 235, 59, 0);
             }
           }
           
@@ -1695,16 +1697,16 @@ const ImprovedCSSAnimationDemo = () => {
             }
           }
           
-          @keyframes neon {
-            0%, 100% {
-              text-shadow: 0 0 3px #fff, 0 0 6px #fff, 0 0 10px #ff5470, 0 0 15px #ff5470, 0 0 18px #ff5470;
-              box-shadow: 0 0 3px #fff, 0 0 6px #fff, 0 0 10px #ff5470, 0 0 15px #ff5470;
+                      @keyframes neon {
+              0%, 100% {
+                text-shadow: 0 0 3px #fff, 0 0 6px #fff, 0 0 10px #FFEB3B, 0 0 15px #FFEB3B, 0 0 18px #FFEB3B;
+                box-shadow: 0 0 3px #fff, 0 0 6px #fff, 0 0 10px #FFEB3B, 0 0 15px #FFEB3B;
+              }
+              50% {
+                text-shadow: 0 0 1.5px #fff, 0 0 3px #fff, 0 0 5px #FFEB3B, 0 0 8px #FFEB3B, 0 0 10px #FFEB3B;
+                box-shadow: 0 0 1.5px #fff, 0 0 3px #fff, 0 0 5px #FFEB3B, 0 0 8px #FFEB3B;
+              }
             }
-            50% {
-              text-shadow: 0 0 1.5px #fff, 0 0 3px #fff, 0 0 5px #ff5470, 0 0 8px #ff5470, 0 0 10px #ff5470;
-              box-shadow: 0 0 1.5px #fff, 0 0 3px #fff, 0 0 5px #ff5470, 0 0 8px #ff5470;
-            }
-          }
           
           @keyframes morph {
             0%, 100% { border-radius: 8px; }
@@ -1818,7 +1820,7 @@ const ImprovedCSSAnimationDemo = () => {
             fontSize: '0.85rem',
             color: 'rgba(255, 255, 255, 0.7)',
             textAlign: 'left',
-            borderLeft: '3px solid #ff5470'
+            borderLeft: '3px solid #FFEB3B'
           }}>
             {getAnimationDescription()}
           </div>

@@ -8,7 +8,7 @@ import Navbar from "./Components/Navbar";
 import Portfolio from "./Components/Portfolio";
 import Services from "./Components/Services";
 import Stacks from "./Components/Stacks";
-import MatrixRain from "./Components/MatrixRain";
+import SubtleBackground from "./Components/SubtleBackground";
 import PrivacyPolicy from "./Components/PrivacyPolicy";
 import TermsOfService from "./Components/TermsOfService";
 import CookiePolicy from "./Components/CookiePolicy";
@@ -18,11 +18,12 @@ import Projects from "./pages/Projects";
 import HivekeyProject from "./pages/HivekeyProject";
 import TechShowcase from "./Components/TechShowcase";
 import Pricing from "./Components/Pricing";
-import ContactUs from "./Components/ContactUs";
 import Testimonials from "./Components/Testimonials";
 import BlogSection from "./Components/BlogSection";
-import darkTheme, { themeToVars } from "./themes";
+import TechCarousel from "./Components/TechCarousel";
+import { darkTheme, themeToVars } from "./themes";
 import { AnimationProvider } from './Components/AnimationContext';
+import ContactUs from './Components/ContactUs';
 
 // Create a context for the current path
 export const PathContext = createContext('/');
@@ -35,7 +36,8 @@ const AppWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  background: transparent;
 `;
 
 // This component is needed to access location inside Router
@@ -50,7 +52,7 @@ const AppContent = () => {
   return (
     <PathContext.Provider value={currentPath}>
       <AppWrapper>
-        <MatrixRain />
+        <SubtleBackground />
         <ContentWrapper>
           <Navbar />
           <Routes>
@@ -60,9 +62,7 @@ const AppContent = () => {
               element={
                 <>
                   <HeroImage id="home" />
-                  {/* <Services id="services" />
-                  <Portfolio id="projects" />
-                  <Stacks id="stacks" /> */}
+                  <TechCarousel />
                 </>
               }
             />

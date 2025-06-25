@@ -9,15 +9,20 @@ const PolicyWrapper = styled.div`
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
+  
+  @media (max-width: 768px) {
+    padding: 100px 5% 60px;
+  }
 `;
 
 const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 800;
   margin-bottom: 30px;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #FFEB3B, #fbb604);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-align: center;
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
@@ -28,17 +33,41 @@ const LastUpdated = styled.p`
   color: var(--text-secondary);
   font-size: 1rem;
   margin-bottom: 40px;
+  text-align: center;
+  opacity: 0.8;
 `;
 
 const Section = styled.section`
   margin-bottom: 40px;
+  padding: 30px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(251, 182, 4, 0.2);
+    box-shadow: 0 4px 20px rgba(251, 182, 4, 0.1);
+  }
 `;
 
 const SectionTitle = styled.h2`
-  color: var(--text-primary);
+  color: #FFEB3B;
   font-size: 1.8rem;
   margin-bottom: 20px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(to bottom, #FFEB3B, #fbb604);
+    border-radius: 2px;
+  }
 `;
 
 const Paragraph = styled.p`
@@ -46,6 +75,11 @@ const Paragraph = styled.p`
   font-size: 1.1rem;
   line-height: 1.8;
   margin-bottom: 20px;
+
+  strong {
+    color: #fbb604;
+    font-weight: 600;
+  }
 `;
 
 const List = styled.ul`
@@ -57,32 +91,14 @@ const List = styled.ul`
 
   li {
     margin-bottom: 10px;
-  }
-`;
-
-const BackButton = styled.button`
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  padding: 15px 30px;
-  background: var(--button-bg);
-  border: none;
-  border-radius: 8px;
-  color: var(--button-text);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--button-glow);
-
-  &:hover {
-    transform: translateY(-2px);
-    background: var(--button-hover-bg);
-    box-shadow: var(--button-hover-glow);
-  }
-
-  @media (max-width: 768px) {
-    bottom: 20px;
-    right: 20px;
+    position: relative;
+    
+    &::before {
+      content: '•';
+      color: #fbb604;
+      position: absolute;
+      left: -20px;
+    }
   }
 `;
 
@@ -118,9 +134,9 @@ const TermsOfService = () => {
           You agree to use our Services only for lawful purposes and in accordance with these Terms. You are prohibited from:
         </Paragraph>
         <List>
-          <li>Violating any applicable laws or regulations.</li>
-          <li>Infringing upon or violating our intellectual property rights or the intellectual property rights of others.</li>
-          <li>Engaging in any conduct that restricts or inhibits anyone's use or enjoyment of the Services.</li>
+          <li>Violating any applicable laws or regulations</li>
+          <li>Infringing upon or violating our intellectual property rights or the intellectual property rights of others</li>
+          <li>Engaging in any conduct that restricts or inhibits anyone's use or enjoyment of the Services</li>
         </List>
       </Section>
 
@@ -174,8 +190,6 @@ const TermsOfService = () => {
           Legal: legal@revolvo.tech
         </Paragraph>
       </Section>
-
-      <BackButton onClick={() => navigate(-1)}>← Go Back</BackButton>
     </PolicyWrapper>
   );
 };

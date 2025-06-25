@@ -1,22 +1,186 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AiOutlineCode, AiOutlineRobot, AiOutlineMessage, AiOutlineSmile, AiOutlineFrown, AiOutlineUser } from 'react-icons/ai';
 import { FaSmile, FaFrown, FaMeh } from 'react-icons/fa';
+import styled from 'styled-components';
 
-// Import styled components
-import {
-  CodeShowcaseGrid,
-  CodeShowcaseItem,
-  CodeShowcaseHeader,
-  CodeShowcaseTitle,
-  CodeShowcaseDescription,
-  CodeDemoContainer,
-  CodeSnippetContainer,
-  CodeHeader,
-  CodeFileName,
-  CodeLanguage,
-  DemoContainer,
-  PreBlock
-} from '../StyledComponents';
+// Import styled components with updated colors
+const CodeShowcaseGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  margin-bottom: 60px;
+`;
+
+const CodeShowcaseItem = styled.div`
+  background: rgba(18, 18, 18, 0.95);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(255, 235, 59, 0.1);
+    border: 1px solid rgba(255, 235, 59, 0.4);
+  }
+`;
+
+const CodeShowcaseHeader = styled.div`
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.05), rgba(251, 182, 4, 0.03));
+`;
+
+const CodeShowcaseTitle = styled.h3`
+  margin: 0;
+  font-size: 1.5rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  
+  svg {
+    margin-right: 10px;
+    color: #FFEB3B;
+  }
+`;
+
+const CodeShowcaseDescription = styled.p`
+  padding: 16px 28px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(255, 235, 59, 0.1);
+  margin: 0;
+`;
+
+const CodeDemoContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px 28px 28px;
+  
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CodeSnippetContainer = styled.div`
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(25, 25, 25, 0.8);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border: 1px solid rgba(255, 235, 59, 0.4);
+    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  }
+`;
+
+const CodeHeader = styled.div`
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.08), rgba(251, 182, 4, 0.05));
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #e0e0e0;
+  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+`;
+
+const CodeFileName = styled.span`
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #FFEB3B;
+`;
+
+const CodeLanguage = styled.span`
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.2), rgba(251, 182, 4, 0.15));
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: #FFEB3B;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(255, 235, 59, 0.3);
+`;
+
+const DemoContainer = styled.div`
+  background: rgba(25, 25, 25, 0.8);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border: 1px solid rgba(255, 235, 59, 0.4);
+    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  }
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, #FFEB3B, #00d4ff);
+    z-index: 2;
+  }
+`;
+
+const PreBlock = styled.pre`
+  margin: 0;
+  padding: 18px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-height: 350px;
+  color: #ffffff;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+  
+  /* Set all code to white */
+  .keyword, .string, .comment, .function, .variable, .operator, .number {
+    color: #ffffff;
+  }
+`;
 
 // Smart Chat Bot Demo
 const SmartChatDemo = () => {
@@ -169,14 +333,14 @@ const SmartChatDemo = () => {
             width: '38px',
             height: '38px',
             borderRadius: '12px',
-            background: 'linear-gradient(135deg, #ff5470, #ff7eb3)',
+            background: 'linear-gradient(135deg, #FFEB3B, #fbb604)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginRight: '12px',
-            boxShadow: '0 4px 12px rgba(255, 84, 112, 0.25)'
+            boxShadow: '0 4px 12px rgba(255, 235, 59, 0.25)'
           }}>
-            <AiOutlineRobot color="#fff" size={20} />
+            <AiOutlineRobot color="#000" size={20} />
           </div>
           <div>
             <div style={{
@@ -258,19 +422,19 @@ const SmartChatDemo = () => {
                   width: '32px',
                   height: '32px',
                   borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #ff5470, #ff7eb3)',
+                  background: 'linear-gradient(135deg, #FFEB3B, #fbb604)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  boxShadow: '0 4px 12px rgba(255, 84, 112, 0.15)'
+                  boxShadow: '0 4px 12px rgba(255, 235, 59, 0.15)'
                 }}>
-                  <AiOutlineRobot color="#fff" size={18} />
+                  <AiOutlineRobot color="#000" size={18} />
                 </div>
               )}
               <div style={{
                 background: message.role === 'user' 
-                  ? 'linear-gradient(135deg, #4f56ff, #5c7cfa)' 
+                  ? 'linear-gradient(135deg, #00d4ff, #0099ff)' 
                   : 'rgba(45, 45, 60, 0.8)',
                 padding: '14px 18px',
                 borderRadius: message.role === 'user' ? '18px 18px 0 18px' : '18px 18px 18px 0',
@@ -278,7 +442,7 @@ const SmartChatDemo = () => {
                 lineHeight: '1.5',
                 color: message.role === 'user' ? '#fff' : '#eee',
                 boxShadow: message.role === 'user'
-                  ? '0 4px 12px rgba(79, 86, 255, 0.2)' 
+                  ? '0 4px 12px rgba(0, 212, 255, 0.2)' 
                   : '0 4px 12px rgba(0, 0, 0, 0.1)',
                 borderTop: message.role === 'assistant' ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
                 borderLeft: message.role === 'assistant' ? '1px solid rgba(255, 255, 255, 0.05)' : 'none'
@@ -290,12 +454,12 @@ const SmartChatDemo = () => {
                   width: '32px',
                   height: '32px',
                   borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #4f56ff, #5c7cfa)',
+                  background: 'linear-gradient(135deg, #00d4ff, #0099ff)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  boxShadow: '0 4px 12px rgba(79, 86, 255, 0.2)'
+                  boxShadow: '0 4px 12px rgba(0, 212, 255, 0.2)'
                 }}>
                   <AiOutlineUser color="#fff" size={18} />
                 </div>
@@ -326,14 +490,14 @@ const SmartChatDemo = () => {
               width: '32px',
               height: '32px',
               borderRadius: '10px',
-              background: 'linear-gradient(135deg, #ff5470, #ff7eb3)',
+              background: 'linear-gradient(135deg, #FFEB3B, #fbb604)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
-              boxShadow: '0 4px 12px rgba(255, 84, 112, 0.15)'
+              boxShadow: '0 4px 12px rgba(255, 235, 59, 0.15)'
             }}>
-              <AiOutlineRobot color="#fff" size={18} />
+              <AiOutlineRobot color="#000" size={18} />
             </div>
             <div style={{
               background: 'rgba(45, 45, 60, 0.8)',
@@ -470,29 +634,29 @@ const SmartChatDemo = () => {
               borderRadius: '12px',
               border: 'none',
               background: input.trim() 
-                ? 'linear-gradient(135deg, #ff5470, #ff7eb3)' 
+                ? 'linear-gradient(135deg, #FFEB3B, #fbb604)' 
                 : 'rgba(45, 45, 60, 0.6)',
-              color: '#fff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+              color: input.trim() && !isTyping ? '#000' : '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               cursor: input.trim() && !isTyping ? 'pointer' : 'default',
-          transition: 'all 0.2s ease',
+              transition: 'all 0.2s ease',
               opacity: input.trim() && !isTyping ? 1 : 0.5,
               boxShadow: input.trim() && !isTyping 
-                ? '0 4px 12px rgba(255, 84, 112, 0.25)' 
+                ? '0 4px 12px rgba(255, 235, 59, 0.25)' 
                 : 'none'
             }}
             onMouseOver={(e) => {
               if (input.trim() && !isTyping) {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 15px rgba(255, 84, 112, 0.3)';
+                e.currentTarget.style.boxShadow = '0 6px 15px rgba(255, 235, 59, 0.3)';
               }
             }}
             onMouseOut={(e) => {
               if (input.trim() && !isTyping) {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 84, 112, 0.25)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 235, 59, 0.25)';
               }
             }}
           >
@@ -1006,9 +1170,9 @@ const SentimentAnalysisDemo = () => {
             background: isAnalyzing 
               ? 'rgba(80, 80, 100, 0.6)' 
               : !inputText.trim() 
-                ? 'rgba(255, 84, 112, 0.3)' 
-                : 'linear-gradient(135deg, #ff5470, #ff7eb3)',
-            color: 'white',
+                ? 'rgba(255, 235, 59, 0.3)' 
+                : 'linear-gradient(135deg, #FFEB3B, #fbb604)',
+            color: isAnalyzing ? 'white' : !inputText.trim() ? 'white' : '#000',
             border: 'none',
             borderRadius: '12px',
             fontSize: '0.95rem',
@@ -1017,7 +1181,7 @@ const SentimentAnalysisDemo = () => {
             transition: 'all 0.3s ease',
             boxShadow: isAnalyzing || !inputText.trim() 
               ? 'none' 
-              : '0 6px 18px rgba(255, 84, 112, 0.25)',
+              : '0 6px 18px rgba(255, 235, 59, 0.25)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1026,13 +1190,13 @@ const SentimentAnalysisDemo = () => {
           onMouseOver={(e) => {
             if (!isAnalyzing && inputText.trim()) {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 8px 22px rgba(255, 84, 112, 0.3)';
+              e.currentTarget.style.boxShadow = '0 8px 22px rgba(255, 235, 59, 0.3)';
             }
           }}
           onMouseOut={(e) => {
             if (!isAnalyzing && inputText.trim()) {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 6px 18px rgba(255, 84, 112, 0.25)';
+              e.currentTarget.style.boxShadow = '0 6px 18px rgba(255, 235, 59, 0.25)';
             }
           }}
         >

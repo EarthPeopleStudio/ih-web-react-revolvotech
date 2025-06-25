@@ -34,8 +34,11 @@ function Model({ url }) {
   const { currentAnimation, DEFAULT_ANIMATION } = useAnimation();
   const prevAnimationRef = useRef(currentAnimation);
   const headBoneRef = useRef(null);
-  const [xPosition, setXPosition] = useState(0.28125);
+  const neckBoneRef = useRef(null);
+  const torsoBoneRef = useRef(null);
+  const [xPosition, setXPosition] = useState(0.15);
   const isMobile = useIsMobile();
+  const headPositionRef = useRef({ x: 0, y: 0 });
 
   // Don't process any effects if on mobile
   if (isMobile) {
@@ -47,9 +50,9 @@ function Model({ url }) {
     const updatePosition = () => {
       // Check if screen is laptop/1080p size (typically less than 1920px width)
       if (window.innerWidth <= 1920) {
-        setXPosition(0.28125 * 0.75); // Move 25% more left for smaller screens
+        setXPosition(0.15 * 0.75); // Move 25% more left for smaller screens
       } else {
-        setXPosition(0.28125); // Original position for larger screens
+        setXPosition(0.15); // Original position for larger screens
       }
     };
 
@@ -61,23 +64,52 @@ function Model({ url }) {
     return () => window.removeEventListener('resize', updatePosition);
   }, []);
 
-  React.useEffect(() => {
     const handleMouseMove = (event) => {
+    if (modelRef.current) {
+      // Calculate reference point at 55% right and 20% from top of screen
+      const referenceX = window.innerWidth * 0.5075;
+      const referenceY = window.innerHeight * 0;
+
+      // Calculate normalized position relative to the reference point
+      const normalizedX = (event.clientX - referenceX) / window.innerWidth;
+      const normalizedY = (event.clientY - referenceY) / window.innerHeight;
+
       mouseRef.current = {
-        x: (event.clientX / window.innerWidth) * 2 - 1,
-        y: -(event.clientY / window.innerHeight) * 2 + 1
+        x: normalizedX,
+        y: normalizedY
       };
+    }
     };
 
+  useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, []);
 
-  // Find and store reference to the head bone
+  // Find and store reference to the head, neck and torso bones
   React.useEffect(() => {
+    console.log('Searching for bones in model...');
     scene.traverse((object) => {
-      if (object.isBone && object.name.toLowerCase().includes('head')) {
+      if (object.isBone) {
+        const name = object.name.toLowerCase();
+        
+        // Head bone
+        if (name === 'head_06') {
+          console.log('Found head bone:', object.name);
         headBoneRef.current = object;
+        }
+        // Neck bone
+        else if (name === 'neck_05') {
+          console.log('Found neck bone:', object.name);
+          neckBoneRef.current = object;
+        }
+        // Torso/upper back bone
+        else if (name === 'upper_back_04') {
+          console.log('Found torso bone:', object.name);
+          torsoBoneRef.current = object;
+        }
       }
     });
   }, [scene]);
@@ -88,6 +120,47 @@ function Model({ url }) {
       actions[DEFAULT_ANIMATION].reset().play();
       actions[DEFAULT_ANIMATION].setLoop(THREE.LoopPingPong);
       actions[DEFAULT_ANIMATION].setEffectiveTimeScale(1);
+
+      // Set up animation mixing to exclude head and neck bones
+      Object.values(actions).forEach(action => {
+        if (action) {
+          action.getMixer().addEventListener('before', () => {
+            // Preserve head and neck rotations during animations
+            if (headBoneRef.current) {
+              const currentHeadRotation = {
+                x: headBoneRef.current.rotation.x,
+                y: headBoneRef.current.rotation.y,
+                z: headBoneRef.current.rotation.z
+              };
+              
+              // Let the animation play
+              requestAnimationFrame(() => {
+                if (headBoneRef.current) {
+                  headBoneRef.current.rotation.x = currentHeadRotation.x;
+                  headBoneRef.current.rotation.y = currentHeadRotation.y;
+                  headBoneRef.current.rotation.z = currentHeadRotation.z;
+                }
+              });
+            }
+            
+            if (neckBoneRef.current) {
+              const currentNeckRotation = {
+                x: neckBoneRef.current.rotation.x,
+                y: neckBoneRef.current.rotation.y,
+                z: neckBoneRef.current.rotation.z
+              };
+              
+              requestAnimationFrame(() => {
+                if (neckBoneRef.current) {
+                  neckBoneRef.current.rotation.x = currentNeckRotation.x;
+                  neckBoneRef.current.rotation.y = currentNeckRotation.y;
+                  neckBoneRef.current.rotation.z = currentNeckRotation.z;
+                }
+              });
+            }
+          });
+        }
+      });
     } else {
       console.warn(`Default animation "${DEFAULT_ANIMATION}" not found, checking for available animations...`);
       // Try to find and play any available animation
@@ -105,53 +178,27 @@ function Model({ url }) {
   // Handle animation transitions
   React.useEffect(() => {
     if (prevAnimationRef.current !== currentAnimation) {
-      // Store current head rotation
-      const currentRotation = headBoneRef.current ? {
-        x: headBoneRef.current.rotation.x,
-        y: headBoneRef.current.rotation.y
-      } : null;
-
       const previousAction = actions[prevAnimationRef.current];
       const targetAnimation = actions[currentAnimation] ? currentAnimation : DEFAULT_ANIMATION;
       const newAction = actions[targetAnimation];
 
       if (newAction) {
-        // If we have a previous action, handle the transition more smoothly
         if (previousAction && previousAction !== newAction) {
-          // For ping-pong animations, let them complete their cycle before transitioning
           if (previousAction.loop === THREE.LoopPingPong && previousAction.isRunning()) {
-            // Check if we're in the middle of a ping-pong cycle
             const normalizedTime = (previousAction.time % previousAction.getClip().duration) / previousAction.getClip().duration;
-            
-            // If we're not near the start/end of the cycle, wait for a smoother transition point
             if (normalizedTime > 0.1 && normalizedTime < 0.9) {
-              // Gradually fade out over a longer period
               previousAction.fadeOut(1.2);
             } else {
-              // Quick fade if we're at a good transition point
               previousAction.fadeOut(0.5);
             }
           } else {
-            // Standard fade out for non-ping-pong animations
             previousAction.fadeOut(0.5);
           }
         }
 
-        // Start the new animation with appropriate settings
         newAction.reset().fadeIn(0.8).play();
         newAction.setLoop(THREE.LoopPingPong);
         newAction.setEffectiveTimeScale(1);
-
-        // Restore head rotation after the animation has started
-        if (currentRotation && headBoneRef.current) {
-          // Delay the restoration to allow the new animation to settle
-          setTimeout(() => {
-            if (headBoneRef.current) {
-              headBoneRef.current.rotation.x = currentRotation.x;
-              headBoneRef.current.rotation.y = currentRotation.y;
-            }
-          }, 100);
-        }
       } else {
         console.error(`Animation "${targetAnimation}" not found`);
       }
@@ -210,7 +257,7 @@ function Model({ url }) {
               child.material.color.setHex(0xf59e0b); // Gold highlights for premium feel
               if (child.material.emissive) {
                 child.material.emissive.setHex(0xf59e0b);
-                child.material.emissiveIntensity = 0.5;
+                child.material.emissiveIntensity = 0.8;
               }
               break;
               
@@ -228,11 +275,11 @@ function Model({ url }) {
               child.material.color.setHex(0x1A202C); // Dark neutral
               break;
               
-            case 'Object_153': // Eyes - Intense Neon Cyan
-              child.material.color.setHex(0x3b82f6); // Bright electric blue
+            case 'Object_153': // Eyes - Intense Electric Blue
+              child.material.color.setHex(0x00d4ff); // Brighter cyan-blue for more pop
               if (child.material.emissive) {
-                child.material.emissive.setHex(0x3b82f6);
-                child.material.emissiveIntensity = 3.0; // Increased intensity
+                child.material.emissive.setHex(0x00d4ff);
+                child.material.emissiveIntensity = 5.0; // Maximum glow for dramatic effect
               }
               if (child.material.roughness !== undefined) child.material.roughness = 0;
               if (child.material.metalness !== undefined) child.material.metalness = 1;
@@ -244,12 +291,20 @@ function Model({ url }) {
               if (child.material.metalness !== undefined) child.material.metalness = 0.1;
               break;
               
-            case 'Object_155': // Scarf (Top) - Neon Pink
-              child.material.color.setHex(0xd97706); // Amber-600
+            case 'Object_155': // Scarf (Top) - Enhanced Gold
+              child.material.color.setHex(0xfbb604); // Primary gold to match buttons
+              if (child.material.emissive) {
+                child.material.emissive.setHex(0xfbb604);
+                child.material.emissiveIntensity = 0.7;
+              }
               break;
               
             case 'Object_156': // Scarf (Bottom) - Deeper Neon Pink
               child.material.color.setHex(0xb45309); // Amber-700
+              if (child.material.emissive) {
+                child.material.emissive.setHex(0xb45309);
+                child.material.emissiveIntensity = 0.4;
+              }
               break;
               
             default:
@@ -265,17 +320,109 @@ function Model({ url }) {
   }, [scene]);
 
   useFrame(() => {
-    if (modelRef.current) {
-      // Adjust rotation sensitivity based on cursor position
-      const rotationMultiplier = mouseRef.current.x > 0 ? 0.25 : 0.65; // 25% on right side, 65% on left side
-      const targetRotationY = mouseRef.current.x * Math.PI * 0.6 * rotationMultiplier; // Horizontal sensitivity
-      
-      // Reduced look up by 50% (from 0.45 to 0.225) while keeping look down the same
-      const verticalSensitivity = mouseRef.current.y < 0 ? 0.225 : 0.075; // Reduced look up by 50%, keeping look down the same
-      const targetRotationX = -mouseRef.current.y * Math.PI * verticalSensitivity;
-      
-      modelRef.current.rotation.y += (targetRotationY - modelRef.current.rotation.y) * 0.1;
-      modelRef.current.rotation.x += (targetRotationX - modelRef.current.rotation.x) * 0.1;
+    if (modelRef.current && headBoneRef.current) {
+      const mouseX = mouseRef.current.x;
+      const mouseY = mouseRef.current.y;
+
+      // Only update head rotation if not in a button hover animation or if in shrug animation
+      if (currentAnimation === DEFAULT_ANIMATION || currentAnimation === 'Shrug') {
+        const rotationAmount = Math.PI / 3; // Base rotation amount (60 degrees)
+        const horizontalAmount = rotationAmount; // Reduced from 2x to 1x for 50% reduction
+
+        // Calculate target rotations with reduced horizontal sensitivity
+        const headRotationY = mouseX * horizontalAmount - Math.PI / 12;  // Keep left bias but halved range
+        const headRotationX = mouseY * rotationAmount;  // Vertical stays the same
+
+        // Neck follows with equal reduced range
+        const neckAmount = rotationAmount * 0.5;
+        const neckHorizontalAmount = neckAmount; // Reduced from 2x to 1x
+        const neckRotationY = mouseX * neckHorizontalAmount;
+        const neckRotationX = mouseY * neckAmount;
+
+        // Torso follows with equal minimal range
+        const torsoAmount = rotationAmount * 0.25;
+        const torsoHorizontalAmount = torsoAmount; // Reduced from 2x to 1x
+        const torsoRotationY = mouseX * torsoHorizontalAmount;
+        const torsoRotationX = mouseY * torsoAmount;
+
+        // Apply head rotation
+        headBoneRef.current.rotation.y = THREE.MathUtils.lerp(
+          headBoneRef.current.rotation.y,
+          headRotationY,
+          0.15
+        );
+        headBoneRef.current.rotation.x = THREE.MathUtils.lerp(
+          headBoneRef.current.rotation.x,
+          headRotationX,
+          0.15
+        );
+
+        // Apply neck rotation
+        if (neckBoneRef.current) {
+          neckBoneRef.current.rotation.y = THREE.MathUtils.lerp(
+            neckBoneRef.current.rotation.y,
+            neckRotationY,
+            0.12
+          );
+          neckBoneRef.current.rotation.x = THREE.MathUtils.lerp(
+            neckBoneRef.current.rotation.x,
+            neckRotationX,
+            0.12
+          );
+        }
+
+        // Apply torso rotation
+        if (torsoBoneRef.current) {
+          torsoBoneRef.current.rotation.y = THREE.MathUtils.lerp(
+            torsoBoneRef.current.rotation.y,
+            torsoRotationY,
+            0.08
+          );
+          torsoBoneRef.current.rotation.x = THREE.MathUtils.lerp(
+            torsoBoneRef.current.rotation.x,
+            torsoRotationX,
+            0.08
+          );
+        }
+
+        // Clamp all rotations with reduced horizontal limits
+        headBoneRef.current.rotation.x = THREE.MathUtils.clamp(
+          headBoneRef.current.rotation.x,
+          -rotationAmount,     // -60 degrees
+          rotationAmount * 0.5  // 30 degrees (reduced upward rotation)
+        );
+        headBoneRef.current.rotation.y = THREE.MathUtils.clamp(
+          headBoneRef.current.rotation.y,
+          -horizontalAmount,     // -60 degrees (reduced from -120)
+          horizontalAmount       // 60 degrees (reduced from 120)
+        );
+
+        if (neckBoneRef.current) {
+          neckBoneRef.current.rotation.x = THREE.MathUtils.clamp(
+            neckBoneRef.current.rotation.x,
+            -neckAmount,       // -30 degrees
+            neckAmount * 0.5   // 15 degrees (reduced upward rotation)
+          );
+          neckBoneRef.current.rotation.y = THREE.MathUtils.clamp(
+            neckBoneRef.current.rotation.y,
+            -neckHorizontalAmount,       // -30 degrees (reduced from -60)
+            neckHorizontalAmount         // 30 degrees (reduced from 60)
+          );
+        }
+
+        if (torsoBoneRef.current) {
+          torsoBoneRef.current.rotation.x = THREE.MathUtils.clamp(
+            torsoBoneRef.current.rotation.x,
+            -torsoAmount,      // -15 degrees
+            torsoAmount * 0.5  // 7.5 degrees (reduced upward rotation)
+          );
+          torsoBoneRef.current.rotation.y = THREE.MathUtils.clamp(
+            torsoBoneRef.current.rotation.y,
+            -torsoHorizontalAmount,      // -15 degrees (reduced from -30)
+            torsoHorizontalAmount        // 15 degrees (reduced from 30)
+          );
+        }
+      }
     }
   });
 
@@ -283,9 +430,9 @@ function Model({ url }) {
     <primitive
       ref={modelRef}
       object={scene}
-      scale={2.0625}
-      position={[xPosition, -0.5, 0]}
-      rotation={[0.1, -0.785, 0]} // Added -0.785 radians (about 45 degrees) for initial left rotation
+      scale={2.2}
+      position={[xPosition, -0.65, 0]}
+      rotation={[0, 0, 0]}
     />
   );
 }
@@ -325,7 +472,7 @@ const Model3D = ({ modelUrl }) => {
       style={{ 
         width: '100%', 
         height: '100%',
-        background: '#000000',
+        background: 'transparent',
         position: 'relative',
         display: isMobile ? 'none' : 'block' // Add display none as backup
       }}
@@ -338,26 +485,42 @@ const Model3D = ({ modelUrl }) => {
           near: 0.1,
           far: 1000
         }}
-        style={{ background: '#000000' }}
+        style={{ background: 'transparent' }}
+        gl={{ alpha: true }}
       >
-        <color attach="background" args={['#000000']} />
         <Suspense fallback={null}>
-          <ambientLight intensity={0.6} /> {/* Lower ambient light for more contrast */}
+          <ambientLight intensity={0.2} />
           <directionalLight
             position={[5, 5, 5]}
-            intensity={1.0} /* Reduced for more contrast */
+            intensity={0.5}
             castShadow
           />
           <directionalLight
             position={[-5, 5, -5]}
-            intensity={0.5} /* Reduced for more contrast */
+            intensity={0.3}
             castShadow
           />
-          {/* Cyberpunk-themed rim light */}
+          {/* Focused lighting on model for glow effect */}
+          <spotLight
+            position={[0, 4, 4]}
+            angle={Math.PI / 4}
+            penumbra={0.5}
+            intensity={3.0}
+            color="#fbb604"
+            castShadow
+          />
+          <spotLight
+            position={[3, 2, 3]}
+            angle={Math.PI / 6}
+            penumbra={0.3}
+            intensity={2.5}
+            color="#3b82f6"
+          />
+          {/* Rim lighting for model edges */}
           <directionalLight
-            position={[0, 3, -5]}
-            intensity={2.0} // Stronger intensity
-            color="#FF00FF"  // Magenta color
+            position={[-2, 0, -4]}
+            intensity={1.5}
+            color="#fbb604"
           />
           <Model url={modelUrl} />
           <OrbitControls 

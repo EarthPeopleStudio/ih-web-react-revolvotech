@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import styled, { keyframes } from "styled-components";
 import hiveKeyMain from "../assets/hivekey.png";
 import hiveKeySettings from "../assets/hivekey-settings.png";
@@ -6,11 +6,10 @@ import hiveKeyOptions from "../assets/hivekey-options.png";
 import windowsLogo from "../assets/windows-11-icon.png";
 import playstoreLogo from "../assets/google-play-store-logo.png";
 
-// Animations
 const fadeIn = keyframes`
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -18,41 +17,20 @@ const fadeIn = keyframes`
   }
 `;
 
-const pulse = keyframes`
-  0% {
-    box-shadow: 0 0 15px rgba(251, 182, 4, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(251, 182, 4, 0.5);
-  }
-  100% {
-    box-shadow: 0 0 15px rgba(251, 182, 4, 0.3);
-  }
+const glow = keyframes`
+  0% { box-shadow: 0 0 20px rgba(251, 182, 4, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(251, 182, 4, 0.4); }
+  100% { box-shadow: 0 0 20px rgba(251, 182, 4, 0.2); }
 `;
 
-const float = keyframes`
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-`;
-
-// Styled Components
 const ProjectWrapper = styled.div`
-  background: #000000;
   min-height: 100vh;
-  color: var(--text-primary);
-  padding: 120px 8% 80px;
-  
-  @media (max-width: 768px) {
-    padding: 100px 6% 120px;
-  }
-  
-  @media (max-width: 480px) {
-    padding: 80px 5% 140px;
-  }
+  background: linear-gradient(180deg, 
+    rgba(0,0,0,1) 0%,
+    rgba(251,182,4,0.05) 50%,
+    rgba(0,0,0,1) 100%
+  );
+  padding: 120px 5% 80px;
 `;
 
 const ContentContainer = styled.div`
@@ -61,573 +39,333 @@ const ContentContainer = styled.div`
   animation: ${fadeIn} 1s ease-out;
 `;
 
-const HeroSection = styled.div`
-  text-align: center;
-  margin-bottom: 80px;
-`;
-
 const ProjectTitle = styled.h1`
-  font-size: 3.5rem;
+  font-size: 4rem;
   font-weight: 800;
-  margin-bottom: 30px;
-  background: linear-gradient(135deg, #fbb604, #f99b04, #d39404);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
   text-align: center;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #fbb604 50%, #d39404 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
 
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
   }
 `;
 
 const ProjectSubtitle = styled.p`
-  color: var(--text-secondary);
-  font-size: 1.2rem;
-  line-height: 1.8;
-  margin-bottom: 40px;
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
   max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto 60px;
+  line-height: 1.6;
+
+  strong {
+    color: #fbb604;
+    font-weight: 500;
+  }
 `;
 
-const HeroImageContainer = styled.div`
-  max-width: 600px;
-  margin: 0 auto 40px;
+const MainImage = styled.div`
+  max-width: 900px;
+  margin: 0 auto 80px;
   border-radius: 20px;
   overflow: hidden;
+  border: 1px solid rgba(251, 182, 4, 0.2);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  animation: ${float} 6s ease-in-out infinite;
-  
+  transition: all 0.3s ease;
+
   img {
     width: 100%;
     height: auto;
     display: block;
   }
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    animation: ${glow} 2s infinite ease-in-out;
+  }
+`;
+
+const StepsSection = styled.div`
+  margin: 100px 0;
+`;
+
+const StepsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+`;
+
+const StepCard = styled.div`
+  background: rgba(30, 30, 35, 0.6);
+  border: 1px solid rgba(251, 182, 4, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: rgba(251, 182, 4, 0.3);
+    box-shadow: 0 15px 30px rgba(251, 182, 4, 0.1);
+
+    .step-number {
+      color: #fbb604;
+    }
+  }
+`;
+
+const StepNumber = styled.div`
+  font-size: 4rem;
+  font-weight: 800;
+  color: rgba(251, 182, 4, 0.2);
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  transition: color 0.3s ease;
+`;
+
+const StepTitle = styled.h3`
+  font-size: 1.6rem;
+  color: #fbb604;
+  margin-bottom: 15px;
+  font-weight: 700;
+`;
+
+const StepDescription = styled.p`
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  font-size: 1.1rem;
+`;
+
+const SecurityHighlight = styled.div`
+  background: rgba(30, 30, 35, 0.6);
+  border: 1px solid rgba(251, 182, 4, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  margin: 60px 0;
+  backdrop-filter: blur(10px);
+  display: flex;
+  gap: 30px;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
+  }
+`;
+
+const SecurityIcon = styled.div`
+  font-size: 3.5rem;
+  color: #fbb604;
+`;
+
+const SecurityContent = styled.div`
+  flex: 1;
+`;
+
+const SecurityTitle = styled.h3`
+  font-size: 1.8rem;
+  color: #fbb604;
+  margin-bottom: 15px;
+  font-weight: 700;
+`;
+
+const SecurityText = styled.p`
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  font-size: 1.1rem;
+
+  strong {
+    color: #fbb604;
+    font-weight: 500;
+  }
+`;
+
+const FeaturesSection = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  margin: 80px 0;
+`;
+
+const FeatureCard = styled.div`
+  background: rgba(30, 30, 35, 0.6);
+  border: 1px solid rgba(251, 182, 4, 0.1);
+  border-radius: 20px;
+  padding: 40px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: rgba(251, 182, 4, 0.3);
+    box-shadow: 0 15px 30px rgba(251, 182, 4, 0.1);
+  }
+`;
+
+const FeatureTitle = styled.h3`
+  font-size: 1.8rem;
+  color: #fbb604;
+  margin-bottom: 20px;
+  font-weight: 700;
+`;
+
+const FeatureDescription = styled.p`
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  font-size: 1.1rem;
 `;
 
 const DownloadSection = styled.div`
+  text-align: center;
+  margin: 80px 0;
+`;
+
+const DownloadTitle = styled.h2`
+  font-size: 2.5rem;
+  color: #ffffff;
+  margin-bottom: 40px;
+  font-weight: 700;
+`;
+
+const DownloadButtons = styled.div`
   display: flex;
-  justify-content: center;
   gap: 20px;
-  margin-bottom: 80px;
-  
-  @media (max-width: 640px) {
-    flex-direction: column;
-    align-items: center;
-  }
+  justify-content: center;
+  flex-wrap: wrap;
 `;
 
 const DownloadButton = styled.a`
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px 24px;
-  background: rgba(248, 248, 248, 0.95);
-  color: #222;
+  padding: 16px 30px;
+  background: #fbb604;
+  color: #000000;
   text-decoration: none;
   border-radius: 12px;
   font-weight: 600;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  min-width: 200px;
-  justify-content: center;
-  
-  &:hover {
-    background: #fbb604;
-    color: #000;
-    transform: translateY(-3px);
-    animation: ${pulse} 2s infinite ease-in-out;
-  }
-  
-  img {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-  }
-`;
-
-const FeaturesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 40px;
-  margin-bottom: 80px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-`;
-
-const FeatureCard = styled.div`
-  background: var(--card-bg);
-  border-radius: 20px;
-  padding: 30px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    border-color: rgba(251, 182, 4, 0.3);
-  }
-`;
-
-const FeatureIcon = styled.div`
-  font-size: 2.5rem;
-  margin-bottom: 20px;
-  text-align: center;
-`;
-
-const FeatureTitle = styled.h3`
-  font-size: 1.4rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: var(--text-primary);
-  text-align: center;
-`;
-
-const FeatureDescription = styled.p`
-  color: var(--text-secondary);
-  line-height: 1.6;
-  text-align: center;
-`;
-
-const FeatureImage = styled.div`
-  margin: 20px 0;
-  border-radius: 12px;
-  overflow: hidden;
-  
-  img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-`;
-
-const SecurityFeatures = styled.div`
-  background: var(--card-bg);
-  border-radius: 20px;
-  padding: 40px;
-  border: 1px solid var(--border-color);
-  margin-bottom: 60px;
-`;
-
-const SecurityTitle = styled.h2`
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 30px;
-  text-align: center;
-  color: var(--text-primary);
-`;
-
-const SecurityList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const SecurityItem = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  
-  .icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-  }
-  
-  .content {
-    flex: 1;
-    
-    strong {
-      color: var(--text-primary);
-      display: block;
-      margin-bottom: 5px;
-    }
-    
-    span {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-  }
-`;
-
-// How It Works Section Styles
-const HowItWorksSection = styled.div`
-  margin-bottom: 80px;
-  text-align: center;
-`;
-
-const HowItWorksTitle = styled.h2`
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 50px;
-  color: var(--text-primary);
-  
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
-`;
-
-const StepsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
-  margin-bottom: 60px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const StepCard = styled.div`
-  background: var(--card-bg);
-  border-radius: 20px;
-  padding: 30px 25px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  position: relative;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    border-color: rgba(251, 182, 4, 0.3);
-  }
-`;
-
-const StepNumber = styled.div`
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, #fbb604, #f99b04);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #000;
-  margin: 0 auto 20px;
-`;
-
-const StepTitle = styled.h3`
-  font-size: 1.3rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: var(--text-primary);
-`;
-
-const StepDescription = styled.p`
-  color: var(--text-secondary);
-  line-height: 1.6;
-  font-size: 0.95rem;
-`;
-
-const SecurityHighlight = styled.div`
-  background: linear-gradient(135deg, rgba(251, 182, 4, 0.1), rgba(249, 155, 4, 0.05));
-  border: 1px solid rgba(251, 182, 4, 0.3);
-  border-radius: 20px;
-  padding: 40px;
-  margin-bottom: 50px;
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-`;
-
-const SecurityIcon = styled.div`
-  font-size: 3rem;
-  flex-shrink: 0;
-`;
-
-const SecurityText = styled.div`
-  flex: 1;
-`;
-
-const SecurityMainText = styled.h3`
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 10px;
-  color: var(--text-primary);
-`;
-
-const SecuritySubText = styled.p`
-  color: var(--text-secondary);
-  line-height: 1.7;
-  font-size: 1rem;
-  
-  strong {
-    color: #fbb604;
-    font-weight: 600;
-  }
-`;
-
-const KeyBenefits = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const BenefitItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(251, 182, 4, 0.2);
-  }
-`;
-
-const BenefitIcon = styled.div`
-  font-size: 1.5rem;
-  flex-shrink: 0;
-`;
-
-const BenefitText = styled.span`
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  font-weight: 500;
-`;
-
-const CallToAction = styled.div`
-  text-align: center;
-  padding: 60px 0;
-  background: linear-gradient(135deg, rgba(251, 182, 4, 0.1), rgba(249, 155, 4, 0.1));
-  border-radius: 20px;
-  border: 1px solid rgba(251, 182, 4, 0.2);
-`;
-
-const CTATitle = styled.h2`
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  background: linear-gradient(135deg, #fbb604, #f99b04);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
-`;
-
-const CTASubtitle = styled.p`
-  color: var(--text-secondary);
   font-size: 1.1rem;
-  margin-bottom: 30px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  transition: all 0.3s ease;
+  border: none;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(251, 182, 4, 0.2);
+  }
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
 const HivekeyProject = () => {
   return (
     <ProjectWrapper>
       <ContentContainer>
-        <HeroSection>
-          <ProjectTitle>HiveKey Password Manager</ProjectTitle>
-          <ProjectSubtitle>
-            Generate unbreakable passwords with military-grade security. 
-            HiveKey uses advanced algorithms to create unique, robust passwords 
-            from your key phrase and service name - no complex passwords to remember!
-          </ProjectSubtitle>
-          
-          <HeroImageContainer>
-            <img src={hiveKeyMain} alt="HiveKey Main Interface" />
-          </HeroImageContainer>
-          
-          <DownloadSection>
-            <DownloadButton 
-              href="https://revolvotech.s3.us-east-1.amazonaws.com/ih/app/flutter/hivekey/HiveKey.exe" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <img src={windowsLogo} alt="Windows" />
-              Download for Windows
-            </DownloadButton>
-            <DownloadButton 
-              href="https://play.google.com/store/apps/details?id=com.revolvotech.hivekey" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <img src={playstoreLogo} alt="Play Store" />
-              Download for Android
-            </DownloadButton>
-          </DownloadSection>
-        </HeroSection>
+        <ProjectTitle>HiveKey</ProjectTitle>
+        <ProjectSubtitle>
+          Generate <strong>complex passwords</strong> that you never need to remember or store. Just use your master key and service name to <strong>recreate the same secure password</strong> anytime, anywhere.
+        </ProjectSubtitle>
 
-        <HowItWorksSection>
-          <HowItWorksTitle>How HiveKey Works</HowItWorksTitle>
+        <MainImage>
+          <img src={hiveKeyMain} alt="HiveKey Interface" />
+        </MainImage>
+
+        <StepsSection>
+          <ProjectTitle style={{ fontSize: '2.8rem' }}>How to Use HiveKey</ProjectTitle>
           <StepsGrid>
             <StepCard>
-              <StepNumber>1</StepNumber>
+              <StepNumber className="step-number">1</StepNumber>
               <StepTitle>Set Your Security Key</StepTitle>
               <StepDescription>
                 Choose a memorable master phrase that only you know. This becomes your personal encryption key.
+                Keep it safe and never share it with anyone.
               </StepDescription>
             </StepCard>
-            
+
             <StepCard>
-              <StepNumber>2</StepNumber>
+              <StepNumber className="step-number">2</StepNumber>
               <StepTitle>Enter Service Name</StepTitle>
               <StepDescription>
                 Type the name of the service you need a password for (e.g., "gmail", "facebook", "netflix").
+                The same combination of security key and service name will always generate the exact same password,
+                so you don't need to remember or store complex passwords.
               </StepDescription>
             </StepCard>
-            
+
             <StepCard>
-              <StepNumber>3</StepNumber>
-              <StepTitle>Get Your Unique Password</StepTitle>
+              <StepNumber className="step-number">3</StepNumber>
+              <StepTitle>Get Your Password</StepTitle>
               <StepDescription>
-                HiveKey generates a 16-character password with 4 lowercase, 4 uppercase, 4 digits, and 4 special characters.
+                HiveKey instantly generates a strong 16-character password with a perfect mix of lowercase,
+                uppercase, numbers, and special characters. Copy and use it for your service.
               </StepDescription>
             </StepCard>
           </StepsGrid>
-          
+
           <SecurityHighlight>
             <SecurityIcon>🛡️</SecurityIcon>
-            <SecurityText>
-              <SecurityMainText>Mathematically Unbreakable</SecurityMainText>
-              <SecuritySubText>
-                With our default 16-character passwords, it would take over <strong>12 trillion years</strong> to brute force. 
-                Each combination of your security key + service name creates a completely unique, reproducible password.
-              </SecuritySubText>
-            </SecurityText>
+            <SecurityContent>
+              <SecurityTitle>Mathematically Unbreakable</SecurityTitle>
+              <SecurityText>
+                HiveKey's default 16-character passwords would take over <strong>12 trillion years</strong> to crack
+                using brute force methods. Each combination of your security key and service name creates a
+                unique, reproducible password that's virtually impossible to guess.
+              </SecurityText>
+            </SecurityContent>
           </SecurityHighlight>
-          
-          <KeyBenefits>
-            <BenefitItem>
-              <BenefitIcon>🔑</BenefitIcon>
-              <BenefitText>Same inputs = Same password every time</BenefitText>
-            </BenefitItem>
-            <BenefitItem>
-              <BenefitIcon>🧠</BenefitIcon>
-              <BenefitText>No complex passwords to remember</BenefitText>
-            </BenefitItem>
-            <BenefitItem>
-              <BenefitIcon>💾</BenefitIcon>
-              <BenefitText>Save services for quick access</BenefitText>
-            </BenefitItem>
-            <BenefitItem>
-              <BenefitIcon>🔒</BenefitIcon>
-              <BenefitText>Zero password storage or cloud sync</BenefitText>
-            </BenefitItem>
-          </KeyBenefits>
-        </HowItWorksSection>
+        </StepsSection>
 
-        <FeaturesGrid>
+        <FeaturesSection>
           <FeatureCard>
-            <FeatureIcon>🔧</FeatureIcon>
-            <FeatureTitle>Custom Password Length</FeatureTitle>
+            <FeatureTitle>Secure by Design</FeatureTitle>
             <FeatureDescription>
-              Take control of your security. Set your desired password length, 
-              from short and sweet to incredibly complex.
+              Using state-of-the-art cryptographic algorithms to generate unique, robust passwords
+              that are virtually impossible to crack. No passwords are ever stored - they're generated on demand.
             </FeatureDescription>
-            <FeatureImage>
-              <img src={hiveKeySettings} alt="Password Length Settings" />
-            </FeatureImage>
           </FeatureCard>
-          
+
           <FeatureCard>
-            <FeatureIcon>⚙️</FeatureIcon>
-            <FeatureTitle>Advanced Options</FeatureTitle>
+            <FeatureTitle>Consistent & Reliable</FeatureTitle>
             <FeatureDescription>
-              Customize your security settings with PIN protection, clipboard 
-              auto-clear, and screenshot protection.
+              HiveKey guarantees that the same security key and service name will always generate the exact same password.
+              This means you can reliably recreate your passwords anytime, anywhere, without needing to store or remember them.
+              Just remember your security key!
             </FeatureDescription>
-            <FeatureImage>
-              <img src={hiveKeyOptions} alt="Advanced Options" />
-            </FeatureImage>
           </FeatureCard>
-        </FeaturesGrid>
 
-        <SecurityFeatures>
-          <SecurityTitle>Enhanced Security Features</SecurityTitle>
-          <SecurityList>
-            <SecurityItem>
-              <span className="icon">🔒</span>
-              <div className="content">
-                <strong>PIN Protection</strong>
-                <span>Secure your app with a personal PIN, adding an extra layer of defense.</span>
-              </div>
-            </SecurityItem>
-            
-            <SecurityItem>
-              <span className="icon">📋</span>
-              <div className="content">
-                <strong>Auto-clear Clipboard</strong>
-                <span>Generated passwords are automatically cleared after 30 seconds.</span>
-              </div>
-            </SecurityItem>
-            
-            <SecurityItem>
-              <span className="icon">📸</span>
-              <div className="content">
-                <strong>Screenshot Protection</strong>
-                <span>Prevent sensitive information from being captured by screenshots.</span>
-              </div>
-            </SecurityItem>
-            
-            <SecurityItem>
-              <span className="icon">🚀</span>
-              <div className="content">
-                <strong>High Performance Mode</strong>
-                <span>Optimize app performance for smooth experience on all devices.</span>
-              </div>
-            </SecurityItem>
-          </SecurityList>
-        </SecurityFeatures>
+          <FeatureCard>
+            <FeatureTitle>Cross-Platform</FeatureTitle>
+            <FeatureDescription>
+              Available on Windows and Android, with seamless synchronization and consistent
+              experience across all your devices. Your passwords are always available when you need them.
+            </FeatureDescription>
+          </FeatureCard>
+        </FeaturesSection>
 
-        <CallToAction>
-          <CTATitle>Unbreakable Security, Effortlessly</CTATitle>
-          <CTASubtitle>
-            Join thousands of users who trust HiveKey to protect their digital lives. 
-            Download now and experience password security reimagined.
-          </CTASubtitle>
-          <DownloadSection>
-            <DownloadButton 
-              href="https://revolvotech.s3.us-east-1.amazonaws.com/ih/app/flutter/hivekey/HiveKey.exe" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
+        <DownloadSection>
+          <DownloadTitle>Get HiveKey Now</DownloadTitle>
+          <DownloadButtons>
+            <DownloadButton href="#windows">
               <img src={windowsLogo} alt="Windows" />
-              Get Started on Windows
+              Download for Windows
             </DownloadButton>
-            <DownloadButton 
-              href="https://play.google.com/store/apps/details?id=com.revolvotech.hivekey" 
-              target="_blank" 
-              rel="noopener noreferrer"
-            >
-              <img src={playstoreLogo} alt="Play Store" />
-              Get Started on Android
+            <DownloadButton href="#android">
+              <img src={playstoreLogo} alt="Android" />
+              Get it on Play Store
             </DownloadButton>
-          </DownloadSection>
-        </CallToAction>
+          </DownloadButtons>
+        </DownloadSection>
       </ContentContainer>
     </ProjectWrapper>
   );

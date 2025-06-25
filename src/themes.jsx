@@ -6,7 +6,7 @@ export const darkTheme = {
     primary: '#ffffff',
     secondary: '#e0e0e0',
     accent: '#ffffff',
-    background: '#000000',
+    background: 'transparent',
     cardBg: 'rgba(25, 25, 25, 0.95)',
     darkCardBg: '#0A0A0A',
     textPrimary: '#ffffff',
@@ -316,4 +316,376 @@ export const commonStyles = {
   `,
 };
 
-export default darkTheme; 
+// =============================================================================
+// REVOLVO DESIGN SYSTEM
+// Comprehensive styling guidelines for consistent UI/UX
+// =============================================================================
+
+export const designSystem = {
+  // ---------------------------------------------------------------------------
+  // COLOR PALETTE
+  // ---------------------------------------------------------------------------
+  colors: {
+    // Primary Brand Colors
+    primary: {
+      gold: '#fbb604',           // Main accent color (buttons, highlights)
+      goldLight: '#f59e0b',      // Lighter gold variant
+      goldDark: '#d97706',       // Darker gold variant
+      goldDeep: '#b45309',       // Deepest gold for shadows/depth
+      yellow: '#FFEB3B',         // Bright yellow (logo accent)
+    },
+    
+    // Secondary Colors
+    secondary: {
+      blue: '#3b82f6',           // Electric blue (eyes, accents)
+      blueLight: '#60a5fa',      // Light blue variant
+      blueDark: '#1d4ed8',       // Dark blue variant
+      cyan: '#00d4ff',           // Cyan accent
+    },
+    
+    // Neutral Colors
+    neutral: {
+      black: '#000000',          // Pure black background
+      darkGray: '#1a1a1a',       // Dark gray for cards
+      mediumGray: '#4a5568',     // Medium gray for borders
+      lightGray: '#6b7280',      // Light gray for text
+      white: '#ffffff',          // Pure white
+      offWhite: '#f8f8f8',       // Off-white for subtle elements
+    },
+    
+    // Text Colors
+    text: {
+      primary: '#ffffff',        // Main text color
+      secondary: 'rgba(255, 255, 255, 0.8)',  // Secondary text
+      muted: 'rgba(255, 255, 255, 0.6)',      // Muted text
+      accent: '#fbb604',         // Accent text color
+    },
+    
+    // Background Colors
+    background: {
+      primary: '#000000',        // Main background
+      secondary: 'rgba(255, 255, 255, 0.05)',  // Card backgrounds
+      accent: 'rgba(251, 182, 4, 0.1)',        // Accent backgrounds
+    },
+    
+    // Border Colors
+    border: {
+      primary: 'rgba(255, 255, 255, 0.1)',     // Main borders
+      accent: 'rgba(251, 182, 4, 0.3)',        // Accent borders
+      focus: '#fbb604',                         // Focus states
+    }
+  },
+
+  // ---------------------------------------------------------------------------
+  // TYPOGRAPHY
+  // ---------------------------------------------------------------------------
+  typography: {
+    // Font Families
+    fonts: {
+      primary: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      mono: '"SF Mono", "Monaco", "Inconsolata", "Roboto Mono", "Courier New", monospace',
+    },
+    
+    // Font Sizes & Weights
+    scale: {
+      // Headings
+      h1: {
+        fontSize: '4.5rem',      // 72px
+        fontWeight: '800',
+        lineHeight: '1.1',
+        letterSpacing: '-0.02em',
+        '@media (max-width: 1024px)': { fontSize: '3.5rem' },
+        '@media (max-width: 768px)': { fontSize: '2.8rem' },
+        '@media (max-width: 480px)': { fontSize: '2.2rem' },
+      },
+      h2: {
+        fontSize: '3.5rem',      // 56px
+        fontWeight: '800',
+        lineHeight: '1.1',
+        letterSpacing: '-0.01em',
+        '@media (max-width: 768px)': { fontSize: '2.5rem' },
+      },
+      h3: {
+        fontSize: '2.5rem',      // 40px
+        fontWeight: '700',
+        lineHeight: '1.2',
+        '@media (max-width: 768px)': { fontSize: '2rem' },
+      },
+      h4: {
+        fontSize: '2.2rem',      // 35px
+        fontWeight: '700',
+        lineHeight: '1.3',
+        '@media (max-width: 768px)': { fontSize: '1.8rem' },
+      },
+      h5: {
+        fontSize: '1.8rem',      // 29px
+        fontWeight: '600',
+        lineHeight: '1.3',
+      },
+      h6: {
+        fontSize: '1.5rem',      // 24px
+        fontWeight: '600',
+        lineHeight: '1.4',
+      },
+      
+      // Body Text
+      bodyLarge: {
+        fontSize: '1.25rem',     // 20px
+        fontWeight: '400',
+        lineHeight: '1.7',
+        letterSpacing: '0.3px',
+        '@media (max-width: 768px)': { fontSize: '1.1rem' },
+      },
+      body: {
+        fontSize: '1.1rem',      // 18px
+        fontWeight: '400',
+        lineHeight: '1.6',
+      },
+      bodySmall: {
+        fontSize: '1rem',        // 16px
+        fontWeight: '400',
+        lineHeight: '1.6',
+      },
+      
+      // UI Elements
+      button: {
+        fontSize: '1.1rem',      // 18px
+        fontWeight: '600',
+        letterSpacing: '0.5px',
+      },
+      buttonLarge: {
+        fontSize: '1.2rem',      // 19px
+        fontWeight: '700',
+        letterSpacing: '0.5px',
+      },
+      caption: {
+        fontSize: '0.9rem',      // 14px
+        fontWeight: '500',
+        lineHeight: '1.4',
+      },
+      small: {
+        fontSize: '0.8rem',      // 13px
+        fontWeight: '400',
+        lineHeight: '1.4',
+      },
+    }
+  },
+
+  // ---------------------------------------------------------------------------
+  // SPACING SYSTEM
+  // ---------------------------------------------------------------------------
+  spacing: {
+    xs: '4px',
+    sm: '8px',
+    md: '16px',
+    lg: '24px',
+    xl: '32px',
+    xxl: '48px',
+    xxxl: '64px',
+    huge: '96px',
+    
+    // Section Spacing
+    sectionPadding: '120px 8% 80px',
+    sectionPaddingMobile: '80px 5% 40px',
+    
+    // Component Spacing
+    cardPadding: '30px',
+    buttonPadding: '18px 40px',
+    inputPadding: '15px 20px',
+  },
+
+  // ---------------------------------------------------------------------------
+  // COMPONENT STYLES
+  // ---------------------------------------------------------------------------
+  components: {
+    // Buttons
+    button: {
+      primary: {
+        background: 'linear-gradient(135deg, #fbb604, #f99b04, #d39404)',
+        color: '#000',
+        borderRadius: '12px',
+        padding: '18px 40px',
+        fontWeight: '700',
+        fontSize: '1.1rem',
+        letterSpacing: '0.5px',
+        boxShadow: '0 8px 25px rgba(251, 182, 4, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2)',
+        transition: 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
+        hover: {
+          transform: 'translateY(-4px) scale(1.02)',
+          boxShadow: '0 15px 40px rgba(251, 182, 4, 0.4), 0 8px 20px rgba(0, 0, 0, 0.3)',
+          filter: 'brightness(1.1)',
+        }
+      },
+      secondary: {
+        background: 'transparent',
+        border: '2px solid rgba(251, 182, 4, 0.6)',
+        color: '#fbb604',
+        borderRadius: '12px',
+        padding: '16px 38px',
+        fontWeight: '600',
+        fontSize: '1.1rem',
+        letterSpacing: '0.5px',
+        backdropFilter: 'blur(10px)',
+        transition: 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
+        hover: {
+          transform: 'translateY(-4px) scale(1.02)',
+          borderColor: '#fbb604',
+          color: '#000',
+          background: 'linear-gradient(135deg, #fbb604, #f99b04)',
+          boxShadow: '0 15px 40px rgba(251, 182, 4, 0.3), 0 8px 20px rgba(0, 0, 0, 0.2)',
+        }
+      }
+    },
+    
+    // Cards
+    card: {
+      background: 'rgba(255, 255, 255, 0.05)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: '20px',
+      padding: '30px',
+      boxShadow: '0 15px 35px rgba(0, 0, 0, 0.2)',
+      transition: 'all 0.3s ease',
+      hover: {
+        transform: 'translateY(-5px)',
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+        borderColor: 'rgba(251, 182, 4, 0.3)',
+      }
+    },
+    
+    // Inputs
+    input: {
+      background: 'rgba(255, 255, 255, 0.05)',
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+      borderRadius: '8px',
+      padding: '15px 20px',
+      color: '#ffffff',
+      fontSize: '1rem',
+      transition: 'all 0.3s ease',
+      focus: {
+        borderColor: '#fbb604',
+        boxShadow: '0 0 0 3px rgba(251, 182, 4, 0.1)',
+        outline: 'none',
+      }
+    }
+  },
+
+  // ---------------------------------------------------------------------------
+  // GRADIENTS & EFFECTS
+  // ---------------------------------------------------------------------------
+  effects: {
+    gradients: {
+      primary: 'linear-gradient(135deg, #ffffff 0%, #f5f5f5 50%, #fbb604 100%)',
+      accent: 'linear-gradient(135deg, #fbb604, #f99b04, #d39404)',
+      text: 'linear-gradient(135deg, #fbb604, #f99b04)',
+      background: 'linear-gradient(135deg, rgba(251, 182, 4, 0.1), rgba(249, 155, 4, 0.1))',
+    },
+    
+    shadows: {
+      small: '0 2px 8px rgba(0, 0, 0, 0.1)',
+      medium: '0 8px 25px rgba(0, 0, 0, 0.15)',
+      large: '0 15px 35px rgba(0, 0, 0, 0.2)',
+      glow: '0 0 20px rgba(251, 182, 4, 0.3)',
+      glowHover: '0 0 30px rgba(251, 182, 4, 0.5)',
+    },
+    
+    animations: {
+      transition: 'all 0.3s ease',
+      transitionSmooth: 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
+      hover: 'transform 0.3s ease, box-shadow 0.3s ease',
+    }
+  },
+
+  // ---------------------------------------------------------------------------
+  // BREAKPOINTS
+  // ---------------------------------------------------------------------------
+  breakpoints: {
+    mobile: '480px',
+    tablet: '768px',
+    laptop: '1024px',
+    desktop: '1200px',
+    wide: '1440px',
+  },
+
+  // ---------------------------------------------------------------------------
+  // USAGE EXAMPLES
+  // ---------------------------------------------------------------------------
+  examples: {
+    // Page Title
+    pageTitle: {
+      fontSize: '4.5rem',
+      fontWeight: '800',
+      background: 'linear-gradient(135deg, #ffffff 0%, #f5f5f5 50%, #fbb604 100%)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      marginBottom: '30px',
+    },
+    
+    // Section Title
+    sectionTitle: {
+      fontSize: '3.5rem',
+      fontWeight: '800',
+      color: '#ffffff',
+      marginBottom: '20px',
+    },
+    
+    // Body Text
+    bodyText: {
+      fontSize: '1.25rem',
+      fontWeight: '400',
+      color: 'rgba(255, 255, 255, 0.8)',
+      lineHeight: '1.7',
+      letterSpacing: '0.3px',
+    },
+    
+    // Accent Text
+    accentText: {
+      background: 'linear-gradient(135deg, #fbb604, #f99b04)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+    }
+  }
+};
+
+// Helper function to get design system values
+export const getDesignToken = (path) => {
+  return path.split('.').reduce((obj, key) => obj?.[key], designSystem);
+};
+
+// CSS Custom Properties for easy usage
+export const cssVariables = `
+  :root {
+    /* Colors */
+    --color-primary-gold: ${designSystem.colors.primary.gold};
+    --color-primary-gold-light: ${designSystem.colors.primary.goldLight};
+    --color-primary-gold-dark: ${designSystem.colors.primary.goldDark};
+    --color-secondary-blue: ${designSystem.colors.secondary.blue};
+    --color-text-primary: ${designSystem.colors.text.primary};
+    --color-text-secondary: ${designSystem.colors.text.secondary};
+    --color-background-primary: ${designSystem.colors.background.primary};
+    --color-background-secondary: ${designSystem.colors.background.secondary};
+    
+    /* Typography */
+    --font-primary: ${designSystem.typography.fonts.primary};
+    --font-size-h1: ${designSystem.typography.scale.h1.fontSize};
+    --font-size-body: ${designSystem.typography.scale.body.fontSize};
+    --font-size-button: ${designSystem.typography.scale.button.fontSize};
+    
+    /* Spacing */
+    --spacing-sm: ${designSystem.spacing.sm};
+    --spacing-md: ${designSystem.spacing.md};
+    --spacing-lg: ${designSystem.spacing.lg};
+    --spacing-xl: ${designSystem.spacing.xl};
+    
+    /* Effects */
+    --gradient-primary: ${designSystem.effects.gradients.primary};
+    --gradient-accent: ${designSystem.effects.gradients.accent};
+    --shadow-medium: ${designSystem.effects.shadows.medium};
+    --shadow-glow: ${designSystem.effects.shadows.glow};
+    
+    /* Transitions */
+    --transition-smooth: ${designSystem.effects.animations.transitionSmooth};
+  }
+`;
+
+// Export the design system as default
+export default designSystem; 

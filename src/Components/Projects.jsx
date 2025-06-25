@@ -142,10 +142,10 @@ const ProjectCard = styled.div`
     border-color: rgba(255, 255, 255, 0.15);
     
     .project-image {
-      transform: scale(1.05);
+      transform: scale(1.02);
     }
     
-    .view-project {
+    .show-project {
       opacity: 1;
       transform: translateY(0);
     }
@@ -219,8 +219,8 @@ const ViewProjectButton = styled.div`
   left: 0;
   right: 0;
   padding: 16px 0;
-  background: rgba(255, 84, 112, 0.9);
-  color: white;
+  background: #fbb604;
+  color: #000000;
   text-align: center;
   font-weight: 600;
   opacity: 0;
@@ -357,11 +357,11 @@ const projectsData = [
 ];
 
 const Projects = () => {
-  const [activeTab, setActiveTab] = useState("All");
+  const [activeTab, setActiveTab] = useState("All Projects");
   const [filteredProjects, setFilteredProjects] = useState([]);
   
   useEffect(() => {
-    if (activeTab === "All") {
+    if (activeTab === "All Projects") {
       setFilteredProjects(projectsData);
     } else {
       setFilteredProjects(projectsData.filter(project => project.category === activeTab));
@@ -373,9 +373,13 @@ const Projects = () => {
   };
   
   const handleProjectClick = (project) => {
-    // This function can be expanded to open a modal or navigate to a project detail page
-    console.log("Project clicked:", project);
-    // For example: navigate(`/projects/${project.id}`) or open a modal with project details
+    if (project.type === 'app') {
+      // Handle app projects (like HiveKey)
+      window.location.href = `/projects/${project.slug}`;
+    } else {
+      // Handle web projects with direct links
+      window.open(project.link, '_blank');
+    }
   };
 
   return (
@@ -388,10 +392,10 @@ const Projects = () => {
       
       <TabsContainer>
         <Tab 
-          active={activeTab === "All"} 
-          onClick={() => handleTabClick("All")}
+          active={activeTab === "All Projects"} 
+          onClick={() => handleTabClick("All Projects")}
         >
-          All
+          All Projects
         </Tab>
         <Tab 
           active={activeTab === "Websites"} 
@@ -433,7 +437,6 @@ const Projects = () => {
                 <ProjectImage 
                   className="project-image" 
                   src={project.imageUrl} 
-                  alt={project.title}
                 />
               </ProjectImageContainer>
               <ProjectInfo>
@@ -445,7 +448,9 @@ const Projects = () => {
                   ))}
                 </TagsContainer>
               </ProjectInfo>
-              <ViewProjectButton className="view-project">View Project</ViewProjectButton>
+              <ViewProjectButton className="show-project">
+                Show Project
+              </ViewProjectButton>
             </ProjectCard>
           ))
         ) : (

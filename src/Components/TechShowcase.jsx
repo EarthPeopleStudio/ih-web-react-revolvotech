@@ -60,15 +60,33 @@ const ShowcaseWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   font-weight: 800;
   margin-bottom: 30px;
+  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   text-align: center;
-  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
   position: relative;
-  
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
+
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 `;
 
@@ -88,14 +106,14 @@ const TabsContainer = styled.div`
   justify-content: center;
   margin-bottom: 50px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(25, 25, 25, 0.9);
   padding: 8px;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   overflow: hidden;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(251, 182, 4, 0.2);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   flex-wrap: wrap;
   
@@ -107,8 +125,8 @@ const TabsContainer = styled.div`
 const Tab = styled.button`
   padding: 14px 20px;
   border: none;
-  background: ${(props) => (props.active ? "rgba(255, 84, 112, 0.15)" : "transparent")};
-  color: ${(props) => (props.active ? "var(--text-primary)" : "var(--text-secondary)")};
+  background: ${(props) => (props.active ? "rgba(251, 182, 4, 0.15)" : "transparent")};
+  color: ${(props) => (props.active ? "#fbb604" : "var(--text-secondary)")};
   font-size: 1rem;
   font-weight: ${(props) => (props.active ? "600" : "400")};
   border-radius: 8px;
@@ -118,8 +136,8 @@ const Tab = styled.button`
   z-index: 1;
   
   &:hover {
-    background: ${(props) => (props.active ? "rgba(255, 84, 112, 0.15)" : "rgba(255, 255, 255, 0.05)")};
-    color: var(--text-primary);
+    background: ${(props) => (props.active ? "rgba(251, 182, 4, 0.15)" : "rgba(251, 182, 4, 0.05)")};
+    color: ${(props) => (props.active ? "#fbb604" : "#f99b04")};
   }
 
   ${(props) => props.active && `
@@ -131,7 +149,7 @@ const Tab = styled.button`
       transform: translateX(-50%);
       width: 30px;
       height: 3px;
-      background: #ff5470;
+      background: #fbb604;
       border-radius: 2px;
     }
   `}
@@ -180,33 +198,33 @@ const CodeShowcaseGrid = styled.div`
 `;
 
 const CodeShowcaseItem = styled.div`
-  background: #121212; /* Darker black background like navbar */
-  border-radius: 20px; /* More rounded corners */
+  background: linear-gradient(145deg, rgba(25, 25, 25, 0.95), rgba(35, 35, 35, 0.95));
+  border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(251, 182, 4, 0.2);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
   transition: all 0.4s ease;
 
   &:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 84, 112, 0.3);
+    border: 1px solid rgba(251, 182, 4, 0.3);
   }
 `;
 
 const CodeShowcaseHeader = styled.div`
   padding: 24px 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(to right, rgba(18, 18, 18, 0.9), rgba(30, 30, 30, 0.9));
+  background: linear-gradient(to right, rgba(25, 25, 25, 0.98), rgba(35, 35, 35, 0.98));
 `;
 
 const CodeShowcaseTitle = styled.h3`
   margin: 0;
   font-size: 1.5rem;
-  color: #fff;
+  color: #fbb604;
   display: flex;
   align-items: center;
   letter-spacing: 0.5px;
@@ -214,17 +232,18 @@ const CodeShowcaseTitle = styled.h3`
   
   svg {
     margin-right: 10px;
-    color: #ff5470;
+    color: #fbb604;
   }
 `;
 
 const CodeShowcaseDescription = styled.p`
   padding: 16px 28px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.1);
   margin: 0;
+  background: rgba(25, 25, 25, 0.5);
 `;
 
 const CodeDemoContainer = styled.div`

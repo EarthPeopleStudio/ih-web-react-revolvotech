@@ -16,8 +16,8 @@ const BlogWrapper = styled.div`
 `;
 
 const BackButton = styled.button`
-  background: transparent;
-  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  border: 1px solid rgba(251, 182, 4, 0.3);
   color: var(--text-secondary);
   padding: 12px 20px;
   border-radius: 8px;
@@ -30,9 +30,21 @@ const BackButton = styled.button`
   transition: all 0.3s ease;
   
   &:hover {
-    background: var(--card-bg);
-    color: var(--text-primary);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, rgba(255, 235, 59, 0.1), rgba(251, 182, 4, 0.1));
+    color: #FFEB3B;
+    border-color: rgba(251, 182, 4, 0.5);
+    box-shadow: 0 4px 12px rgba(251, 182, 4, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &::before {
+    content: "←";
+    margin-right: 8px;
+    transition: transform 0.3s ease;
+  }
+
+  &:hover::before {
+    transform: translateX(-4px);
   }
 `;
 
@@ -45,14 +57,20 @@ const ArticleHeader = styled.header`
 
 const CategoryBadge = styled.div`
   background: var(--card-bg);
-  color: var(--text-primary);
+  color: #FFEB3B;
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 500;
   display: inline-block;
   margin-bottom: 25px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(251, 182, 4, 0.3);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(251, 182, 4, 0.5);
+    box-shadow: 0 0 15px rgba(251, 182, 4, 0.2);
+  }
 `;
 
 const ArticleTitle = styled.h1`
@@ -100,7 +118,7 @@ const ArticleContent = styled.article`
       left: 0;
       width: 60px;
       height: 3px;
-      background: var(--text-primary);
+      background: linear-gradient(to right, #FFEB3B, #fbb604);
       border-radius: 2px;
     }
   }
@@ -156,32 +174,75 @@ const ArticleContent = styled.article`
   }
   
   strong {
-    color: var(--text-primary);
+    color: #fbb604;
   }
   
   em {
     color: var(--text-primary);
     font-style: italic;
+    background: linear-gradient(135deg, #FFEB3B, #fbb604);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 `;
 
 const HighlightBox = styled.div`
   background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(251, 182, 4, 0.2);
   border-radius: 12px;
   padding: 30px;
   margin: 40px 0;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(251, 182, 4, 0.4);
+    box-shadow: 0 15px 35px rgba(251, 182, 4, 0.2);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    
+    th {
+      background: rgba(251, 182, 4, 0.1);
+      color: #FFEB3B;
+      font-weight: 600;
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+    }
+    
+    td {
+      padding: 12px;
+      border-bottom: 1px solid rgba(251, 182, 4, 0.1);
+      
+      strong {
+        color: #fbb604;
+      }
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
 `;
 
 const CTASection = styled.div`
   background: var(--card-bg);
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(251, 182, 4, 0.2);
   border-radius: 20px;
   padding: 40px;
   text-align: center;
   margin: 50px 0;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(251, 182, 4, 0.4);
+    box-shadow: 0 25px 50px rgba(251, 182, 4, 0.2);
+  }
 `;
 
 const CTATitle = styled.h3`
@@ -189,6 +250,20 @@ const CTATitle = styled.h3`
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 15px;
+  position: relative;
+  display: inline-block;
+  
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(to right, #FFEB3B, #fbb604);
+    border-radius: 2px;
+  }
 `;
 
 const CTAText = styled.p`
@@ -199,8 +274,8 @@ const CTAText = styled.p`
 `;
 
 const CTAButton = styled(Link)`
-  background: #f8f8f8;
-  color: black;
+  background: linear-gradient(135deg, #FFEB3B 0%, #fbb604 100%);
+  color: #000;
   border: none;
   border-radius: 8px;
   padding: 15px 30px;
@@ -210,21 +285,22 @@ const CTAButton = styled(Link)`
   transition: all 0.3s ease;
   display: inline-block;
   text-decoration: none;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px rgba(251, 182, 4, 0.2);
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(251, 182, 4, 0.3);
   }
 `;
 
 const PricingLink = styled(Link)`
-  color: var(--text-primary);
+  color: #FFEB3B;
   text-decoration: underline;
   font-weight: 600;
+  transition: all 0.3s ease;
   
   &:hover {
-    opacity: 0.8;
+    color: #fbb604;
   }
 `;
 
@@ -706,7 +782,7 @@ const BlogPost = ({ blog, onBack }) => {
 
   return (
     <BlogWrapper>
-      <BackButton onClick={handleBackClick}>← Back to Blog</BackButton>
+      <BackButton onClick={handleBackClick}>Back to Blog</BackButton>
 
       <ArticleHeader>
         <CategoryBadge>{blog.category}</CategoryBadge>

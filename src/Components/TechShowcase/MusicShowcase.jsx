@@ -1,22 +1,186 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AiOutlineCode, AiOutlineSound, AiOutlinePlayCircle, AiOutlinePauseCircle } from 'react-icons/ai';
 import { MdMusicNote, MdWavingHand, MdVolumeUp, MdSpeed } from 'react-icons/md';
+import styled from 'styled-components';
 
-// Import styled components
-import {
-  CodeShowcaseGrid,
-  CodeShowcaseItem,
-  CodeShowcaseHeader,
-  CodeShowcaseTitle,
-  CodeShowcaseDescription,
-  CodeDemoContainer,
-  CodeSnippetContainer,
-  CodeHeader,
-  CodeFileName,
-  CodeLanguage,
-  DemoContainer,
-  PreBlock
-} from '../StyledComponents';
+// Import styled components with updated colors
+const CodeShowcaseGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  margin-bottom: 60px;
+`;
+
+const CodeShowcaseItem = styled.div`
+  background: rgba(18, 18, 18, 0.95);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  backdrop-filter: blur(10px);
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 60px rgba(255, 235, 59, 0.1);
+    border: 1px solid rgba(255, 235, 59, 0.4);
+  }
+`;
+
+const CodeShowcaseHeader = styled.div`
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.05), rgba(251, 182, 4, 0.03));
+`;
+
+const CodeShowcaseTitle = styled.h3`
+  margin: 0;
+  font-size: 1.5rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  
+  svg {
+    margin-right: 10px;
+    color: #FFEB3B;
+  }
+`;
+
+const CodeShowcaseDescription = styled.p`
+  padding: 16px 28px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(255, 235, 59, 0.1);
+  margin: 0;
+`;
+
+const CodeDemoContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 20px 28px 28px;
+  
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CodeSnippetContainer = styled.div`
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(25, 25, 25, 0.8);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border: 1px solid rgba(255, 235, 59, 0.4);
+    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  }
+`;
+
+const CodeHeader = styled.div`
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.08), rgba(251, 182, 4, 0.05));
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #e0e0e0;
+  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+`;
+
+const CodeFileName = styled.span`
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #FFEB3B;
+`;
+
+const CodeLanguage = styled.span`
+  background: linear-gradient(135deg, rgba(255, 235, 59, 0.2), rgba(251, 182, 4, 0.15));
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: #FFEB3B;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(255, 235, 59, 0.3);
+`;
+
+const DemoContainer = styled.div`
+  background: rgba(25, 25, 25, 0.8);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 235, 59, 0.2);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border: 1px solid rgba(255, 235, 59, 0.4);
+    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  }
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, #FFEB3B, #00d4ff);
+    z-index: 2;
+  }
+`;
+
+const PreBlock = styled.pre`
+  margin: 0;
+  padding: 18px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-height: 350px;
+  color: #ffffff;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+  
+  /* Set all code to white */
+  .keyword, .string, .comment, .function, .variable, .operator, .number {
+    color: #ffffff;
+  }
+`;
 
 // Web Audio API Melody Generator Demo Component
 const MelodyGenerator = ({ title, description, melodyType }) => {
@@ -360,8 +524,8 @@ const MelodyGenerator = ({ title, description, melodyType }) => {
     };
   }, []);
   
-  const primaryColor = melodyType === 'ambient' ? '#3E98C7' : '#ff5470';
-  const secondaryColor = melodyType === 'ambient' ? '#2A3A8F' : '#ff9770';
+      const primaryColor = melodyType === 'ambient' ? '#00d4ff' : '#FFEB3B';
+    const secondaryColor = melodyType === 'ambient' ? '#0ea5e9' : '#fbb604';
   const gradientStyle = `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`;
   
   return (
@@ -398,7 +562,7 @@ const MelodyGenerator = ({ title, description, melodyType }) => {
             justifyContent: 'center',
             boxShadow: `0 5px 15px ${melodyType === 'ambient' 
               ? 'rgba(62, 152, 199, 0.3)'
-              : 'rgba(255, 84, 112, 0.3)'}`
+              : 'rgba(255, 235, 59, 0.3)'}`
           }}>
             <MdMusicNote size={24} color="#fff" />
           </div>
@@ -686,7 +850,7 @@ const MelodyGenerator = ({ title, description, melodyType }) => {
                         textAlign: 'center',
                         whiteSpace: 'nowrap',
                         boxShadow: selectedPattern === index 
-                          ? '0 4px 12px rgba(255, 84, 112, 0.3)' 
+                          ? '0 4px 12px rgba(255, 235, 59, 0.3)' 
                           : 'none'
                       }}
                     >
@@ -759,7 +923,7 @@ const MelodyGenerator = ({ title, description, melodyType }) => {
                   ? 'none'
                   : `0 5px 20px ${melodyType === 'ambient'
                       ? 'rgba(62, 152, 199, 0.4)'
-                      : 'rgba(255, 84, 112, 0.4)'}`,
+                      : 'rgba(255, 235, 59, 0.4)'}`,
                 transition: 'all 0.3s ease',
                 transform: isPlaying ? 'scale(0.95)' : 'scale(1)'
               }}
