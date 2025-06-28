@@ -501,18 +501,18 @@ export const designSystem = {
     // Buttons
     button: {
       primary: {
-        background: 'linear-gradient(135deg, #fbb604, #f99b04, #d39404)',
+        background: 'linear-gradient(135deg, #FFCA28, #fbb604, #f99b04)',
         color: '#000',
         borderRadius: '12px',
         padding: '18px 40px',
         fontWeight: '700',
         fontSize: '1.1rem',
         letterSpacing: '0.5px',
-        boxShadow: '0 8px 25px rgba(251, 182, 4, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2)',
+        boxShadow: '0 8px 25px rgba(255, 202, 40, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2)',
         transition: 'all 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
         hover: {
           transform: 'translateY(-4px) scale(1.02)',
-          boxShadow: '0 15px 40px rgba(251, 182, 4, 0.4), 0 8px 20px rgba(0, 0, 0, 0.3)',
+          boxShadow: '0 15px 40px rgba(255, 202, 40, 0.4), 0 8px 20px rgba(0, 0, 0, 0.3)',
           filter: 'brightness(1.1)',
         }
       },
@@ -643,7 +643,120 @@ export const designSystem = {
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
     }
-  }
+  },
+
+  // ---------------------------------------------------------------------------
+  // ANIMATION & MOTION SYSTEM
+  // ---------------------------------------------------------------------------
+  motion: {
+    // Easing curves
+    easing: {
+      smooth: 'cubic-bezier(0.25, 1, 0.5, 1)',
+      bounce: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+      snappy: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      gentle: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    },
+    
+    // Durations
+    duration: {
+      fast: '0.2s',
+      normal: '0.3s',
+      slow: '0.5s',
+      slower: '0.8s',
+    },
+    
+    // Page transitions
+    pageTransition: {
+      initial: { opacity: 0, y: 20 },
+      animate: { opacity: 1, y: 0 },
+      exit: { opacity: 0, y: -20 },
+      transition: { duration: 0.4, ease: 'easeInOut' }
+    },
+    
+    // Hover effects
+    hover: {
+      lift: 'translateY(-4px) scale(1.02)',
+      glow: '0 15px 40px rgba(255, 202, 40, 0.3)',
+      brightness: 'brightness(1.1)',
+    },
+    
+    // Reveal animations
+    reveal: {
+      fadeUp: {
+        initial: { opacity: 0, y: 30 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.6, ease: 'easeOut' }
+      },
+      fadeLeft: {
+        initial: { opacity: 0, x: -30 },
+        animate: { opacity: 1, x: 0 },
+        transition: { duration: 0.5, ease: 'easeOut' }
+      },
+      stagger: {
+        delayChildren: 0.1,
+        staggerChildren: 0.1
+      }
+    }
+  },
+
+  // ---------------------------------------------------------------------------
+  // DARK MODE ENHANCEMENTS
+  // ---------------------------------------------------------------------------
+  darkMode: {
+    // Enhanced color palette for dark mode
+    colors: {
+      background: {
+        primary: '#000000',
+        secondary: 'rgba(255, 255, 255, 0.03)',
+        tertiary: 'rgba(255, 255, 255, 0.06)',
+        elevated: 'rgba(255, 255, 255, 0.08)',
+      },
+      text: {
+        primary: '#ffffff',
+        secondary: 'rgba(255, 255, 255, 0.8)',
+        muted: 'rgba(255, 255, 255, 0.6)',
+        accent: '#E0B23B', // Slightly desaturated for calm night-mode feel
+      },
+      accent: {
+        primary: '#E0B23B', // Desaturated yellow for dark mode
+        secondary: '#F9C643', // Warmer yellow variant
+        glow: 'rgba(224, 178, 59, 0.3)',
+      },
+      border: {
+        primary: 'rgba(255, 255, 255, 0.08)',
+        secondary: 'rgba(255, 255, 255, 0.12)',
+        accent: 'rgba(224, 178, 59, 0.3)',
+      }
+    },
+    
+    // Cursor effects
+    cursor: {
+      glow: `
+        .cursor-glow {
+          position: fixed;
+          width: 20px;
+          height: 20px;
+          background: radial-gradient(circle, rgba(224, 178, 59, 0.4) 0%, transparent 70%);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 9999;
+          mix-blend-mode: screen;
+          transition: transform 0.1s ease;
+        }
+      `,
+      trail: `
+        .cursor-trail {
+          position: fixed;
+          width: 6px;
+          height: 6px;
+          background: rgba(224, 178, 59, 0.6);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 9998;
+        }
+      `
+    }
+  },
 };
 
 // Helper function to get design system values

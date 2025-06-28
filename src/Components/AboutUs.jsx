@@ -1,6 +1,16 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
 
 const AboutWrapper = styled.div`
   padding: 120px 8% 80px;
@@ -9,18 +19,46 @@ const AboutWrapper = styled.div`
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 30px 30px, 45px 45px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
 `;
 
 const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 800;
   margin-bottom: 20px;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-align: center;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 2rem;
+    margin-bottom: 16px;
   }
 `;
 
@@ -29,6 +67,8 @@ const Subtitle = styled.h2`
   font-weight: 700;
   margin-bottom: 30px;
   color: var(--text-primary);
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
     font-size: 1.8rem;
@@ -36,14 +76,79 @@ const Subtitle = styled.h2`
 `;
 
 const Section = styled.section`
-  margin-bottom: 50px;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border-radius: 16px;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 25px 25px, 25px 25px, 12px 12px, 18px 18px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
+
+  &:hover {
+    transform: translateY(-5px);
+    border-color: rgba(251, 182, 4, 0.4);
+    box-shadow: 0 20px 40px rgba(251, 182, 4, 0.1);
+    
+    &::after {
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+    }
+  }
 `;
 
 const SectionTitle = styled.h3`
-  color: var(--text-primary);
+  color: #fbb604;
   font-size: 1.8rem;
   margin-bottom: 20px;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(to bottom, #FFEB3B, #fbb604);
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(251, 182, 4, 0.3);
+  }
 `;
 
 const Paragraph = styled.p`
@@ -51,6 +156,13 @@ const Paragraph = styled.p`
   font-size: 1.1rem;
   line-height: 1.8;
   margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+
+  strong {
+    color: #fbb604;
+    font-weight: 600;
+  }
 `;
 
 const List = styled.ul`
@@ -59,45 +171,68 @@ const List = styled.ul`
   line-height: 1.8;
   margin-bottom: 20px;
   padding-left: 20px;
+  position: relative;
+  z-index: 1;
 
   li {
-    margin-bottom: 15px;
-  }
-`;
-
-const BackButton = styled.button`
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  padding: 15px 30px;
-  background: var(--button-bg);
-  border: none;
-  border-radius: 8px;
-  color: var(--button-text);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: var(--button-glow);
-
-  &:hover {
-    transform: translateY(-2px);
-    background: var(--button-hover-bg);
-    box-shadow: var(--button-hover-glow);
-  }
-
-  @media (max-width: 768px) {
-    bottom: 20px;
-    right: 20px;
+    margin-bottom: 10px;
+    position: relative;
+    
+    &::before {
+      content: '•';
+      color: #fbb604;
+      position: absolute;
+      left: -20px;
+      filter: drop-shadow(0 0 4px rgba(251, 182, 4, 0.3));
+    }
   }
 `;
 
 const ContactLink = styled.a`
-  color: var(--text-primary);
-  text-decoration: underline;
-  transition: opacity 0.3s ease;
+  color: #fbb604;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 0 rgba(251, 182, 4, 0);
   
   &:hover {
-    opacity: 0.8;
+    color: #FFEB3B;
+    text-shadow: 0 0 10px rgba(251, 182, 4, 0.5);
+  }
+`;
+
+const CircuitAccent = styled.div`
+  position: absolute;
+  top: 150px;
+  right: 50px;
+  width: 60px;
+  height: 60px;
+  border: 1px solid rgba(251, 182, 4, 0.1);
+  border-radius: 4px;
+  z-index: 0;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 182, 4, 0.2);
+    border-radius: 50%;
+    animation: ${circuitPulse} 3s ease-in-out infinite reverse;
   }
 `;
 
@@ -106,6 +241,7 @@ const AboutUs = () => {
 
   return (
     <AboutWrapper>
+      <CircuitAccent />
       <Title>About Us</Title>
       <Subtitle>Welcome to Revolvo Tech</Subtitle>
       
@@ -160,11 +296,10 @@ const AboutUs = () => {
       <Section>
         <SectionTitle>Get in Touch</SectionTitle>
         <Paragraph>
-          Ready to transform your ideas into reality? Contact us today at <ContactLink href="mailto:hey@revolvo.tech">hey@revolvo.tech</ContactLink> to learn more about our services and products.
+          Have questions or want to discuss a project? Feel free to reach out to us at{" "}
+          <ContactLink href="mailto:hey@revolvo.tech">hey@revolvo.tech</ContactLink>
         </Paragraph>
       </Section>
-
-      <BackButton onClick={() => navigate(-1)}>← Go Back</BackButton>
     </AboutWrapper>
   );
 };

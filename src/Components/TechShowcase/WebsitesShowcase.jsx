@@ -1,6 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AiOutlineCode, AiOutlineDesktop, AiOutlineMobile, AiOutlineGlobal } from 'react-icons/ai';
+
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
+
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
 
 // Styled components
 const CodeShowcaseGrid = styled.div`
@@ -11,59 +25,109 @@ const CodeShowcaseGrid = styled.div`
 `;
 
 const CodeShowcaseItem = styled.div`
-  background: rgba(18, 18, 18, 0.95);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(255, 235, 59, 0.2);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s ease;
+  position: relative;
   backdrop-filter: blur(10px);
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
 
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 30px 60px rgba(255, 235, 59, 0.1);
-    border: 1px solid rgba(255, 235, 59, 0.4);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(251, 182, 4, 0.3);
+    
+    &::after {
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+    }
   }
 `;
 
 const CodeShowcaseHeader = styled.div`
   padding: 24px 28px;
-  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, rgba(255, 235, 59, 0.05), rgba(251, 182, 4, 0.03));
+  background: linear-gradient(to right, rgba(25, 25, 30, 0.98), rgba(35, 35, 40, 0.98));
+  position: relative;
+  z-index: 1;
 `;
 
 const CodeShowcaseTitle = styled.h3`
   margin: 0;
   font-size: 1.5rem;
-  color: #fff;
+  color: #fbb604;
   display: flex;
   align-items: center;
   letter-spacing: 0.5px;
   font-weight: 600;
+  position: relative;
+  z-index: 1;
   
   svg {
     margin-right: 10px;
-    color: #FFEB3B;
+    color: #fbb604;
   }
 `;
 
 const CodeShowcaseDescription = styled.p`
   padding: 16px 28px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
-  border-bottom: 1px solid rgba(255, 235, 59, 0.1);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.1);
   margin: 0;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.8), rgba(35, 35, 40, 0.8));
+  position: relative;
+  z-index: 1;
 `;
 
 const CodeDemoContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  padding: 20px 28px 28px;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  overflow: hidden;
   
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
@@ -72,117 +136,153 @@ const CodeDemoContainer = styled.div`
 
 const CodeSnippetContainer = styled.div`
   position: relative;
-  border-radius: 12px;
+  border-radius: 0;
   overflow: hidden;
   background: rgba(25, 25, 25, 0.8);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 235, 59, 0.2);
+  border: none;
+  border-right: 1px solid rgba(251, 182, 4, 0.2);
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
   
-  &:hover {
-    border: 1px solid rgba(255, 235, 59, 0.4);
-    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  @media (max-width: 968px) {
+    border-right: none;
+    border-bottom: 1px solid rgba(251, 182, 4, 0.2);
   }
 `;
 
 const CodeHeader = styled.div`
-  background: linear-gradient(135deg, rgba(255, 235, 59, 0.08), rgba(251, 182, 4, 0.05));
+  background: linear-gradient(135deg, rgba(251, 182, 4, 0.08), rgba(251, 182, 4, 0.05));
   padding: 12px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.8rem;
   color: #e0e0e0;
-  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
 `;
 
 const CodeFileName = styled.span`
   display: flex;
   align-items: center;
   font-weight: 500;
-  color: #FFEB3B;
+  color: #fbb604;
 `;
 
 const CodeLanguage = styled.span`
-  background: linear-gradient(135deg, rgba(255, 235, 59, 0.2), rgba(251, 182, 4, 0.15));
+  background: linear-gradient(135deg, rgba(251, 182, 4, 0.2), rgba(251, 182, 4, 0.15));
   padding: 4px 12px;
   border-radius: 6px;
-  color: #FFEB3B;
+  color: #fbb604;
   font-weight: 600;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border: 1px solid rgba(255, 235, 59, 0.3);
+  border: 1px solid rgba(251, 182, 4, 0.3);
 `;
 
 const PreBlock = styled.pre`
+  background: transparent;
   margin: 0;
-  padding: 18px;
-  overflow-x: auto;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: 'Fira Code', monospace;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   line-height: 1.5;
-  max-height: 350px;
   color: #ffffff;
-  background: #1a1a1a;
+  white-space: pre-wrap;
+  word-break: break-word;
+  word-wrap: break-word;
+  flex: 1;
+  max-height: 400px;
   
   &::-webkit-scrollbar {
     width: 8px;
-    height: 8px;
   }
   
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.1);
   }
   
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 4px;
   }
   
   &::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(251, 182, 4, 0.5);
   }
-  
-  /* Set all code to white */
-  .keyword, .string, .comment, .function, .variable, .operator, .number {
-    color: #ffffff;
-  }
-  
-  /* Add font smoothing for better readability */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 `;
 
 const DemoContainer = styled.div`
-  background: rgba(25, 25, 25, 0.8);
-  border-radius: 12px;
   padding: 20px;
+  background: linear-gradient(145deg, rgba(30, 30, 35, 0.9), rgba(40, 40, 45, 0.9));
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 235, 59, 0.2);
+  min-height: 400px;
+  border: 1px solid rgba(251, 182, 4, 0.1);
   overflow: hidden;
-  position: relative;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
+  box-sizing: border-box;
+  max-height: 600px;
   
-  &:hover {
-    border: 1px solid rgba(255, 235, 59, 0.4);
-    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  /* Ensure all child elements scale properly and center */
+  > * {
+    max-width: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
   }
   
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(to right, #FFEB3B, #00d4ff);
-    z-index: 2;
+  /* Handle scrolling if content is too large */
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(251, 182, 4, 0.5);
+  }
+`;
+
+const DemoWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  
+  /* Ensure demo content doesn't overflow and centers properly */
+  > * {
+    max-width: 100%;
+    max-height: 100%;
+    transform-origin: center;
+    margin: 0 auto;
+  }
+  
+  /* Scale down large demos to fit properly */
+  @media (max-width: 768px) {
+    transform: scale(0.9);
+  }
+  
+  @media (max-width: 480px) {
+    transform: scale(0.8);
   }
 `;
 
@@ -230,1045 +330,231 @@ const RainbowCode = ({ code, language }) => {
   );
 };
 
-// Responsive Portfolio Demo Component
-const ResponsivePortfolioDemo = () => {
-  const [activeSection, setActiveSection] = useState('work');
-  const [viewMode, setViewMode] = useState('desktop');
-  const [hoveredProject, setHoveredProject] = useState(null);
-  const [animatedHeader, setAnimatedHeader] = useState(false);
-  const [loadingComplete, setLoadingComplete] = useState(false);
-  const [shapesVisible, setShapesVisible] = useState(false);
-  const [initialized, setInitialized] = useState(false);
-  const [autoDemo, setAutoDemo] = useState(true);
-  const [lastInteraction, setLastInteraction] = useState(Date.now());
-  const autoResumeTimeoutRef = useRef(null);
+// Creative Analytics Dashboard Demo Component
+const CreativeAgencyDashboard = () => {
+  const [activeMetric, setActiveMetric] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [pulseEffect, setPulseEffect] = useState(false);
+  
+  const metrics = [
+    {
+      title: 'Revenue Growth',
+      value: '+47%',
+      subtitle: 'vs last month',
+      color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      accent: '#4facfe',
+      icon: '💰'
+    },
+    {
+      title: 'Active Projects',
+      value: '23',
+      subtitle: 'in progress',
+      color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+      accent: '#ff6b9d',
+      icon: '🚀'
+    },
+    {
+      title: 'Client Satisfaction',
+      value: '96%',
+      subtitle: 'rating average',
+      color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+      accent: '#43e97b',
+      icon: '⭐'
+    }
+  ];
 
-  // References for animations
-  const shapesRef = useRef(null);
-  const containerRef = useRef(null);
-  
-  // Optimize loading sequence
+  // Auto cycle through metrics
   useEffect(() => {
-    // Preload all states immediately to avoid cascading timeouts
-    setInitialized(true); // Initialize immediately
+    const interval = setInterval(() => {
+      setActiveMetric((prev) => (prev + 1) % metrics.length);
+    }, 3500);
     
-    // Use requestAnimationFrame for better performance
-    requestAnimationFrame(() => {
-      setLoadingComplete(true);
-      
-      // Stagger shape animations with reduced delay
-      setTimeout(() => {
-        setShapesVisible(true);
-      }, 150); // Reduced from 400ms
-    });
-    
-    return () => {
-      // Clean up any potential memory leaks
-      if (autoResumeTimeoutRef.current) {
-        clearTimeout(autoResumeTimeoutRef.current);
-      }
-    };
-  }, []); // Only run on mount
+    return () => clearInterval(interval);
+  }, []);
   
-  // Resume auto demo after period of inactivity
+  // Pulse effect
   useEffect(() => {
-    if (autoDemo) return; // Skip if already in auto mode
+    const pulseInterval = setInterval(() => {
+      setPulseEffect(true);
+      setTimeout(() => setPulseEffect(false), 600);
+    }, 2000);
     
-    // Clear any existing auto-resume timeout
-    if (autoResumeTimeoutRef.current) {
-      clearTimeout(autoResumeTimeoutRef.current);
-    }
-    
-    // Set a new timeout to resume auto demo after inactivity (10 seconds)
-    autoResumeTimeoutRef.current = setTimeout(() => {
-      const now = Date.now();
-      const inactiveTime = now - lastInteraction;
-      
-      // If user has been inactive for more than 10 seconds, resume auto demo
-      if (inactiveTime > 10000) {
-        setAutoDemo(true);
-      }
-    }, 10000);
-    
-    return () => {
-      if (autoResumeTimeoutRef.current) {
-        clearTimeout(autoResumeTimeoutRef.current);
-      }
-    };
-  }, [autoDemo, lastInteraction]);
+    return () => clearInterval(pulseInterval);
+  }, []);
   
-  // Handle user interaction
-  const handleUserInteraction = () => {
-    setLastInteraction(Date.now());
-    setAutoDemo(false);
-  };
-  
-  // Optimize cycling animations - only start when component is fully loaded
-  useEffect(() => {
-    if (!autoDemo || !loadingComplete) return;
-    
-    const sections = ['work', 'about', 'contact'];
-    const currentIndex = sections.indexOf(activeSection);
-    
-    // Reduced time from 6000ms to 5000ms for faster cycling
-    const sectionTimer = setTimeout(() => {
-      setActiveSection(sections[(currentIndex + 1) % sections.length]);
-    }, 5000);
-    
-    return () => clearTimeout(sectionTimer);
-  }, [activeSection, autoDemo, loadingComplete]);
-  
-  // Optimize device mode cycling
-  useEffect(() => {
-    if (!autoDemo || !loadingComplete) return;
-    
-    const modes = ['desktop', 'tablet', 'mobile'];
-    const currentIndex = modes.indexOf(viewMode);
-    
-    // Reduced time from 10000ms to 8000ms for faster cycling
-    const modeTimer = setTimeout(() => {
-      setViewMode(modes[(currentIndex + 1) % modes.length]);
-    }, 8000);
-    
-    return () => clearTimeout(modeTimer);
-  }, [viewMode, autoDemo, loadingComplete]);
-  
-  // Optimize project card hover effect
-  useEffect(() => {
-    if (!autoDemo || !loadingComplete || activeSection !== 'work') return;
-    
-    let currentProject = null;
-    
-    // Reduced time from 3000ms to 2500ms for faster cycling
-    const hoverTimer = setInterval(() => {
-      if (currentProject !== null) {
-        setHoveredProject(null);
-        currentProject = null;
-      } else {
-        currentProject = Math.floor(Math.random() * projects.length);
-        setHoveredProject(currentProject);
-      }
-    }, 2500);
-    
-    return () => clearInterval(hoverTimer);
-  }, [activeSection, autoDemo, loadingComplete]);
-  
-  // Optimize shape animations for better performance
-  useEffect(() => {
-    if (!shapesVisible || !shapesRef.current) return;
-    
-    // Use more performant CSS properties (prefer transform over others)
-    const shapeElements = shapesRef.current.children;
-    if (shapeElements && shapeElements.length > 0) {
-      Array.from(shapeElements).forEach((shape, index) => {
-        // Use transform-based animations instead of multiple properties
-        shape.style.animation = `float ${2 + index % 2}s infinite ease-in-out`; // Reduced animation time
-        shape.style.animationDelay = `${index * 0.3}s`; // Reduced delay
-      });
-    }
-  }, [shapesVisible]);
-  
-  // Device frame based on viewMode
-  const getDeviceFrame = () => {
-    if (viewMode === 'desktop') {
-      return {
-        outerStyle: {
+  return (
+    <div style={{
     width: '100%',
-          maxWidth: '600px',
-          margin: '0 auto 20px',
-          padding: '20px 20px 30px',
-          background: '#333',
-          borderRadius: '16px 16px 6px 6px',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(255,255,255,0.1), inset 0 1px 10px rgba(0,0,0,0.8)',
+      maxWidth: '520px',
+      height: '441px',
+      background: metrics[activeMetric].color,
+      borderRadius: '20px',
+      padding: '30px',
           position: 'relative',
-          zIndex: 2,
-          transform: initialized ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.98)',
-          opacity: initialized ? 1 : 0,
-          transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.05s', // Faster transition
-          boxSizing: 'border-box',
-          willChange: 'transform, opacity' // Performance hint for browser
-        },
-        standStyle: {
-          position: 'absolute',
-          bottom: '-15px',
-          left: '50%',
-          width: '140px',
-          height: '20px',
-          background: 'linear-gradient(to bottom, #333 0%, #222 100%)',
-          transform: 'translateX(-50%)',
-          borderRadius: '0 0 10px 10px',
-          boxShadow: '0 5px 10px rgba(0,0,0,0.2)'
-        },
-        screenStyle: {
-          width: '100%',
-          height: '400px',
-          background: '#FAFAFA',
-          borderRadius: '8px',
     overflow: 'hidden',
-    position: 'relative',
-          boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.05)',
-          border: '1px solid #e0e0e0'
-        },
-        cameraStyle: {
+      boxShadow: '0 25px 50px rgba(0,0,0,0.3)',
+      transition: 'background 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+      margin: '0 auto'
+    }}>
+      {/* Background decorative elements */}
+      <div style={{
           position: 'absolute',
-          top: '10px',
-          left: '50%',
-          width: '6px',
-          height: '6px',
-          background: 'rgba(0,0,0,0.2)',
+        top: '-50px',
+        right: '-50px',
+        width: '150px',
+        height: '150px',
+        background: 'rgba(255,255,255,0.1)',
           borderRadius: '50%',
-          transform: 'translateX(-50%)',
-          boxShadow: 'inset 0 0 2px rgba(0,0,0,0.5)'
-        }
-      };
-    } else if (viewMode === 'tablet') {
-      return {
-        outerStyle: {
-          width: '100%',
-          maxWidth: '450px',
-          margin: '0 auto 20px',
-          padding: '20px',
-          background: 'linear-gradient(to bottom, #444 0%, #333 100%)',
-          borderRadius: '30px',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.3), inset 0 0 0 2px rgba(255,255,255,0.05), inset 0 0 10px rgba(0,0,0,0.5)',
-          position: 'relative',
-          zIndex: 2,
-          transform: initialized ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.98)',
-          opacity: initialized ? 1 : 0,
-          transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s'
-        },
-        buttonStyle: {
-          position: 'absolute',
-          top: '50%',
-          right: '6px',
-          width: '4px',
-          height: '40px',
-          background: '#222',
-          borderRadius: '2px',
-          transform: 'translateY(-50%)',
-          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.1)'
-        },
-        screenStyle: {
-          width: '100%',
-          height: '400px',
-          background: '#FAFAFA',
-          borderRadius: '10px',
-          overflow: 'hidden',
-          position: 'relative',
-          boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.05)',
-          border: '1px solid #e0e0e0'
-        },
-        cameraStyle: {
-          position: 'absolute',
-          top: '10px',
-          left: '50%',
-          width: '5px',
-          height: '5px',
-          background: 'rgba(0,0,0,0.2)',
-          borderRadius: '50%',
-          transform: 'translateX(-50%)',
-          boxShadow: 'inset 0 0 2px rgba(0,0,0,0.5)'
-        }
-      };
-    } else {
-      return {
-        outerStyle: {
-          width: '100%',
-          maxWidth: '280px',
-          margin: '0 auto 20px',
-          padding: '15px 10px',
-          background: 'linear-gradient(to bottom, #444 0%, #222 100%)',
-          borderRadius: '30px',
-          boxShadow: '0 15px 30px rgba(0,0,0,0.3), inset 0 0 0 2px rgba(255,255,255,0.05), inset 0 0 10px rgba(0,0,0,0.5)',
-          position: 'relative',
-          zIndex: 2,
-          transform: initialized ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.98)',
-          opacity: initialized ? 1 : 0,
-          transition: 'all 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s',
-          boxSizing: 'border-box'
-        },
-        speakerStyle: {
-          position: 'absolute',
-          top: '12px',
-          left: '50%',
-          width: '60px',
-          height: '6px',
-          background: '#222',
-          borderRadius: '3px',
-          transform: 'translateX(-50%)',
-          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.1)'
-        },
-        notchStyle: {
-          position: 'absolute',
-          top: 0,
-          left: '50%',
-          width: '120px',
-          height: '25px',
-          background: '#222',
-          borderRadius: '0 0 12px 12px',
-          transform: 'translateX(-50%)',
-    display: 'flex',
-    alignItems: 'center',
-          justifyContent: 'center',
-          boxShadow: 'inset 0 -2px 5px rgba(0,0,0,0.2)'
-        },
-        notchCameraStyle: {
-          width: '8px',
-          height: '8px',
-          background: '#111',
-          borderRadius: '50%',
-          marginRight: '5px',
-          boxShadow: 'inset 0 0 2px rgba(0,0,0,0.8), 0 0 1px rgba(255,255,255,0.1)'
-        },
-        notchSpeakerStyle: {
-          width: '35px',
-          height: '4px',
-          background: '#111',
-          borderRadius: '2px',
-          boxShadow: 'inset 0 0 2px rgba(0,0,0,0.8), 0 0 1px rgba(255,255,255,0.1)'
-        },
-        screenStyle: {
-          width: '100%',
-          height: '450px',
-          background: '#FAFAFA',
-          borderRadius: '20px',
-          overflow: 'hidden',
-    position: 'relative',
-          boxShadow: 'inset 0 0 0 2px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.05)',
-          border: '1px solid #e0e0e0'
-        },
-        buttonStyle: {
-          position: 'absolute',
-          top: '120px',
-          right: '-2px',
-          width: '3px',
-          height: '30px',
-          background: 'rgba(0,0,0,0.2)',
-          borderRadius: '2px 0 0 2px',
-          boxShadow: 'inset 1px 0 2px rgba(0,0,0,0.3)'
-        },
-        volumeButtonsStyle: {
-          position: 'absolute',
-          top: '80px',
-          left: '-2px',
-    display: 'flex',
-          flexDirection: 'column',
-          gap: '10px'
-        },
-        volumeButtonStyle: {
-          width: '3px',
-          height: '25px',
-          background: 'rgba(0,0,0,0.2)',
-          borderRadius: '0 2px 2px 0',
-          boxShadow: 'inset -1px 0 2px rgba(0,0,0,0.3)'
-        }
-      };
-    }
-  };
-
-  const deviceFrame = getDeviceFrame();
-  
-  const backgroundGradient = {
+        transform: pulseEffect ? 'scale(1.1)' : 'scale(1)',
+        transition: 'transform 0.6s ease'
+      }} />
+      
+      <div style={{
       position: 'absolute',
-    top: '-10%',
-    left: '-10%',
-    width: '120%',
-    height: '120%',
-    background: 'linear-gradient(-45deg, rgba(244,114,182,0.2) 0%, rgba(59,130,246,0.2) 50%, rgba(16,185,129,0.2) 100%)',
-    zIndex: 0,
-    borderRadius: '100%',
-    filter: 'blur(50px)',
-    animation: 'rotateBg 30s linear infinite',
-    opacity: loadingComplete ? 0.6 : 0
-  };
-  
-  const contentStyle = {
-    padding: viewMode === 'desktop' ? '20px 25px' : 
-             viewMode === 'tablet' ? '18px 22px' : '16px',
-    height: viewMode === 'desktop' ? '360px' : viewMode === 'tablet' ? '360px' : '420px',
-    overflowY: 'auto',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: viewMode === 'mobile' ? '18px' : '25px',
-    msOverflowStyle: 'none',
-    scrollbarWidth: 'none',
-    className: 'hide-scrollbar',
-    position: 'relative',
-    background: '#FAFAFA',
-    transition: 'opacity 0.4s ease',
-    opacity: loadingComplete ? 1 : 0
-  };
-  
-  const headerStyle = {
+        bottom: '-30px',
+        left: '-30px',
+        width: '100px',
+        height: '100px',
+        background: 'rgba(255,255,255,0.05)',
+        borderRadius: '50%'
+      }} />
+      
+      {/* Header */}
+      <div style={{
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: viewMode === 'desktop' ? '14px 25px' : 
-             viewMode === 'tablet' ? '12px 22px' : '10px 16px',
-    background: 'linear-gradient(to right, rgba(255,255,255,0.95), rgba(245,245,250,0.95))',
-    borderBottom: '1px solid #EAEAEA',
-    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.03)',
-    backdropFilter: 'blur(5px)',
-    transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-    transform: animatedHeader ? 'translateY(-100%)' : 'translateY(0%)',
-    opacity: animatedHeader ? 0 : 1,
-    position: 'sticky',
-    top: 0,
-    zIndex: 5
-  };
-  
-  const projectCardStyle = (index) => ({
+        marginBottom: '30px',
     position: 'relative',
-    height: viewMode === 'desktop' ? '170px' : 
-            viewMode === 'tablet' ? '150px' : '120px',
-    borderRadius: '12px',
-    overflow: 'hidden',
-    cursor: 'pointer',
-    background: 'white',
-    transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-    transform: hoveredProject === index ? 'translateY(-8px)' : 'translateY(0)',
-    boxShadow: hoveredProject === index ? 
-      '0 15px 30px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05)' : 
-      '0 5px 15px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.03)',
-    border: '1px solid #EAEAEA',
-    animation: loadingComplete ? `fadeIn 0.5s forwards ${0.2 + index * 0.1}s` : 'none',
-    opacity: 0
-  });
-  
-  const shapeStyle = (size, top, left, delay, type, color) => ({
-    position: 'absolute',
-    width: size,
-    height: type === 'circle' ? size : type === 'square' ? size : size/2,
-    top: top,
-    left: left,
-    background: color,
-    borderRadius: type === 'circle' ? '50%' : type === 'triangle' ? '0' : '4px',
-    clipPath: type === 'triangle' ? 'polygon(50% 0%, 0% 100%, 100% 100%)' : 'none',
-    opacity: shapesVisible ? 0.7 : 0,
-    transform: shapesVisible ? 'translateY(0) rotate(0)' : 'translateY(20px) rotate(-20deg)',
-    transition: `all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) ${delay}s`,
-    animation: shapesVisible ? `float ${3 + Math.random() * 4}s infinite ease-in-out` : 'none',
-    zIndex: 1
-  });
-  
-  const projects = [
-    { 
-      color: 'linear-gradient(135deg, #FFF4E5 0%, #FFE8CC 100%)',
-      accent: '#FF9900',
-      title: 'Brand Identity',
-      icon: '✦',
-      year: '2023',
-      tools: ['Figma', 'Photoshop']
-    },
-    { 
-      color: 'linear-gradient(135deg, #E8F4FF 0%, #D1E9FF 100%)',
-      accent: '#2D7FF9',
-      title: 'Mobile App UI',
-      icon: '◎',
-      year: '2023',
-      tools: ['React Native', 'Sketch']
-    },
-    { 
-      color: 'linear-gradient(135deg, #F0FFF4 0%, #DCFFE7 100%)',
-      accent: '#38A169',
-      title: 'Web Dashboard',
-      icon: '◩',
-      year: '2022',
-      tools: ['React', 'D3.js']
-    },
-    { 
-      color: 'linear-gradient(135deg, #FFF1F3 0%, #FFE4E8 100%)',
-      accent: '#E53E3E',
-      title: 'Social Platform',
-      icon: '◇',
-      year: '2022',
-      tools: ['Vue.js', 'Firebase']
-    },
-  ];
-
-  const shapes = [
-    { size: '60px', top: '15%', left: '10%', delay: 0.1, type: 'circle', color: 'rgba(255, 153, 0, 0.15)' },
-    { size: '40px', top: '70%', left: '8%', delay: 0.3, type: 'square', color: 'rgba(45, 127, 249, 0.15)' },
-    { size: '30px', top: '40%', left: '85%', delay: 0.4, type: 'circle', color: 'rgba(56, 161, 105, 0.15)' },
-    { size: '50px', top: '80%', left: '75%', delay: 0.2, type: 'triangle', color: 'rgba(229, 62, 62, 0.15)' },
-    { size: '25px', top: '20%', left: '75%', delay: 0.5, type: 'square', color: 'rgba(102, 126, 234, 0.15)' }
-  ];
-
-  const animations = `
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes float {
-      0% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(3deg); }
-      100% { transform: translateY(0px) rotate(0deg); }
-    }
-    
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-    
-    @keyframes rotateBg {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .hide-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-  `;
-  
-  return (
-    <>
-      <div style={{ position: 'relative', padding: '20px 0 60px' }}>
-        <style>{animations}</style>
-        
-        <div style={backgroundGradient}></div>
-        
-        {/* Device Frame */}
-        <div style={{
-          ...deviceFrame.outerStyle,
-          transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)'
-        }} ref={containerRef}>
-          {viewMode === 'desktop' && <div style={deviceFrame.standStyle}></div>}
-          {viewMode === 'tablet' && <div style={deviceFrame.buttonStyle}></div>}
-          {viewMode === 'mobile' && <div style={deviceFrame.speakerStyle}></div>}
-          
-          <div style={{
-            ...deviceFrame.screenStyle,
-            transition: 'all 0.4s ease'
-          }}>
-            {viewMode !== 'mobile' && <div style={deviceFrame.cameraStyle}></div>}
-            
-            {/* Mobile device notch and speaker */}
-            {viewMode === 'mobile' && (
-              <div style={deviceFrame.notchStyle}>
-                <div style={deviceFrame.notchCameraStyle}></div>
-                <div style={deviceFrame.notchSpeakerStyle}></div>
-          </div>
-            )}
-            
-            {/* Side buttons for mobile */}
-            {viewMode === 'mobile' && (
-              <>
-                <div style={deviceFrame.buttonStyle}></div>
-                <div style={deviceFrame.volumeButtonsStyle}>
-                  <div style={deviceFrame.volumeButtonStyle}></div>
-                  <div style={deviceFrame.volumeButtonStyle}></div>
-            </div>
-              </>
-            )}
-            
-            {/* Background shapes */}
-            <div ref={shapesRef}>
-              {shapes.map((shape, i) => (
-                <div
-                  key={i}
-                  style={shapeStyle(
-                    shape.size,
-                    shape.top,
-                    shape.left,
-                    shape.delay,
-                    shape.type,
-                    shape.color
-                  )}
-                />
-              ))}
-            </div>
-            
-            {/* Header */}
+        zIndex: 2
+      }}>
             <div style={{
-              ...headerStyle,
-              transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)'
-            }}>
-              <div style={{
-                fontWeight: '700',
-                fontSize: viewMode === 'desktop' ? '1.3rem' : 
-                          viewMode === 'tablet' ? '1.2rem' : '1.1rem',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                color: '#222',
-                position: 'relative'
-              }}>
-                <span style={{
+          color: 'white',
                   fontSize: '1.4rem',
-                  color: '#222',
-                  background: 'linear-gradient(135deg, #ff9900, #ff5470)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent'
-                }}>◮</span>
-                <span>Portfolio</span>
+          fontWeight: '700'
+        }}>
+          Analytics Dashboard
               </div>
               <div style={{
-                display: 'flex',
-                gap: viewMode === 'desktop' ? '30px' : 
-                    viewMode === 'tablet' ? '20px' : '15px'
-              }}>
-                {['Work', 'About', 'Contact'].map((item) => (
-                  <div 
-                    key={item}
-                    style={{
-                      color: activeSection === item.toLowerCase() ? '#222' : '#777',
-                      fontWeight: activeSection === item.toLowerCase() ? '600' : '500',
-                      fontSize: viewMode === 'desktop' ? '0.95rem' : 
-                                viewMode === 'tablet' ? '0.85rem' : '0.8rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      position: 'relative',
-                      padding: '6px 0',
-                      borderBottom: activeSection === item.toLowerCase() ? '2px solid #ff5470' : '2px solid transparent'
-                    }}
-                    onClick={() => {
-                      handleUserInteraction();
-                      setActiveSection(item.toLowerCase());
-                    }}
-                  >
-                    {item}
-            </div>
-                ))}
+          background: 'rgba(255,255,255,0.2)',
+          padding: '8px 16px',
+          borderRadius: '20px',
+          color: 'white',
+          fontSize: '0.9rem',
+          fontWeight: '600'
+        }}>
+          Live
           </div>
         </div>
         
-            {/* Content area with interactive sections */}
-            <div 
-              style={{
-                ...contentStyle,
-                transition: 'opacity 0.6s ease'
-              }} 
-              className="hide-scrollbar"
-              onMouseMove={handleUserInteraction}
-              onClick={handleUserInteraction}
-            >
-          {activeSection === 'work' && (
-            <>
+      {/* Main metric display */}
               <div style={{
-                    color: '#222', 
-                    fontSize: viewMode === 'desktop' ? '1.6rem' : '1.4rem', 
-                fontWeight: '700',
-                display: 'flex',
-                alignItems: 'center',
-                    justifyContent: 'space-between',
+        textAlign: 'center',
+        marginBottom: '30px',
                 position: 'relative',
-                    paddingBottom: '15px',
-                    marginBottom: '5px',
-                    borderBottom: '1px solid #EAEAEA',
                     zIndex: 2
                   }}>
-                    <span>Projects</span>
-                <span style={{
-                      fontSize: '0.9rem',
-                      fontWeight: '500',
-                      color: 'white',
-                      background: 'linear-gradient(to right, #ff9900, #ff5470)',
-                      padding: '5px 12px',
-                  borderRadius: '20px',
-                      boxShadow: '0 4px 10px rgba(255, 84, 112, 0.2)'
-                }}>
-                  4 projects
-                </span>
-              </div>
-                  
                   <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: viewMode === 'desktop' ? 'repeat(auto-fill, minmax(200px, 1fr))' : 
-                                          viewMode === 'tablet' ? 'repeat(2, 1fr)' : '1fr',
-                    gap: '16px'
-                  }}>
-                {projects.map((project, index) => (
-                  <div 
-                    key={index}
-                        style={projectCardStyle(index)}
-                    onMouseEnter={() => setHoveredProject(index)}
-                    onMouseLeave={() => setHoveredProject(null)}
-                  >
-                    <div style={{
-                      position: 'absolute',
-                          top: '0',
-                          left: '0',
-                          width: '100%',
-                          height: '100%',
-                          display: 'flex',
-                          alignItems: 'flex-start',
-                          justifyContent: 'flex-start',
-                          padding: '16px',
-                          boxSizing: 'border-box',
-                          flexDirection: 'column',
-                          transition: 'transform 0.4s ease',
-                          transform: hoveredProject === index ? 'translateY(-60px)' : 'translateY(0)',
-                          background: 'white',
-                          zIndex: 2
-                        }}>
-                          <div style={{
-                            fontSize: '28px',
+          fontSize: '4rem',
                             marginBottom: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                            width: '50px',
-                            height: '50px',
-                            background: project.color,
-                            borderRadius: '8px',
-                            color: project.accent,
-                            boxShadow: '0 4px 10px rgba(0,0,0,0.07)'
-                    }}>
-                      {project.icon}
-                    </div>
-                      <div style={{
-                            fontSize: '1rem',
-                        fontWeight: '600',
-                            color: '#222',
-                            marginBottom: '6px'
-                      }}>
-                        {project.title}
-                      </div>
-                      <div style={{
-                            fontSize: '0.85rem',
-                            fontWeight: '500',
-                            color: '#666',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '5px'
-                      }}>
-                            <span>{project.year}</span>
-                          </div>
+          transform: pulseEffect ? 'scale(1.1)' : 'scale(1)',
+          transition: 'transform 0.6s ease'
+        }}>
+          {metrics[activeMetric].icon}
                         </div>
                         
-                        {/* Details panel that slides up on hover */}
                         <div style={{
-                          position: 'absolute',
-                          bottom: '0',
-                          left: '0',
-                          width: '100%',
-                          padding: '16px',
-                          boxSizing: 'border-box',
-                          background: project.color,
-                          transition: 'transform 0.4s ease',
-                          transform: hoveredProject === index ? 'translateY(0)' : 'translateY(100%)',
-                          borderTop: `3px solid ${project.accent}`,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '10px',
-                          zIndex: 1
-                        }}>
-                          <div style={{
-                            display: 'flex',
-                            gap: '5px',
-                            flexWrap: 'wrap'
-                          }}>
-                            {project.tools.map((tool, i) => (
-                              <span key={i} style={{
-                                background: 'white',
-                          padding: '4px 8px',
-                          borderRadius: '4px',
-                                fontSize: '0.7rem',
-                                color: '#444',
-                                fontWeight: '500',
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
-                        }}>
-                                {tool}
-                        </span>
-                            ))}
+          color: 'white',
+          fontSize: '3rem',
+          fontWeight: '800',
+          marginBottom: '8px',
+          textShadow: '0 4px 20px rgba(0,0,0,0.3)'
+        }}>
+          {metrics[activeMetric].value}
                       </div>
                           
-                          <button style={{
-                            border: 'none',
-                            background: 'white',
-                            color: '#222',
-                            padding: '8px 12px',
-                            borderRadius: '6px',
+        <div style={{
+          color: 'white',
+          fontSize: '1.2rem',
                             fontWeight: '600',
-                            fontSize: '0.8rem',
-                            cursor: 'pointer',
-                            boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '5px',
-                            alignSelf: 'flex-start',
-                            transition: 'transform 0.2s ease'
-                          }}>
-                            View Project <span style={{marginLeft: '2px'}}>→</span>
-                          </button>
+          marginBottom: '5px'
+        }}>
+          {metrics[activeMetric].title}
                     </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
           
-              {/* About section */}
-          {activeSection === 'about' && (
             <div style={{
-                  color: '#444', 
-                  fontSize: '0.95rem', 
-              lineHeight: '1.6',
-                  animation: 'fadeIn 0.5s forwards',
+          color: 'rgba(255,255,255,0.8)',
+          fontSize: '1rem'
+        }}>
+          {metrics[activeMetric].subtitle}
+                </div>
+                  </div>
+          
+      {/* Bottom stats */}
+            <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: '16px',
+        marginBottom: '35px',
+        position: 'relative',
                   zIndex: 2
             }}>
-              <h2 style={{
-                    color: '#222', 
-                    marginTop: '0',
-                    marginBottom: '20px', 
-                    fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem',
-                    fontWeight: '700',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                    paddingBottom: '15px',
-                    borderBottom: '1px solid #EAEAEA'
-                  }}>
-                    <span style={{
-                      fontSize: '1rem',
-                      background: 'linear-gradient(to right, #ff9900, #ff5470)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      fontWeight: '600'
-                    }}>01.</span> About Me
-              </h2>
-                  
-              <div style={{
-                display: 'flex',
-                flexDirection: viewMode === 'desktop' ? 'row' : 'column',
-                    gap: '25px'
-              }}>
-                <div style={{
-                  position: 'relative',
-                      width: viewMode === 'desktop' ? '110px' : '90px',
-                      height: viewMode === 'desktop' ? '110px' : '90px',
-                      background: 'linear-gradient(135deg, #fff4e5, #ffe8cc)',
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                      fontSize: '44px',
-                      alignSelf: viewMode === 'desktop' ? 'flex-start' : 'flex-start',
-                      marginBottom: viewMode === 'desktop' ? '0' : '5px',
-                      boxShadow: '0 8px 20px rgba(0,0,0,0.07)',
-                      border: '1px solid #EAEAEA',
-                      animation: 'float 5s infinite ease-in-out'
-                }}>
-                  👋
-                </div>
-                    
-                <div>
-                      <p style={{marginTop: 0, marginBottom: '15px'}}>I'm a UI/UX designer and front-end developer with 5+ years of experience creating beautiful and functional digital experiences.</p>
-                      
-                      <p style={{marginTop: '0', marginBottom: '20px'}}>My expertise includes responsive web design, mobile app interfaces, and interactive prototypes with a focus on accessibility and user engagement.</p>
-                  
-                  <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '8px',
-                        marginTop: '20px'
-                  }}>
-                    {['React', 'Vue.js', 'Figma', 'UX Research', 'Responsive Design'].map((skill, index) => (
-                      <span key={index} style={{
-                            background: 'white',
-                            padding: '6px 12px',
-                        borderRadius: '20px',
-                        fontSize: '0.75rem',
-                            color: '#444',
-                            fontWeight: '500',
-                            boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-                            border: '1px solid #EAEAEA'
-                      }}>
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-          
-              {/* Contact section */}
-          {activeSection === 'contact' && (
-            <div style={{
-                  color: '#444', 
-                  fontSize: '0.95rem',
-                  animation: 'fadeIn 0.5s forwards',
-                  zIndex: 2
-            }}>
-              <h2 style={{
-                    color: '#222', 
-                    marginTop: '0',
-                    marginBottom: '20px', 
-                    fontSize: viewMode === 'desktop' ? '1.6rem' : '1.3rem',
-                    fontWeight: '700',
-                    paddingBottom: '15px',
-                    borderBottom: '1px solid #EAEAEA'
-                  }}>
-                    <span style={{
-                      fontSize: '1rem',
-                      background: 'linear-gradient(to right, #ff9900, #ff5470)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      fontWeight: '600'
-                    }}>02.</span> Get In Touch
-              </h2>
-                  
-              <div style={{
-                    background: 'white', 
-                padding: '20px', 
+        {[
+          { label: 'Conversion', value: '8.2%', trend: '↑' },
+          { label: 'Sessions', value: '12.4K', trend: '↑' },
+          { label: 'Bounce Rate', value: '24%', trend: '↓' }
+        ].map((stat, index) => (
+          <div key={index} style={{
+            background: 'rgba(255,255,255,0.15)',
+            padding: '14px',
                     borderRadius: '14px', 
-                    marginBottom: '16px',
-                    boxShadow: '0 5px 20px rgba(0,0,0,0.05)',
-                    border: '1px solid #EAEAEA',
-                    position: 'relative',
-                    overflow: 'hidden'
+            textAlign: 'center',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.2)'
               }}>
                 <div style={{
-                      marginBottom: '14px', 
-                      color: '#222',
-                  display: 'flex',
-                  alignItems: 'center',
-                      gap: '12px'
-                    }}>
-                      <div style={{
-                        width: '38px',
-                        height: '38px',
-                        background: 'linear-gradient(135deg, #fff4e5, #ffe8cc)',
-                        color: '#FF9900',
-                        borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '18px',
-                        boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
-                  }}>
-                    ✉️
+              color: 'white',
+              fontSize: '1.1rem',
+              fontWeight: '700',
+              marginBottom: '4px'
+            }}>
+              {stat.value} <span style={{ color: metrics[activeMetric].accent }}>{stat.trend}</span>
                 </div>
                 <div style={{
-                        fontWeight: '600',
-                        fontSize: '1.05rem'
-                      }}>Email</div>
-                    </div>
-                    
-                    <div style={{
-                      color: '#222',
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      background: '#F9F9F9',
-                      border: '1px solid #EAEAEA',
-                      marginLeft: '50px',
-                      fontWeight: '500'
-                }}>
-                  hello@portfolio.com
+              color: 'rgba(255,255,255,0.8)',
+              fontSize: '0.8rem'
+            }}>
+              {stat.label}
                 </div>
-              </div>
-                  
-              <div style={{
-                    background: 'white', 
-                padding: '20px', 
-                    borderRadius: '14px',
-                    boxShadow: '0 5px 20px rgba(0,0,0,0.05)',
-                    border: '1px solid #EAEAEA'
-              }}>
-                <div style={{
-                      marginBottom: '14px', 
-                      color: '#222',
-                  display: 'flex',
-                  alignItems: 'center',
-                      gap: '12px'
-                    }}>
-                      <div style={{
-                        width: '38px',
-                        height: '38px',
-                        background: 'linear-gradient(135deg, #e8f4ff, #d1e9ff)',
-                        color: '#2D7FF9',
-                        borderRadius: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '18px',
-                        boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
-                  }}>
-                    🔗
-                </div>
-                      <div style={{
-                        fontWeight: '600',
-                        fontSize: '1.05rem'
-                      }}>Social</div>
-                    </div>
-                    
-                <div style={{
-                  display: 'flex', 
-                  gap: '10px',
-                      marginLeft: '50px',
-                      flexWrap: 'wrap'
-                }}>
-                  {['Twitter', 'LinkedIn', 'Dribbble'].map((social, index) => (
-                    <div key={index} style={{
-                      cursor: 'pointer',
-                          padding: '8px 14px',
-                      borderRadius: '6px',
-                          fontWeight: '500',
-                          color: '#222',
-                          background: '#F9F9F9',
-                          border: '1px solid #EAEAEA',
-                          transition: 'all 0.2s ease'
-                    }}>
-                      {social}
                     </div>
                   ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
         </div>
         
-        {/* View mode selector */}
+      {/* Navigation dots */}
       <div style={{
+        position: 'absolute',
+        bottom: '15px',
+        left: '50%',
+        transform: 'translateX(-50%)',
         display: 'flex',
-        justifyContent: 'center',
         gap: '8px',
-          marginTop: '30px',
-          position: 'relative',
-          zIndex: 5
+        zIndex: 2
       }}>
-          {['Desktop', 'Tablet', 'Mobile'].map((mode) => (
-        <button 
-              key={mode}
+        {metrics.map((_, index) => (
+          <div
+            key={index}
           style={{
-                padding: '7px 14px',
-                background: viewMode === mode.toLowerCase() 
-                  ? 'linear-gradient(to right, #ff9900, #ff5470)' 
-                  : 'white',
-                color: viewMode === mode.toLowerCase() ? 'white' : '#777',
-                border: viewMode === mode.toLowerCase() 
-                  ? 'none' 
-                  : '1px solid #EAEAEA',
-            borderRadius: '20px',
-                fontSize: '0.85rem',
-                fontWeight: viewMode === mode.toLowerCase() ? '600' : '500',
-            cursor: 'pointer',
+              width: '10px',
+              height: '10px',
+              borderRadius: '50%',
+              background: index === activeMetric ? 'white' : 'rgba(255,255,255,0.4)',
             transition: 'all 0.3s ease',
-                boxShadow: viewMode === mode.toLowerCase() 
-                  ? '0 4px 12px rgba(255,84,112,0.3)' 
-                  : '0 2px 5px rgba(0,0,0,0.05)'
-              }}
-              onClick={() => {
-                handleUserInteraction();
-                setViewMode(mode.toLowerCase());
-              }}
-            >
-              {mode}
-        </button>
+              boxShadow: index === activeMetric ? '0 0 10px rgba(255,255,255,0.5)' : 'none'
+            }}
+          />
           ))}
         </div>
       </div>
-    </>
   );
 };
 
@@ -1279,28 +565,28 @@ const ProductShowcaseDemo = () => {
   
   const products = [
     {
-      name: 'Pro Wireless Headphones',
-      price: '$249',
-      color: 'Midnight Black',
-      features: ['Active Noise Cancellation', '36hr Battery Life', 'Hi-Fi Sound'],
-      background: 'linear-gradient(135deg, #434343 0%, #000000 100%)',
-      accent: '#5a5a5a'
+      name: 'Ocean Wave Headphones',
+      price: '$299',
+      color: 'Deep Ocean',
+      features: ['Crystal Clear Sound', '48hr Battery Life', 'Ocean-Inspired Design'],
+      background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
+      accent: '#3b82f6'
     },
     {
-      name: 'Air Comfort Earbuds',
-      price: '$179',
-      color: 'Sky Blue',
-      features: ['Touch Controls', 'Water Resistant', 'Ambient Sound Mode'],
-      background: 'linear-gradient(135deg, #00c6fb 0%, #005bea 100%)',
-      accent: '#00a1fb'
+      name: 'Tidal Pro Earbuds',
+      price: '$199',
+      color: 'Turquoise',
+      features: ['Touch Controls', 'Waterproof IPX8', 'Tidal Sound Wave'],
+      background: 'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
+      accent: '#0ea5e9'
     },
     {
-      name: 'Studio Monitor Headphones',
-      price: '$329',
-      color: 'Premium Gold',
-      features: ['Studio-grade Sound', 'Wired + Wireless', 'Foldable Design'],
-      background: 'linear-gradient(135deg, #f6d365 0%, #fda085 100%)',
-      accent: '#f8c76e'
+      name: 'Azure Studio Cans',
+      price: '$399',
+      color: 'Electric Teal',
+      features: ['Studio-grade Audio', 'Wireless + Wired', 'Premium Comfort'],
+      background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+      accent: '#10b981'
     }
   ];
   
@@ -1327,7 +613,7 @@ const ProductShowcaseDemo = () => {
   
   const containerStyle = {
     width: '100%',
-    height: '420px',
+    height: '441px',
     background: products[activeProduct].background,
     borderRadius: '14px',
     padding: '25px',
@@ -1708,7 +994,9 @@ export default ProductShowcase;`}
             />
           </CodeSnippetContainer>
           <DemoContainer>
+            <DemoWrapper>
             <ProductShowcaseDemo />
+            </DemoWrapper>
           </DemoContainer>
         </CodeDemoContainer>
       </CodeShowcaseItem>
@@ -1815,13 +1103,16 @@ const NavItem = styled.div\`
 
 const ShapeElement = styled.div\`
   position: absolute;
-  width: \${props => props.size};
-  height: \${props => 
-    props.type === 'circle' 
-      ? props.size 
-      : props.type === 'square' 
-        ? props.size 
-        : 'calc(' + props.size + '/2)'};
+  width: \${props => props.size || '40px'};
+  height: \${props => {
+    if (props.type === 'circle' || props.type === 'square') {
+      return props.size || '40px';
+    } else if (props.type === 'triangle') {
+      const size = parseInt(props.size) || 40;
+      return \`\${size / 2}px\`;
+    }
+    return props.size || '40px';
+  }};
   background: \${props => props.color};
   border-radius: \${props => 
     props.type === 'circle' ? '50%' : '4px'};
@@ -1921,7 +1212,9 @@ export default Portfolio;`}
             />
           </CodeSnippetContainer>
           <DemoContainer>
-            <ResponsivePortfolioDemo />
+            <DemoWrapper>
+              <CreativeAgencyDashboard />
+            </DemoWrapper>
           </DemoContainer>
         </CodeDemoContainer>
       </CodeShowcaseItem>

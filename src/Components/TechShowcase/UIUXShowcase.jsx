@@ -3,26 +3,232 @@ import Lottie from "lottie-react";
 import dogAnimation from "../../assets/animations/dog.json";
 import cupAnimation from "../../assets/animations/cup.json";
 import { AiOutlineCode } from 'react-icons/ai';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
-// Import styled components
-import {
-  CodeShowcaseGrid,
-  CodeShowcaseItem,
-  CodeShowcaseHeader,
-  CodeShowcaseTitle,
-  CodeShowcaseDescription,
-  CodeDemoContainer,
-  CodeSnippetContainer,
-  CodeHeader,
-  CodeFileName,
-  CodeLanguage,
-  DemoContainer,
-  PreBlock,
-  RainbowCode
-} from '../StyledComponents';
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
 
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
 
+// Local styled components
+
+const CodeShowcaseGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  margin-bottom: 60px;
+`;
+
+const CodeShowcaseItem = styled.div`
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s ease;
+  position: relative;
+  backdrop-filter: blur(10px);
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(251, 182, 4, 0.3);
+    
+    &::after {
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+    }
+  }
+`;
+
+const CodeShowcaseHeader = styled.div`
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, rgba(25, 25, 30, 0.98), rgba(35, 35, 40, 0.98));
+  position: relative;
+  z-index: 1;
+`;
+
+const CodeShowcaseTitle = styled.h3`
+  margin: 0;
+  font-size: 1.5rem;
+  color: #fbb604;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  
+  svg {
+    margin-right: 10px;
+    color: #fbb604;
+  }
+`;
+
+const CodeShowcaseDescription = styled.p`
+  padding: 16px 28px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(251, 182, 4, 0.1);
+  margin: 0;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.8), rgba(35, 35, 40, 0.8));
+  position: relative;
+  z-index: 1;
+`;
+
+const CodeDemoContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  overflow: hidden;
+  
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const CodeSnippetContainer = styled.div`
+  position: relative;
+  border-radius: 0;
+  overflow: hidden;
+  background: rgba(25, 25, 25, 0.8);
+  border: none;
+  border-right: 1px solid rgba(251, 182, 4, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  
+  @media (max-width: 968px) {
+    border-right: none;
+    border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+  }
+`;
+
+const CodeHeader = styled.div`
+  background: linear-gradient(135deg, rgba(251, 182, 4, 0.08), rgba(251, 182, 4, 0.05));
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #e0e0e0;
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+`;
+
+const CodeFileName = styled.span`
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: #fbb604;
+`;
+
+const CodeLanguage = styled.span`
+  background: linear-gradient(135deg, rgba(251, 182, 4, 0.2), rgba(251, 182, 4, 0.15));
+  padding: 4px 12px;
+  border-radius: 6px;
+  color: #fbb604;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid rgba(251, 182, 4, 0.3);
+`;
+
+const DemoContainer = styled.div`
+  padding: 20px;
+  background: linear-gradient(145deg, rgba(30, 30, 35, 0.9), rgba(40, 40, 45, 0.9));
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 1px solid rgba(251, 182, 4, 0.1);
+`;
+
+const PreBlock = styled.pre`
+  background: transparent;
+  margin: 0;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #ffffff;
+  white-space: pre-wrap;
+  word-break: break-word;
+  word-wrap: break-word;
+  flex: 1;
+  max-height: 400px;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(251, 182, 4, 0.5);
+  }
+`;
 
 // CSS Animation Demo Component
 const CSSAnimationDemo = () => {

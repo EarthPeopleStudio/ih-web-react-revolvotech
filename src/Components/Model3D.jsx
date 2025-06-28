@@ -223,38 +223,38 @@ function Model({ url }) {
         if (child.material.color) {
           switch(name) {
             case 'Object_143': // Metal Lining (Dark Chrome)
-              child.material.color.setHex(0x4A5568);
+              child.material.color.setHex(0x4d4d4d); // Darker gray
               if (child.material.emissive) child.material.emissive.setHex(0x000000);
               if (child.material.roughness !== undefined) child.material.roughness = 0.1;
               if (child.material.metalness !== undefined) child.material.metalness = 0.95;
               break;
               
             case 'Object_144': // Hat (Top)
-              child.material.color.setHex(0x1e293b); // Deep, dark blue
+              child.material.color.setHex(0x2d2d2d); // Very dark gray
               break;
               
             case 'Object_145': // Jacket (Outside)
-              child.material.color.setHex(0x0f172a); // Near-black, dark blue-gray
+              child.material.color.setHex(0x1a1a1a); // Near-black gray
               break;
               
             case 'Object_146': // Belt
-              child.material.color.setHex(0x1A202C); // Keep dark
+              child.material.color.setHex(0x333333); // Dark gray
               break;
               
             case 'Object_147': // Face/Head Metal (Dark Chrome)
-              child.material.color.setHex(0x6b7280);
+              child.material.color.setHex(0x666666); // Medium gray
               if (child.material.roughness !== undefined) child.material.roughness = 0.1;
               if (child.material.metalness !== undefined) child.material.metalness = 0.95;
               break;
               
             case 'Object_148': // Jacket (Inside)
-              child.material.color.setHex(0x0ea5e9); // Electric Blue instead of hot pink
+              child.material.color.setHex(0x808080); // Light gray
               if (child.material.roughness !== undefined) child.material.roughness = 0.5;
               if (child.material.metalness !== undefined) child.material.metalness = 0.2;
               break;
               
-            case 'Object_149': // Jacket Lining (Top) - Neon Pink
-              child.material.color.setHex(0xf59e0b); // Gold highlights for premium feel
+            case 'Object_149': // Jacket Lining (Top) - Keep gold
+              child.material.color.setHex(0xf59e0b); // Gold highlights
               if (child.material.emissive) {
                 child.material.emissive.setHex(0xf59e0b);
                 child.material.emissiveIntensity = 0.8;
@@ -262,44 +262,44 @@ function Model({ url }) {
               break;
               
             case 'Object_150': // Scarf Inside
-              child.material.color.setHex(0x333333); // Dark neutral
+              child.material.color.setHex(0x404040); // Dark gray
               break;
               
             case 'Object_151': // Sides, Belt Buckle, Hands (Dark Chrome)
-              child.material.color.setHex(0x6b7280); // Warmer gunmetal
+              child.material.color.setHex(0x595959); // Medium-dark gray
               if (child.material.roughness !== undefined) child.material.roughness = 0.1;
               if (child.material.metalness !== undefined) child.material.metalness = 0.95;
               break;
               
             case 'Object_152': // Hat (Inside)
-              child.material.color.setHex(0x1A202C); // Dark neutral
+              child.material.color.setHex(0x262626); // Very dark gray
               break;
               
-            case 'Object_153': // Eyes - Intense Electric Blue
-              child.material.color.setHex(0x00d4ff); // Brighter cyan-blue for more pop
+            case 'Object_153': // Eyes - Keep bright blue
+              child.material.color.setHex(0x39FF14); // Bright cyan-blue
               if (child.material.emissive) {
-                child.material.emissive.setHex(0x00d4ff);
-                child.material.emissiveIntensity = 5.0; // Maximum glow for dramatic effect
+                child.material.emissive.setHex(0xFFFFFF);
+                child.material.emissiveIntensity = 5.0;
               }
-              if (child.material.roughness !== undefined) child.material.roughness = 0;
+              if (child.material.roughness !== undefined) child.material.roughness = 1;
               if (child.material.metalness !== undefined) child.material.metalness = 1;
               break;
               
             case 'Object_154': // Shoes
-              child.material.color.setHex(0x1A202C); // Keep dark
+              child.material.color.setHex(0x1f1f1f); // Very dark gray
               if (child.material.roughness !== undefined) child.material.roughness = 0.2;
               if (child.material.metalness !== undefined) child.material.metalness = 0.1;
               break;
               
-            case 'Object_155': // Scarf (Top) - Enhanced Gold
-              child.material.color.setHex(0xfbb604); // Primary gold to match buttons
+            case 'Object_155': // Scarf (Top) - Keep gold
+              child.material.color.setHex(0xfbb604); // Primary gold
               if (child.material.emissive) {
                 child.material.emissive.setHex(0xfbb604);
                 child.material.emissiveIntensity = 0.7;
               }
               break;
               
-            case 'Object_156': // Scarf (Bottom) - Deeper Neon Pink
+            case 'Object_156': // Scarf (Bottom) - Keep amber
               child.material.color.setHex(0xb45309); // Amber-700
               if (child.material.emissive) {
                 child.material.emissive.setHex(0xb45309);
@@ -324,8 +324,8 @@ function Model({ url }) {
       const mouseX = mouseRef.current.x;
       const mouseY = mouseRef.current.y;
 
-      // Only update head rotation if not in a button hover animation or if in shrug animation
-      if (currentAnimation === DEFAULT_ANIMATION || currentAnimation === 'Shrug') {
+      // Only update head rotation if not in a button hover animation or if in allowed animations
+      if (currentAnimation === DEFAULT_ANIMATION || currentAnimation === 'Shrug' || currentAnimation === 'Grin') {
         const rotationAmount = Math.PI / 3; // Base rotation amount (60 degrees)
         const horizontalAmount = rotationAmount; // Reduced from 2x to 1x for 50% reduction
 

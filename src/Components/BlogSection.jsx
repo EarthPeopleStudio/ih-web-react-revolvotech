@@ -1,6 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import BlogPost from './BlogPost';
+import React from 'react';
+import styled, { keyframes } from 'styled-components';
+import { FaEye, FaCalendar, FaUser, FaArrowRight, FaTags } from 'react-icons/fa';
+
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
+
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
 
 const BlogWrapper = styled.div`
   padding: 120px 8% 80px;
@@ -9,6 +27,25 @@ const BlogWrapper = styled.div`
   position: relative;
   max-width: 1200px;
   margin: 0 auto;
+  animation: ${fadeIn} 0.8s ease-out;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 30px 30px, 45px 45px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
   
   @media (max-width: 768px) {
     padding: 100px 6% 120px;
@@ -18,48 +55,51 @@ const BlogWrapper = styled.div`
 const SectionHeader = styled.div`
   text-align: center;
   margin-bottom: 80px;
+  animation: none;
 `;
 
 const Title = styled.h1`
-  font-size: 4.5rem;
-  font-weight: 800;
-  margin-bottom: 30px;
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
   background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
   position: relative;
   z-index: 1;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    z-index: 0;
-  }
+  animation: none;
 
   @media (max-width: 768px) {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 2rem;
+    margin-bottom: 16px;
   }
 `;
 
 const Subtitle = styled.p`
   color: var(--text-secondary);
-  font-size: 1.2rem;
-  line-height: 1.8;
-  margin-bottom: 40px;
-  max-width: 800px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 48px;
+  max-width: 700px;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1;
+  animation: none;
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 36px;
+  }
 `;
 
 const BlogGrid = styled.div`
@@ -70,111 +110,132 @@ const BlogGrid = styled.div`
 `;
 
 const BlogCard = styled.div`
-  background: var(--card-bg);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border-radius: 20px;
   overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  
-  &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 25px 50px rgba(251, 182, 4, 0.2);
-    border-color: rgba(251, 182, 4, 0.2);
-  }
-`;
-
-const BlogImage = styled.div`
-  height: 200px;
-  background: var(--card-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
   position: relative;
-  overflow: hidden;
-  border-bottom: 1px solid var(--border-color);
+  animation: ${fadeIn} 0.8s ease-out;
+  animation-delay: ${props => props.delay || '0s'};
+  animation-fill-mode: both;
   
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.8;
-    transition: transform 0.3s ease;
-  }
-
-  &[data-category="Business Strategy"]::before {
-    background-image: url("https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop&crop=entropy&auto=format&q=80");
-  }
-
-  &[data-category="Mobile Development"]::before {
-    background-image: url("https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&h=400&fit=crop&crop=entropy&auto=format&q=80");
-  }
-
-  ${BlogCard}:hover &::before {
-    transform: scale(1.1);
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 0;
   }
 
   &::after {
-    content: "";
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
+
+  &:hover {
+    transform: translateY(-12px);
+    border-color: rgba(251, 182, 4, 0.4);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    
+    &::after {
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+    }
+  }
+
+  cursor: pointer;
+`;
+
+const BlogImage = styled.div`
+  height: 220px;
+  background: ${props => props.image ? `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${props.image})` : 'linear-gradient(135deg, rgba(251, 182, 4, 0.1), rgba(251, 182, 4, 0.05))'};
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1;
+
+  &::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%);
-    z-index: 1;
+    background: linear-gradient(135deg, rgba(251, 182, 4, 0.1), rgba(0, 0, 0, 0.1));
+    z-index: -1;
   }
+
+  ${props => !props.image && `
+    &::after {
+      content: '📝';
+      font-size: 4rem;
+      opacity: 0.3;
+    }
+  `}
 `;
 
 const BlogContent = styled.div`
   padding: 30px;
+  position: relative;
+  z-index: 1;
 `;
 
 const BlogMeta = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
 `;
 
-const CategoryBadge = styled.span`
-  background: var(--card-bg);
-  color: #FFEB3B;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  border: 1px solid rgba(251, 182, 4, 0.3);
-  transition: all 0.3s ease;
+const MetaItem = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 6px;
 
-  ${BlogCard}:hover & {
-    border-color: rgba(251, 182, 4, 0.5);
-    box-shadow: 0 0 15px rgba(251, 182, 4, 0.2);
+  svg {
+    color: #fbb604;
+    font-size: 0.8rem;
   }
 `;
 
-const BlogDate = styled.span`
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-`;
-
-const BlogTitle = styled.h3`
-  color: var(--text-primary);
+const BlogCardTitle = styled.h3`
   font-size: 1.4rem;
   font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 15px;
-  line-height: 1.4;
-  transition: all 0.3s ease;
-
-  ${BlogCard}:hover & {
-    color: #fbb604;
-  }
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
 const BlogExcerpt = styled.p`
@@ -182,6 +243,10 @@ const BlogExcerpt = styled.p`
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
 const BlogFooter = styled.div`
@@ -202,27 +267,35 @@ const ReadTime = styled.span`
   font-size: 0.9rem;
 `;
 
-const ReadMoreButton = styled.div`
-  margin-top: 20px;
-  color: #FFEB3B;
-  font-size: 1rem;
-  font-weight: 500;
+const ReadMoreButton = styled.button`
+  background: linear-gradient(135deg, #fbb604, #f99b04);
+  color: #000;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  transition: all 0.3s ease;
-  
-  &:after {
-    content: "→";
-    margin-left: 8px;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(251, 182, 4, 0.3);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(251, 182, 4, 0.4);
+    filter: brightness(1.1);
+  }
+
+  svg {
     transition: transform 0.3s ease;
   }
-  
-  ${BlogCard}:hover & {
-    color: #fbb604;
-    
-    &:after {
-      transform: translateX(5px);
-    }
+
+  &:hover svg {
+    transform: translateX(3px);
   }
 `;
 
@@ -292,36 +365,6 @@ const NewsletterButton = styled.button`
 `;
 
 const BlogSection = () => {
-  const [selectedBlog, setSelectedBlog] = useState(null);
-
-  // SEO optimization - update document title and meta tags
-  useEffect(() => {
-    if (!selectedBlog) {
-      document.title = "Expert Insights on Software Development | Revolvo Blog";
-      
-      // Update meta description
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', 'Discover expert insights on offshore software development, cross-platform mobile app development with Flutter and React Native, and cost-effective enterprise solutions.');
-      } else {
-        const meta = document.createElement('meta');
-        meta.name = 'description';
-        meta.content = 'Discover expert insights on offshore software development, cross-platform mobile app development with Flutter and React Native, and cost-effective enterprise solutions.';
-        document.head.appendChild(meta);
-      }
-
-      // Add keywords meta tag
-      let metaKeywords = document.querySelector('meta[name="keywords"]');
-      if (metaKeywords) {
-        metaKeywords.setAttribute('content', 'offshore software development, cross-platform mobile development, Flutter, React Native, enterprise solutions, mobile app development, software outsourcing');
-      } else {
-        metaKeywords = document.createElement('meta');
-        metaKeywords.name = 'keywords';
-        metaKeywords.content = 'offshore software development, cross-platform mobile development, Flutter, React Native, enterprise solutions, mobile app development, software outsourcing';
-        document.head.appendChild(metaKeywords);
-      }
-    }
-  }, [selectedBlog]);
 
   const blogPosts = [
     {
@@ -354,10 +397,6 @@ const BlogSection = () => {
     }
   ];
 
-  if (selectedBlog) {
-    return <BlogPost blog={selectedBlog} onBack={() => setSelectedBlog(null)} />;
-  }
-
   return (
     <BlogWrapper>
       <SectionHeader>
@@ -370,16 +409,26 @@ const BlogSection = () => {
 
       <BlogGrid>
         {blogPosts.map(blog => (
-          <BlogCard key={blog.id} onClick={() => setSelectedBlog(blog)}>
-            <BlogImage data-category={blog.category} />
+          <BlogCard key={blog.id}>
+            <BlogImage image={blog.image} />
             
             <BlogContent>
               <BlogMeta>
-                <CategoryBadge>{blog.category}</CategoryBadge>
-                <BlogDate>{blog.date}</BlogDate>
+                <MetaItem>
+                  <FaEye />
+                  {blog.views}
+                </MetaItem>
+                <MetaItem>
+                  <FaCalendar />
+                  {blog.date}
+                </MetaItem>
+                <MetaItem>
+                  <FaUser />
+                  By {blog.author}
+                </MetaItem>
               </BlogMeta>
 
-              <BlogTitle>{blog.title}</BlogTitle>
+              <BlogCardTitle>{blog.title}</BlogCardTitle>
               <BlogExcerpt>{blog.excerpt}</BlogExcerpt>
               
               <BlogFooter>

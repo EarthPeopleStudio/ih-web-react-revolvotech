@@ -1,5 +1,19 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import styled, { keyframes } from 'styled-components';
+import { AiOutlineCode, AiOutlineMobile, AiOutlineTablet, AiOutlineApple, AiOutlineAndroid } from 'react-icons/ai';
+
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
+
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
 
 // Styled components
 const CodeShowcaseGrid = styled.div`
@@ -10,59 +24,109 @@ const CodeShowcaseGrid = styled.div`
 `;
 
 const CodeShowcaseItem = styled.div`
-  background: rgba(18, 18, 18, 0.95);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(255, 235, 59, 0.2);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s ease;
+  position: relative;
   backdrop-filter: blur(10px);
+  max-height: 600px;
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
 
   &:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 30px 60px rgba(255, 235, 59, 0.1);
-    border: 1px solid rgba(255, 235, 59, 0.4);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(251, 182, 4, 0.3);
+    
+    &::after {
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+    }
   }
 `;
 
 const CodeShowcaseHeader = styled.div`
   padding: 24px 28px;
-  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, rgba(255, 235, 59, 0.05), rgba(251, 182, 4, 0.03));
+  background: linear-gradient(to right, rgba(25, 25, 30, 0.98), rgba(35, 35, 40, 0.98));
+  position: relative;
+  z-index: 1;
 `;
 
 const CodeShowcaseTitle = styled.h3`
   margin: 0;
   font-size: 1.5rem;
-  color: #fff;
+  color: #fbb604;
   display: flex;
   align-items: center;
   letter-spacing: 0.5px;
   font-weight: 600;
+  position: relative;
+  z-index: 1;
   
   svg {
     margin-right: 10px;
-    color: #FFEB3B;
+    color: #fbb604;
   }
 `;
 
 const CodeShowcaseDescription = styled.p`
   padding: 16px 28px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
-  border-bottom: 1px solid rgba(255, 235, 59, 0.1);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.1);
   margin: 0;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.8), rgba(35, 35, 40, 0.8));
+  position: relative;
+  z-index: 1;
 `;
 
 const CodeDemoContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
-  padding: 20px 28px 28px;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  overflow: hidden;
   
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
@@ -71,117 +135,147 @@ const CodeDemoContainer = styled.div`
 
 const CodeSnippetContainer = styled.div`
   position: relative;
-  border-radius: 12px;
+  border-radius: 0;
   overflow: hidden;
   background: rgba(25, 25, 25, 0.8);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 235, 59, 0.2);
+  border: none;
+  border-right: 1px solid rgba(251, 182, 4, 0.2);
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
   
-  &:hover {
-    border: 1px solid rgba(255, 235, 59, 0.4);
-    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  @media (max-width: 968px) {
+    border-right: none;
+    border-bottom: 1px solid rgba(251, 182, 4, 0.2);
   }
 `;
 
 const CodeHeader = styled.div`
-  background: linear-gradient(135deg, rgba(255, 235, 59, 0.08), rgba(251, 182, 4, 0.05));
+  background: linear-gradient(135deg, rgba(251, 182, 4, 0.08), rgba(251, 182, 4, 0.05));
   padding: 12px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.8rem;
   color: #e0e0e0;
-  border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
 `;
 
 const CodeFileName = styled.span`
   display: flex;
   align-items: center;
   font-weight: 500;
-  color: #FFEB3B;
+  color: #fbb604;
 `;
 
 const CodeLanguage = styled.span`
-  background: linear-gradient(135deg, rgba(255, 235, 59, 0.2), rgba(251, 182, 4, 0.15));
+  background: linear-gradient(135deg, rgba(251, 182, 4, 0.2), rgba(251, 182, 4, 0.15));
   padding: 4px 12px;
   border-radius: 6px;
-  color: #FFEB3B;
+  color: #fbb604;
   font-weight: 600;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border: 1px solid rgba(255, 235, 59, 0.3);
+  border: 1px solid rgba(251, 182, 4, 0.3);
 `;
 
 const PreBlock = styled.pre`
+  background: transparent;
   margin: 0;
-  padding: 18px;
-  overflow-x: auto;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
   font-family: 'Fira Code', monospace;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   line-height: 1.5;
-  max-height: 350px;
   color: #ffffff;
-  background: #1a1a1a;
+  white-space: pre-wrap;
+  word-break: break-word;
+  word-wrap: break-word;
+  flex: 1;
+  max-height: 400px;
   
   &::-webkit-scrollbar {
     width: 8px;
-    height: 8px;
   }
   
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.1);
   }
   
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 4px;
   }
   
   &::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(251, 182, 4, 0.5);
   }
-  
-  /* Set all code to white */
-  .keyword, .string, .comment, .function, .variable, .operator, .number {
-    color: #ffffff;
-  }
-  
-  /* Add font smoothing for better readability */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 `;
 
 const DemoContainer = styled.div`
-  background: rgba(25, 25, 25, 0.8);
-  border-radius: 12px;
   padding: 20px;
+  background: linear-gradient(145deg, rgba(30, 30, 35, 0.9), rgba(40, 40, 45, 0.9));
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 235, 59, 0.2);
+  min-height: 650px;
+  border: 1px solid rgba(251, 182, 4, 0.1);
   overflow: hidden;
-  position: relative;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
+  box-sizing: border-box;
+  max-height: 800px;
   
-  &:hover {
-    border: 1px solid rgba(255, 235, 59, 0.4);
-    box-shadow: 0 12px 35px rgba(255, 235, 59, 0.1);
+  /* Ensure all child elements scale properly */
+  > * {
+    max-width: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
   }
   
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(to right, #FFEB3B, #00d4ff);
-    z-index: 2;
+  /* Handle scrolling if content is still too large */
+  overflow-y: auto;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(251, 182, 4, 0.5);
+  }
+`;
+
+const DemoWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  
+  /* Ensure demo content doesn't overflow */
+  > * {
+    max-width: 100%;
+    max-height: 100%;
+    transform-origin: center;
+  }
+  
+  /* Scale down large demos to fit */
+  @media (max-width: 768px) {
+    transform: scale(0.85);
   }
 `;
 
@@ -229,9 +323,9 @@ const MobileNavigationDemo = () => {
   }, [activeTab]);
   
   const demoContainerStyle = {
-    width: '280px',
-    height: '560px',
-    background: 'linear-gradient(165deg, #003b63 0%, #04a6c2 100%)',
+    width: '260px',
+    height: '624px',
+    background: 'linear-gradient(165deg, #1e40af 0%, #3b82f6 100%)',
     borderRadius: '36px',
     overflow: 'hidden',
     position: 'relative',
@@ -258,7 +352,7 @@ const MobileNavigationDemo = () => {
     justifyContent: 'space-between',
     alignItems: 'center',
     borderBottom: '1px solid rgba(255,255,255,0.08)',
-    background: 'rgba(7,27,61,0.9)',
+    background: 'rgba(30,64,175,0.9)',
     backdropFilter: 'blur(10px)',
     borderRadius: '28px 28px 0 0',
     boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
@@ -295,8 +389,8 @@ const MobileNavigationDemo = () => {
   `;
   
   const tabItemStyle = (isActive) => ({
-    background: isActive ? 'linear-gradient(135deg, rgba(0, 176, 155, 0.3), rgba(29, 209, 161, 0.15))' : 'rgba(255,255,255,0.02)',
-    color: isActive ? '#1dd1a1' : 'rgba(255,255,255,0.5)',
+    background: isActive ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(34, 197, 94, 0.15))' : 'rgba(255,255,255,0.02)',
+    color: isActive ? '#10b981' : 'rgba(255,255,255,0.5)',
     display: 'flex', 
     flexDirection: 'column',
     alignItems: 'center',
@@ -308,20 +402,20 @@ const MobileNavigationDemo = () => {
     borderRadius: '14px',
     margin: '0 4px',
     transition: 'all 0.3s ease',
-    boxShadow: isActive ? '0 5px 15px rgba(29, 209, 161, 0.25)' : 'none',
+    boxShadow: isActive ? '0 5px 15px rgba(16, 185, 129, 0.25)' : 'none',
     transform: isActive ? 'translateY(-3px)' : 'translateY(0)',
-    border: isActive ? '1px solid rgba(29, 209, 161, 0.3)' : '1px solid transparent',
+    border: isActive ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid transparent',
   });
   
   // Content for each screen
   const renderHomeContent = () => (
     <div style={{ padding: '5px' }}>
       <div style={{ 
-        background: 'linear-gradient(135deg, #00b0ab, #1dd1a1)', 
+        background: 'linear-gradient(135deg, #059669, #10b981)', 
         borderRadius: '20px', 
         padding: '22px 25px', 
         marginBottom: '20px',
-        boxShadow: '0 15px 30px rgba(0, 176, 155, 0.35)',
+        boxShadow: '0 15px 30px rgba(5, 150, 105, 0.35)',
         transform: pulseEffect ? 'scale(1.02)' : 'scale(1)',
         transition: 'transform 0.4s ease, box-shadow 0.4s ease',
         position: 'relative',
@@ -990,9 +1084,9 @@ const FlutterCardDemo = () => {
   }, []);
   
   const demoContainerStyle = {
-    width: '280px',
-    height: '560px',
-    background: 'linear-gradient(165deg, #8B0000 0%, #FF4500 100%)',
+    width: '260px',
+    height: '624px',
+    background: 'linear-gradient(165deg, #7c2d12 0%, #ea580c 100%)',
     borderRadius: '36px',
     overflow: 'hidden',
     position: 'relative',
@@ -1020,7 +1114,7 @@ const FlutterCardDemo = () => {
     alignItems: 'center',
     borderBottom: '1px solid rgba(255,255,255,0.08)',
     marginBottom: '15px',
-    background: 'rgba(139,0,0,0.95)',
+    background: 'rgba(124,45,18,0.95)',
     backdropFilter: 'blur(10px)',
     borderRadius: '28px 28px 0 0',
     boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
@@ -2080,7 +2174,9 @@ function HomeScreen() {
             />
           </CodeSnippetContainer>
           <DemoContainer>
-            <MobileNavigationDemo />
+            <DemoWrapper>
+              <MobileNavigationDemo />
+            </DemoWrapper>
           </DemoContainer>
         </CodeDemoContainer>
       </CodeShowcaseItem>
@@ -2504,7 +2600,9 @@ class HomeScreen extends StatelessWidget {
             />
           </CodeSnippetContainer>
           <DemoContainer>
-            <FlutterCardDemo />
+            <DemoWrapper>
+              <FlutterCardDemo />
+            </DemoWrapper>
           </DemoContainer>
         </CodeDemoContainer>
       </CodeShowcaseItem>

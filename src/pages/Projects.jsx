@@ -1,9 +1,42 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { FaExternalLinkAlt, FaGithub, FaArrowRight, FaRocket, FaStar } from "react-icons/fa";
 import HiveKeyImage from "../assets/hivekey.png";
 import FreshCleaningLuxeImage from "../assets/fresh-cleaning-luxe-logo.png";
+
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
+
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
+
+const searchBarAnimation = keyframes`
+  0% { transform: translateY(-20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+`;
+
+const statsAnimation = keyframes`
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+`;
+
+const cardAnimation = keyframes`
+  0% { transform: translateY(30px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
 
 const ProjectsWrapper = styled.div`
   padding: 120px 8% 80px;
@@ -12,6 +45,24 @@ const ProjectsWrapper = styled.div`
   position: relative;
   max-width: 1400px;
   margin: 0 auto;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 30px 30px, 45px 45px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
   
   @media (max-width: 768px) {
     padding: 100px 6% 120px;
@@ -26,198 +77,114 @@ const HeroSection = styled.div`
   text-align: center;
   margin-bottom: 80px;
   position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: -20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    z-index: 0;
-  }
+  z-index: 1;
 `;
 
 const Title = styled.h1`
-  font-size: 4.5rem;
-  font-weight: 800;
-  margin-bottom: 30px;
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
   background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
   position: relative;
   z-index: 1;
 
   @media (max-width: 768px) {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 2rem;
+    margin-bottom: 16px;
   }
 `;
 
 const Subtitle = styled.p`
   color: var(--text-secondary);
-  font-size: 1.3rem;
-  line-height: 1.8;
-  margin-bottom: 60px;
-  max-width: 800px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 48px;
+  max-width: 700px;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-  position: relative;
-  z-index: 1;
   
   @media (max-width: 768px) {
-    font-size: 1.1rem;
-    margin-bottom: 40px;
+    font-size: 1rem;
+    margin-bottom: 36px;
   }
-`;
-
-const StatsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 30px;
-  margin-bottom: 80px;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-`;
-
-const StatCard = styled.div`
-  background: rgba(25, 25, 25, 0.6);
-  border: 1px solid rgba(255, 235, 59, 0.2);
-  border-radius: 20px;
-  padding: 30px 20px;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 235, 59, 0.05), rgba(251, 182, 4, 0.03));
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-  
-  &:hover {
-    transform: translateY(-10px);
-    border-color: rgba(255, 235, 59, 0.5);
-    box-shadow: 0 20px 40px rgba(255, 235, 59, 0.1);
-    
-    &::before {
-      opacity: 1;
-    }
-  }
-`;
-
-const StatNumber = styled.div`
-  font-size: 2.5rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #FFEB3B, #fbb604);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 10px;
-`;
-
-const StatLabel = styled.div`
-  color: var(--text-secondary);
-  font-size: 1rem;
-  font-weight: 500;
 `;
 
 const TabsContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 60px;
-  border-radius: 20px;
-  background: rgba(25, 25, 25, 0.6);
-  padding: 12px;
-  max-width: 700px;
+  margin-bottom: 50px;
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  padding: 8px;
+  width: 100%;
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255, 235, 59, 0.2);
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(15px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  z-index: 100;
   
-  @media (max-width: 768px) {
-    flex-wrap: wrap;
-    padding: 10px;
+  @media (max-width: 1200px) {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 8px 4px;
+    
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 
 const Tab = styled.button`
-  padding: 18px 32px;
+  padding: 14px 24px;
   border: none;
-  background: ${(props) => (props.active ? 
-    "linear-gradient(135deg, rgba(255, 235, 59, 0.2), rgba(251, 182, 4, 0.1))" : 
-    "transparent")};
-  color: ${(props) => (props.active ? "#FFEB3B" : "var(--text-secondary)")};
-  font-size: 1.1rem;
-  font-weight: ${(props) => (props.active ? "700" : "500")};
-  border-radius: 16px;
+  background: ${(props) => (props.active ? "rgba(251, 182, 4, 0.15)" : "transparent")};
+  color: ${(props) => (props.active ? "#fbb604" : "var(--text-secondary)")};
+  font-size: 1rem;
+  font-weight: ${(props) => (props.active ? "600" : "400")};
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: all 0.3s ease;
   position: relative;
-  z-index: 1;
-  flex: 1;
-  letter-spacing: 0.5px;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(255, 235, 59, 0.1), rgba(251, 182, 4, 0.05));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 16px;
-  }
+  z-index: 10;
+  white-space: nowrap;
+  flex-shrink: 0;
   
   &:hover {
-    background: ${(props) => (props.active ? 
-      "linear-gradient(135deg, rgba(255, 235, 59, 0.2), rgba(251, 182, 4, 0.1))" : 
-      "rgba(255, 235, 59, 0.08)")};
-    color: ${(props) => (props.active ? "#FFEB3B" : "#fbb604")};
-    transform: translateY(-2px);
-    
-    &::before {
-      opacity: 1;
-    }
+    background: ${(props) => (props.active ? "rgba(251, 182, 4, 0.15)" : "rgba(251, 182, 4, 0.05)")};
+    color: ${(props) => (props.active ? "#fbb604" : "#f99b04")};
   }
 
   ${(props) => props.active && `
     &:after {
       content: "";
       position: absolute;
-      bottom: 10px;
+      bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
-      width: 40px;
+      width: 30px;
       height: 3px;
-      background: linear-gradient(135deg, #FFEB3B, #fbb604);
+      background: #fbb604;
       border-radius: 2px;
     }
   `}
-  
-  @media (max-width: 768px) {
-    padding: 16px 24px;
-    font-size: 1rem;
-  }
 `;
 
 const ProjectsGrid = styled.div`
@@ -238,23 +205,58 @@ const ProjectsGrid = styled.div`
 `;
 
 const ProjectCard = styled.div`
-  background: rgba(25, 25, 25, 0.6);
-  border-radius: 24px;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255, 235, 59, 0.2);
+  border: 1px solid rgba(251, 182, 4, 0.2);
   transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
   position: relative;
   backdrop-filter: blur(15px);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   cursor: pointer;
   height: 100%;
   display: flex;
   flex-direction: column;
+  animation: ${cardAnimation} 0.6s ease forwards;
+  animation-delay: ${props => props.index * 0.1}s;
+  opacity: 0;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 25px 25px, 25px 25px, 12px 12px, 18px 18px;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 182, 4, 0.4);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 1;
+  }
   
   &:hover {
     transform: translateY(-15px) scale(1.02);
-    box-shadow: 0 30px 70px rgba(255, 235, 59, 0.15);
-    border-color: rgba(255, 235, 59, 0.6);
+    box-shadow: 0 30px 60px rgba(251, 182, 4, 0.15);
+    border-color: rgba(251, 182, 4, 0.6);
     
     .project-image {
       transform: scale(1.08);
@@ -266,27 +268,15 @@ const ProjectCard = styled.div`
     }
     
     .project-title {
-      background: linear-gradient(135deg, #FFEB3B, #f99b04);
+      background: linear-gradient(135deg, #fbb604, #f99b04);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-  }
   
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    background: linear-gradient(135deg, rgba(255, 235, 59, 0.08), rgba(251, 182, 4, 0.03));
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  
-  &:hover:before {
-    opacity: 1;
+    &::after {
+      background: rgba(251, 182, 4, 0.8);
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+    }
   }
 `;
 
@@ -385,6 +375,7 @@ const Tag = styled.span`
 
 const ProjectLinks = styled.div`
   display: flex;
+  gap: 10px;
   opacity: 0;
   transform: translateY(20px);
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
@@ -397,14 +388,14 @@ const ProjectLink = styled.button`
   justify-content: center;
   gap: 8px;
   padding: 12px 20px;
-  width: 100%;
-  background: linear-gradient(135deg, #FFEB3B, #fbb604);
-  color: #000;
+  width: ${props => props.secondary ? 'auto' : '100%'};
+  background: ${props => props.secondary ? 'rgba(251, 182, 4, 0.1)' : 'linear-gradient(135deg, #FFEB3B, #fbb604)'};
+  color: ${props => props.secondary ? '#fbb604' : '#000'};
   text-decoration: none;
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
-  border: none;
+  border: ${props => props.secondary ? '1px solid rgba(251, 182, 4, 0.3)' : 'none'};
   transition: all 0.3s ease;
   cursor: pointer;
   
@@ -535,13 +526,6 @@ const Projects = () => {
   const [activeTab, setActiveTab] = useState("All");
   const [filteredProjects, setFilteredProjects] = useState([]);
   const navigate = useNavigate();
-
-  const stats = [
-    { number: "50+", label: "Projects Completed" },
-    { number: "30+", label: "Happy Clients" },
-    { number: "15+", label: "Countries Served" },
-    { number: "5+", label: "Years Experience" }
-  ];
   
   useEffect(() => {
     if (activeTab === "All") {
@@ -569,20 +553,11 @@ const Projects = () => {
     <ProjectsWrapper>
       <HeroSection>
         <Title>Our Project Portfolio</Title>
-      <Subtitle>
+        <Subtitle>
           Discover our collection of innovative digital solutions that transform ideas into 
           extraordinary experiences. From cutting-edge applications to stunning websites, 
           each project reflects our passion for excellence and innovation.
-      </Subtitle>
-        
-        <StatsContainer>
-          {stats.map((stat, index) => (
-            <StatCard key={index}>
-              <StatNumber>{stat.number}</StatNumber>
-              <StatLabel>{stat.label}</StatLabel>
-            </StatCard>
-          ))}
-        </StatsContainer>
+        </Subtitle>
       </HeroSection>
       
       <TabsContainer>
@@ -599,17 +574,47 @@ const Projects = () => {
           Websites
         </Tab>
         <Tab 
-          active={activeTab === "Apps"} 
-          onClick={() => handleTabClick("Apps")}
+          active={activeTab === "Mobile Apps"} 
+          onClick={() => handleTabClick("Mobile Apps")}
         >
-          Applications
+          Mobile Apps
+        </Tab>
+        <Tab 
+          active={activeTab === "UI/UX"} 
+          onClick={() => handleTabClick("UI/UX")}
+        >
+          UI/UX
+        </Tab>
+        <Tab 
+          active={activeTab === "Games"} 
+          onClick={() => handleTabClick("Games")}
+        >
+          Games
+        </Tab>
+        <Tab 
+          active={activeTab === "Music"} 
+          onClick={() => handleTabClick("Music")}
+        >
+          Music
+        </Tab>
+        <Tab 
+          active={activeTab === "AI"} 
+          onClick={() => handleTabClick("AI")}
+        >
+          AI
+        </Tab>
+        <Tab 
+          active={activeTab === "Content"} 
+          onClick={() => handleTabClick("Content")}
+        >
+          Content
         </Tab>
       </TabsContainer>
       
       <ProjectsGrid>
         {filteredProjects.length > 0 ? (
-          filteredProjects.map(project => (
-            <ProjectCard key={project.id} onClick={() => handleProjectClick(project)}>
+          filteredProjects.map((project, index) => (
+            <ProjectCard key={project.id} index={index} onClick={() => handleProjectClick(project)}>
               <ProjectImageContainer>
                 <ProjectImage 
                   className="project-image" 
@@ -638,7 +643,7 @@ const Projects = () => {
           ))
         ) : (
           <ProjectsActionSection>
-            <ActionTitle>No Projects Yet</ActionTitle>
+            <ActionTitle>No Projects Found</ActionTitle>
             <ActionDescription>
               We're working on exciting new projects in this category. 
               Check back soon for amazing updates!

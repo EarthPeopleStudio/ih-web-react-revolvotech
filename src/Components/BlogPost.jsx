@@ -1,50 +1,319 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaEye, FaCalendar, FaUser, FaTags, FaArrowLeft } from 'react-icons/fa';
 
-const BlogWrapper = styled.div`
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
+
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const BlogPostWrapper = styled.div`
   padding: 120px 8% 80px;
   color: var(--text-primary);
   min-height: 100vh;
   position: relative;
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
+  animation: ${fadeIn} 0.8s ease-out;
   
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 30px 30px, 45px 45px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+
   @media (max-width: 768px) {
-    padding: 100px 6% 120px;
+    padding: 100px 5% 120px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 80px 4% 140px;
   }
 `;
 
 const BackButton = styled.button`
-  background: var(--card-bg);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border: 1px solid rgba(251, 182, 4, 0.3);
-  color: var(--text-secondary);
+  color: #fbb604;
   padding: 12px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 40px;
-  font-size: 1rem;
-  display: inline-flex;
+  border-radius: 10px;
+  display: flex;
   align-items: center;
-  text-decoration: none;
+  gap: 8px;
+  cursor: pointer;
   transition: all 0.3s ease;
-  
-  &:hover {
-    background: linear-gradient(135deg, rgba(255, 235, 59, 0.1), rgba(251, 182, 4, 0.1));
-    color: #FFEB3B;
-    border-color: rgba(251, 182, 4, 0.5);
-    box-shadow: 0 4px 12px rgba(251, 182, 4, 0.2);
-    transform: translateY(-2px);
-  }
+  margin-bottom: 40px;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
 
   &::before {
-    content: "←";
-    margin-right: 8px;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.01) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.01) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(251, 182, 4, 0.5);
+    background: linear-gradient(145deg, rgba(35, 35, 40, 0.95), rgba(45, 45, 50, 0.95));
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  svg {
     transition: transform 0.3s ease;
   }
 
-  &:hover::before {
-    transform: translateX(-4px);
+  &:hover svg {
+    transform: translateX(-3px);
+  }
+`;
+
+const PostHeader = styled.div`
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+  z-index: 1;
+`;
+
+const PostTitle = styled.h1`
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
+`;
+
+const PostMeta = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    gap: 20px;
+  }
+`;
+
+const MetaItem = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  svg {
+    color: #fbb604;
+    font-size: 0.9rem;
+  }
+`;
+
+const PostCategory = styled.span`
+  background: linear-gradient(135deg, #fbb604, #f99b04);
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(251, 182, 4, 0.3);
+`;
+
+const PostContent = styled.div`
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border-radius: 20px;
+  padding: 60px;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 30px 30px, 30px 30px, 15px 15px, 20px 20px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
+
+  @media (max-width: 768px) {
+    padding: 40px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 30px;
+  }
+`;
+
+const ContentText = styled.div`
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  position: relative;
+  z-index: 1;
+
+  p {
+    margin-bottom: 25px;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fbb604;
+    margin: 40px 0 20px;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 30px 0 15px;
+  }
+
+  ul, ol {
+    margin: 20px 0;
+    padding-left: 30px;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  blockquote {
+    background: rgba(251, 182, 4, 0.1);
+    border-left: 4px solid #fbb604;
+    padding: 20px;
+    margin: 30px 0;
+    border-radius: 8px;
+    font-style: italic;
+  }
+
+  code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    color: #fbb604;
+  }
+
+  pre {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 20px 0;
+    border: 1px solid rgba(251, 182, 4, 0.2);
+
+    code {
+      background: none;
+      padding: 0;
+      color: #fff;
+    }
+  }
+`;
+
+const TagsContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(251, 182, 4, 0.2);
+  position: relative;
+  z-index: 1;
+`;
+
+const Tag = styled.span`
+  background: rgba(251, 182, 4, 0.1);
+  border: 1px solid rgba(251, 182, 4, 0.3);
+  color: #fbb604;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(251, 182, 4, 0.2);
+    border-color: rgba(251, 182, 4, 0.5);
+    transform: translateY(-1px);
   }
 `;
 
@@ -704,7 +973,7 @@ const BlogPost = ({ blog, onBack }) => {
 
         <HighlightBox>
           <p>
-            <strong>For detailed and up-to-date pricing information, please visit our <PricingLink to="/pricing">Pricing Page</PricingLink> where you can explore our Essential Launch, Growth Partnership, and Tailored Enterprise packages, as well as build a custom team configuration that fits your specific needs.</strong>
+            <strong>For detailed and up-to-date pricing information, please visit our <PricingLink to="/pricing">Pricing Page</PricingLink> where you can explore our Spark, Charge, and Blitz packages, as well as build a custom team configuration that fits your specific needs.</strong>
           </p>
           <p>
             Our pricing is transparent and includes dedicated resources working efficiently to bring your vision to life globally, with teams serving clients in the USA, UK, Europe, Australia, and Dubai.
@@ -781,23 +1050,34 @@ const BlogPost = ({ blog, onBack }) => {
   };
 
   return (
-    <BlogWrapper>
-      <BackButton onClick={handleBackClick}>Back to Blog</BackButton>
+    <BlogPostWrapper>
+      <BackButton onClick={handleBackClick}>
+        <FaArrowLeft /> Back to Blog
+      </BackButton>
 
       <ArticleHeader>
         <CategoryBadge>{blog.category}</CategoryBadge>
         <ArticleTitle>{blog.title}</ArticleTitle>
         <ArticleMeta>
-          <span>By {blog.author}</span>
-          <span>{blog.date}</span>
-          <span>{blog.readTime}</span>
+          <MetaItem>
+            <FaUser />
+            <span>By {blog.author}</span>
+          </MetaItem>
+          <MetaItem>
+            <FaCalendar />
+            <span>{blog.date}</span>
+          </MetaItem>
+          <MetaItem>
+            <FaEye />
+            <span>{blog.readTime}</span>
+          </MetaItem>
         </ArticleMeta>
       </ArticleHeader>
 
       <ArticleContent>
         {renderContent()}
       </ArticleContent>
-    </BlogWrapper>
+    </BlogPostWrapper>
   );
 };
 

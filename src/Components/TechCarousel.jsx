@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { 
   SiReact, SiNodedotjs, SiMongodb, SiExpress, SiFlutter,
-  SiUnity, SiCsharp, SiDotnet, SiPython, SiTensorflow,
+  SiUnity, SiPython, SiTensorflow,
   SiOpenai, SiAframe
 } from 'react-icons/si';
 import { FaDatabase, FaCloud, FaCode } from 'react-icons/fa';
@@ -32,11 +32,42 @@ const shimmer = keyframes`
   100% { background-position: 200% center; }
 `;
 
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
+
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
+
 const CarouselSection = styled.section`
   padding: 80px 0;
   background: transparent;
   overflow: hidden;
   position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 30px 30px, 45px 45px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
 `;
 
 const Title = styled.h2`
@@ -48,6 +79,8 @@ const Title = styled.h2`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -1px;
+  position: relative;
+  z-index: 1;
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
@@ -61,6 +94,8 @@ const Subtitle = styled.p`
   max-width: 800px;
   margin: 0 auto 40px;
   line-height: 1.6;
+  position: relative;
+  z-index: 1;
 
   strong {
     color: #fbb604;
@@ -86,40 +121,85 @@ const CarouselTrack = styled.div`
 `;
 
 const TechItem = styled.div`
-  background: rgba(30, 30, 35, 0.6);
-  border: 1px solid rgba(251, 182, 4, 0.1);
-  border-radius: 12px;
-  padding: 20px;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  border-radius: 16px;
+  padding: 24px 20px;
   min-width: 140px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 20px 20px, 20px 20px, 10px 10px, 15px 15px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 182, 4, 0.4);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
 
   &:hover {
-    transform: translateY(-5px);
-    background: rgba(35, 35, 40, 0.9);
-    border-color: rgba(251, 182, 4, 0.3);
-    box-shadow: 0 5px 15px rgba(251, 182, 4, 0.1);
+    transform: translateY(-8px);
+    background: linear-gradient(145deg, rgba(35, 35, 40, 0.98), rgba(45, 45, 50, 0.98));
+    border-color: rgba(251, 182, 4, 0.4);
+    box-shadow: 0 15px 35px rgba(251, 182, 4, 0.15);
+
+    &::after {
+      background: rgba(251, 182, 4, 0.8);
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+    }
 
     svg {
       color: #fbb604;
+      transform: scale(1.1);
     }
   }
 
   svg {
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: rgba(255, 255, 255, 0.8);
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
   }
 `;
 
 const TechName = styled.span`
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.9);
   text-align: center;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
 `;
 
 const CarouselContainer = styled.div`
@@ -131,6 +211,8 @@ const CarouselContainer = styled.div`
     black 90%,
     transparent 100%
   );
+  position: relative;
+  z-index: 1;
 `;
 
 const techStacks = [

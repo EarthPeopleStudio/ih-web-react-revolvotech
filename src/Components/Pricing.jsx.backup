@@ -1,0 +1,1800 @@
+import React, { useState, useEffect } from "react";
+import styled, { keyframes } from "styled-components";
+import { Link } from "react-router-dom";
+import { FaCheck, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
+
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
+
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
+
+const PricingWrapper = styled.div`
+  padding: 120px 8% 80px;
+  color: var(--text-primary);
+  min-height: 100vh;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.05) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.03) 1px, transparent 1px);
+    background-size: 80px 80px, 80px 80px, 40px 40px, 60px 60px;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 100px 6% 120px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 80px 5% 140px;
+  }
+`;
+
+const Title = styled.h1`
+  font-size: 4.5rem;
+  font-weight: 800;
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 3rem;
+  }
+`;
+
+const Subtitle = styled.p`
+  color: var(--text-secondary);
+  font-size: 1.3rem;
+  line-height: 1.8;
+  margin-bottom: 60px;
+  max-width: 800px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+  }
+`;
+
+const HoursExplanation = styled.div`
+  background: linear-gradient(to right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 25px 30px;
+  margin-bottom: 35px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+`;
+
+const HoursTitle = styled.h3`
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  font-weight: 600;
+`;
+
+const HoursNote = styled.p`
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-top: 10px;
+  font-style: italic;
+  opacity: 0.85;
+`;
+
+const AdvantageBanner = styled.div`
+  background: linear-gradient(to bottom right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 35px 40px;
+  margin-bottom: 60px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  
+  @media (max-width: 768px) {
+    padding: 25px 20px;
+  }
+`;
+
+const AdvantageTitle = styled.h2`
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  display: inline-block;
+`;
+
+const AdvantageText = styled.p`
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 10px;
+`;
+
+const PricingGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-bottom: 80px;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+  }
+`;
+
+const PricingCard = styled.div`
+  background: linear-gradient(145deg, rgba(20, 20, 25, 0.95), rgba(30, 30, 35, 0.95));
+  border-radius: 24px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 182, 4, 0.6);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    width: 4px;
+    height: 4px;
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 50%;
+  }
+  
+  ${props => props.featured && `
+    background: linear-gradient(145deg, rgba(25, 25, 30, 0.98), rgba(35, 35, 40, 0.98));
+    transform: scale(1.05);
+    border: 2px solid #fbb604;
+    box-shadow: 
+      0 25px 70px rgba(251, 182, 4, 0.2),
+      0 0 0 1px rgba(251, 182, 4, 0.1);
+    z-index: 2;
+    
+    &:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(135deg, #fbb604, #f99b04);
+      animation: ${digitalFlicker} 3s ease-in-out infinite;
+    }
+    
+    &::after {
+      background: rgba(251, 182, 4, 0.8);
+      width: 8px;
+      height: 8px;
+      top: 8px;
+      right: 8px;
+    }
+  `}
+  
+  &:hover {
+    transform: ${props => props.featured ? 'translateY(-10px) scale(1.05)' : 'translateY(-10px)'};
+    box-shadow: 0 30px 70px rgba(251, 182, 4, 0.25);
+    border-color: rgba(251, 182, 4, 0.6);
+  
+    &::before {
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+  }
+  }
+`;
+
+const PlanName = styled.h2`
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #fbb604;
+  position: relative;
+  display: inline-block;
+  
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(135deg, #fbb604, #f99b04);
+    border-radius: 2px;
+  }
+`;
+
+const FeatureBadge = styled.span`
+  position: absolute;
+  top: -12px;
+  right: -30px;
+  background: linear-gradient(135deg, #fbb604, #f99b04);
+  color: #000;
+  font-size: 0.8rem;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  transform: rotate(12deg);
+  box-shadow: 0 5px 15px rgba(251, 182, 4, 0.4);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  
+  &:before {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background: inherit;
+    border-radius: 2px;
+    rotate: 45deg;
+    z-index: -1;
+  }
+`;
+
+const PlanDescription = styled.p`
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  flex-grow: 0;
+  opacity: 0.9;
+`;
+
+const PriceContainer = styled.div`
+  margin-bottom: 30px;
+  margin-top: 0;
+  text-align: left;
+`;
+
+const StrikethroughPrice = styled.div`
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  text-decoration: line-through;
+  opacity: 0.7;
+  margin-bottom: 5px;
+`;
+
+const Price = styled.div`
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+  line-height: 1;
+  
+  sup {
+    font-size: 1rem;
+    top: -1.5em;
+    margin-left: 2px;
+  }
+`;
+
+const PriceDescription = styled.p`
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 2px;
+  margin-top: 2px;
+  opacity: 0.9;
+`;
+
+const CustomPrice = styled.div`
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+  line-height: 1;
+  
+  sup {
+    font-size: 1rem;
+    top: -1.5em;
+    margin-left: 2px;
+  }
+`;
+
+const FeatureList = styled.ul`
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 35px 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 12px;
+`;
+
+const FeatureItem = styled.li`
+  color: var(--text-secondary);
+  padding: 8px 0;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.5;
+
+  svg {
+    color: #fbb604;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+`;
+
+const CrossedFeatureItem = styled(FeatureItem)`
+  opacity: 0.6;
+  text-decoration: line-through;
+  
+  svg {
+    color: var(--text-secondary);
+  }
+`;
+
+const SelectButton = styled(Link)`
+  background: linear-gradient(135deg, #fbb604, #f99b04, #d39404);
+  color: #000;
+  border: none;
+  border-radius: 16px;
+  padding: 18px 32px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(251, 182, 4, 0.3), 0 0 20px rgba(251, 182, 4, 0.1);
+  position: relative;
+  overflow: hidden;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(251, 182, 4, 0.4), 0 0 30px rgba(251, 182, 4, 0.2);
+    filter: brightness(1.1);
+    
+    &:before {
+      left: 100%;
+    }
+  }
+`;
+
+const CustomTierWrapper = styled.div`
+  background: rgba(25, 25, 25, 0.6);
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  border-radius: 20px;
+  padding: 0;
+  margin-top: 80px;
+  position: relative;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(135deg, #fbb604, #f99b04);
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 0 15px rgba(251, 182, 4, 0.5);
+    z-index: 3;
+  }
+  
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8), rgba(40, 40, 40, 0.9));
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: 0;
+    pointer-events: none;
+  }
+  
+  &:hover:after {
+    opacity: 1;
+  }
+`;
+
+const CustomTierTitle = styled.h2`
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: ${props => props.isOpen ? '30px' : '0'};
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 40px;
+  border-radius: 20px 20px 0 0;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+  
+  &:hover {
+    .icon-container {
+      box-shadow: 0 0 15px rgba(251, 182, 4, 0.4);
+      background: rgba(251, 182, 4, 0.1);
+    }
+  }
+  
+  .icon-container {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+    background: transparent;
+    border: 2px solid #fbb604;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .icon {
+    position: relative;
+    width: 14px;
+    height: 2px;
+    background: #fbb604;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    
+    &:before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 2px;
+      background: #fbb604;
+      transform: ${props => props.isOpen ? 'rotate(0deg)' : 'rotate(90deg)'};
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+  }
+`;
+
+const CustomTierContent = styled.div`
+  max-height: ${props => props.isOpen ? '2000px' : '0'};
+  opacity: ${props => props.isOpen ? '1' : '0'};
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  padding: ${props => props.isOpen ? '0 40px 40px' : '0 40px'};
+  position: relative;
+  z-index: 2;
+  
+  /* Separate transition for max-height to make collapse smoother */
+  transition-property: max-height, opacity, padding;
+  transition-duration: ${props => props.isOpen ? '0.6s' : '0.4s'}, 0.4s, 0.3s;
+  transition-delay: 0s, ${props => props.isOpen ? '0s' : '0.1s'}, 0s;
+`;
+
+const ResourceGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+`;
+
+const ResourceCard = styled.div`
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 22px;
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(20, 20, 20, 0.6);
+  }
+`;
+
+const ResourceTitle = styled.h3`
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: var(--text-primary);
+  border-left: 3px solid #fbb604;
+  padding-left: 10px;
+`;
+
+const ResourceControls = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 6px 10px;
+  border-radius: 6px;
+`;
+
+const ControlButton = styled.button`
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  border: none;
+  background: ${props => props.add ? "rgba(74, 74, 74, 0.5)" : "rgba(42, 42, 42, 0.5)"};
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+
+  &:hover {
+    background: ${props => props.add ? "rgba(85, 85, 85, 0.7)" : "rgba(51, 51, 51, 0.7)"};
+    transform: ${props => props.add ? "scale(1.05)" : "scale(0.95)"};
+  }
+`;
+
+const ResourceCount = styled.span`
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  min-width: 30px;
+  text-align: center;
+  font-weight: 600;
+`;
+
+const ExperienceSelect = styled.div`
+  display: flex;
+  gap: 2px;
+  margin-top: 10px;
+  padding: 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+`;
+
+const ExperienceOption = styled.button`
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  border: none;
+  background: ${props => props.selected ? "rgba(255, 255, 255, 0.1)" : "transparent"};
+  color: ${props => props.selected ? "var(--text-primary)" : "var(--text-secondary)"};
+  font-weight: ${props => props.selected ? "500" : "400"};
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  text-align: center;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+`;
+
+const TotalContainer = styled.div`
+  margin-top: 40px;
+  padding: 30px 40px;
+  border-radius: 16px;
+  background: linear-gradient(to right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 800px;
+  margin: 40px auto 0;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+`;
+
+const TotalText = styled.p`
+  font-size: 1.2rem;
+  color: var(--text-primary);
+`;
+
+const TotalPrice = styled.p`
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white;
+`;
+
+const ContactButton = styled(Link)`
+  background: linear-gradient(135deg, #fbb604, #f99b04, #d39404);
+  color: #000;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  display: inline-block;
+  text-decoration: none;
+  margin-top: 30px;
+  box-shadow: 0 8px 25px rgba(251, 182, 4, 0.3), 0 0 20px rgba(251, 182, 4, 0.1);
+  position: relative;
+  overflow: hidden;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(251, 182, 4, 0.4), 0 0 30px rgba(251, 182, 4, 0.2);
+    filter: brightness(1.1);
+    
+    &:before {
+      left: 100%;
+    }
+  }
+`;
+
+const InfoSection = styled.div`
+  margin-top: 80px;
+`;
+
+const InfoTitle = styled.h3`
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 25px;
+  position: relative;
+  display: inline-block;
+  
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 70%;
+    height: 3px;
+    background: white;
+    border-radius: 2px;
+  }
+`;
+
+const InfoBlock = styled.div`
+  background: linear-gradient(to bottom right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+  border-radius: 18px;
+  padding: 40px 50px;
+  margin-bottom: 30px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+  
+  @media (max-width: 768px) {
+    padding: 30px 25px;
+  }
+`;
+
+const DiscountGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+`;
+
+const DiscountCard = styled.div`
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+`;
+
+const DiscountHours = styled.div`
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+`;
+
+const DiscountPercent = styled.div`
+  font-size: 1.1rem;
+  color: #f8f8f8;
+  font-weight: 600;
+`;
+
+const DiscountText = styled.p`
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 8px;
+`;
+
+const CountdownContainer = styled.div`
+  background: linear-gradient(145deg, rgba(20, 20, 25, 0.95), rgba(30, 30, 35, 0.95));
+  border: 1px solid rgba(251, 182, 4, 0.3);
+  border-radius: 24px;
+  padding: 40px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  backdrop-filter: blur(15px);
+  
+  &:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #fbb604, #f99b04, #fbb604);
+    background-size: 200% 100%;
+    animation: ${digitalFlicker} 2s ease-in-out infinite;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: #fbb604;
+    border-radius: 50%;
+    animation: ${circuitPulse} 3s ease-in-out infinite;
+  }
+  
+  @media (max-width: 768px) {
+    padding: 30px 25px;
+  }
+`;
+
+const CountdownHeader = styled.h3`
+  color: #fbb604;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 25px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  
+  @media (max-width: 768px) {
+    font-size: 1.4rem;
+  }
+`;
+
+const CountdownTimerDisplay = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  margin: 20px 0;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+`;
+
+const CountdownUnit = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 90px;
+  
+  @media (max-width: 768px) {
+    min-width: 75px;
+  }
+`;
+
+const CountdownNumber = styled.div`
+  background: linear-gradient(145deg, rgba(15, 15, 20, 0.9), rgba(25, 25, 30, 0.9));
+  color: #fbb604;
+  font-size: 2.8rem;
+  font-weight: 800;
+  border-radius: 16px;
+  min-width: 95px;
+  height: 95px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 
+    0 12px 25px rgba(0, 0, 0, 0.6), 
+    inset 0 2px 6px rgba(251, 182, 4, 0.1),
+    0 0 0 1px rgba(251, 182, 4, 0.2);
+  position: relative;
+  border: 1px solid rgba(251, 182, 4, 0.3);
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+  
+  &:before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 182, 4, 0.4);
+    border-radius: 50%;
+  }
+  
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 4px;
+    height: 4px;
+    background: rgba(251, 182, 4, 0.2);
+    border-radius: 50%;
+  }
+  
+  @media (max-width: 768px) {
+    font-size: 2.2rem;
+    min-width: 80px;
+    height: 80px;
+  }
+`;
+
+const CountdownLabel = styled.div`
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  margin-top: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+`;
+
+const CountdownUrgency = styled.p`
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 25px;
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    margin-top: 18px;
+  }
+`;
+
+const CountdownButton = styled(Link)`
+  background: linear-gradient(135deg, #fbb604, #f99b04);
+  color: #000;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  margin-top: 25px;
+  box-shadow: 0 8px 20px rgba(251, 182, 4, 0.3);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(251, 182, 4, 0.4);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+`;
+
+const PulsingDot = styled.span`
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-color: #f8f8f8;
+  border-radius: 50%;
+  margin-right: 12px;
+  position: relative;
+  box-shadow: 0 0 10px rgba(248, 248, 248, 0.6);
+  
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f8f8f8;
+    border-radius: 50%;
+    animation: pulse-dot 1.5s infinite;
+    opacity: 0.8;
+  }
+  
+  @keyframes pulse-dot {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: scale(3);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0;
+    }
+  }
+`;
+
+const CountdownHighlight = styled.span`
+  color: #f8f8f8;
+  font-weight: 600;
+  margin: 0 6px;
+  letter-spacing: 0.5px;
+`;
+
+const BillingToggleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 60px;
+  position: relative;
+  gap: 20px;
+`;
+
+const BillingOption = styled.span`
+  font-size: 1.1rem;
+  color: ${props => props.active ? '#fbb604' : 'var(--text-secondary)'};
+  font-weight: ${props => props.active ? '600' : '400'};
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    color: ${props => !props.active && '#fbb604'};
+  }
+`;
+
+const ToggleSwitch = styled.div`
+  width: 56px;
+  height: 28px;
+  background: ${props => props.isOn ? 'linear-gradient(135deg, #fbb604, #f99b04)' : 'rgba(255, 255, 255, 0.1)'};
+  border-radius: 14px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: ${props => props.isOn ? '30px' : '2px'};
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  &:hover {
+    &:before {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+`;
+
+const SaveBadge = styled.span`
+  position: absolute;
+  right: -80px;
+  background: linear-gradient(135deg, #fbb604, #f99b04);
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+`;
+
+const ComparisonSection = styled.div`
+  margin-top: 100px;
+  margin-bottom: 80px;
+`;
+
+const ComparisonTitle = styled.h2`
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #fbb604;
+`;
+
+const ComparisonTable = styled.div`
+  background: rgba(25, 25, 25, 0.6);
+  border-radius: 24px;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+`;
+
+const TableHeader = styled.div`
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  padding: 25px;
+  background: rgba(251, 182, 4, 0.1);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const TableHeaderCell = styled.div`
+  color: #fbb604;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  
+  &:first-child {
+    text-align: left;
+  }
+`;
+
+const TableRow = styled.div`
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  padding: 20px 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: center;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 15px;
+    text-align: center;
+    
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  }
+`;
+
+const FeatureCell = styled.div`
+  color: var(--text-secondary);
+  font-size: 1rem;
+  
+  @media (max-width: 768px) {
+    font-weight: 600;
+    color: #fbb604;
+    margin-bottom: 10px;
+  }
+`;
+
+const ValueCell = styled.div`
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  
+  svg {
+    color: ${props => props.included ? '#fbb604' : 'var(--text-secondary)'};
+    font-size: 1.2rem;
+  }
+  
+  @media (max-width: 768px) {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 10px;
+    
+    &:before {
+      content: attr(data-label);
+      display: block;
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: var(--text-secondary);
+    }
+  }
+`;
+
+const FAQSection = styled.div`
+  margin-top: 100px;
+  margin-bottom: 80px;
+`;
+
+const FAQTitle = styled.h2`
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 50px;
+  color: #fbb604;
+`;
+
+const FAQGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const FAQItem = styled.div`
+  background: rgba(25, 25, 25, 0.6);
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+`;
+
+const FAQQuestion = styled.div`
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(251, 182, 4, 0.05);
+  }
+  
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    padding-right: 20px;
+  }
+  
+  svg {
+    color: #fbb604;
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+  }
+`;
+
+const FAQAnswer = styled.div`
+  padding: ${props => props.isOpen ? '0 25px 25px' : '0 25px'};
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-height: ${props => props.isOpen ? '500px' : '0'};
+  opacity: ${props => props.isOpen ? '1' : '0'};
+  transition: all 0.3s ease;
+  overflow: hidden;
+`;
+
+const resources = [
+  { id: 1, name: "Front-End Web Developer", count: 0, experience: "intermediate" },
+  { id: 2, name: "Back-End Web Developer", count: 0, experience: "intermediate" },
+  { id: 3, name: "Full-Stack Web Developer", count: 0, experience: "intermediate", specialRates: true },
+  { id: 4, name: "Mobile App Developer", count: 0, experience: "intermediate" },
+  { id: 5, name: "Game Developer", count: 0, experience: "intermediate" },
+  { id: 6, name: "UI/UX Designer", count: 0, experience: "intermediate" },
+  { id: 7, name: "2D Artist", count: 0, experience: "intermediate" },
+  { id: 8, name: "3D Artist", count: 0, experience: "intermediate" },
+  { id: 9, name: "2D Animator", count: 0, experience: "intermediate" },
+  { id: 10, name: "3D Animator", count: 0, experience: "intermediate" },
+  { id: 11, name: "Sound Engineer", count: 0, experience: "intermediate" },
+  { id: 12, name: "SQA Engineer", count: 0, experience: "intermediate" },
+  { id: 13, name: "Technical Content Writer", count: 0, experience: "intermediate" },
+  { id: 14, name: "SEO Writer", count: 0, experience: "intermediate" },
+  { id: 15, name: "ASO Writer", count: 0, experience: "intermediate" },
+  { id: 16, name: "Social Media Marketer", count: 0, experience: "intermediate" },
+  { id: 17, name: "Virtual Assistant", count: 0, experience: "intermediate" },
+  { id: 18, name: "AI Engineer", count: 0, experience: "intermediate" },
+  { id: 19, name: "IoT Engineer", count: 0, experience: "intermediate" },
+  { id: 20, name: "DevOps Engineer", count: 0, experience: "intermediate" },
+  { id: 21, name: "Cyber Security Engineer", count: 0, experience: "intermediate" },
+  { id: 22, name: "Technical Support Specialist", count: 0, experience: "intermediate" },
+  { id: 23, name: "Technical Project Manager", count: 0, experience: "intermediate", flatRate: 3 },
+  { id: 24, name: "Technical Product Manager", count: 0, experience: "intermediate", flatRate: 3 },
+];
+
+const Pricing = () => {
+  const [customResources, setCustomResources] = useState(resources);
+  const [isAnnual, setIsAnnual] = useState(false);
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isCustomTeamOpen, setIsCustomTeamOpen] = useState(false);
+  const [openFAQ, setOpenFAQ] = useState(null);
+  
+  useEffect(() => {
+    const calculateCountdown = () => {
+      const targetDate = new Date('January 1, 2026 00:00:00 PST');
+      const now = new Date();
+      
+      const difference = targetDate - now;
+      
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+      
+      setCountdown({ days, hours, minutes, seconds });
+    };
+    
+    calculateCountdown();
+    const timer = setInterval(calculateCountdown, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+  
+  const updateResourceCount = (id, increment) => {
+    setCustomResources(prev => 
+      prev.map(resource => 
+        resource.id === id 
+          ? { ...resource, count: Math.max(0, resource.count + increment) }
+          : resource
+      )
+    );
+  };
+  
+  const toggleExperience = (id) => {
+    setCustomResources(prev => 
+      prev.map(resource => 
+        resource.id === id 
+          ? { ...resource, experience: resource.experience === "intermediate" ? "veteran" : "intermediate" }
+          : resource
+      )
+    );
+  };
+  
+  const calculateTotal = () => {
+    const hourlyRate = 176; // 176 working hours
+    return customResources.reduce((total, resource) => {
+      if (resource.flatRate) {
+        return total + (resource.count * resource.flatRate * hourlyRate);
+      }
+      
+      const rate = resource.specialRates
+        ? (resource.experience === "intermediate" ? 4.5 : 9)
+        : (resource.experience === "intermediate" ? 3 : 6);
+        
+      return total + (resource.count * rate * hourlyRate);
+    }, 0);
+  };
+  
+  const getMonthlyPrice = (price) => {
+    const priceWithTax = price * 1.16; // Adding 16% sales tax
+    const discountedPrice = isAnnual ? Math.floor(priceWithTax * 0.88) : priceWithTax;
+    return Math.round(discountedPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const getAnnualTotal = (price) => {
+    const priceWithTax = price * 1.16; // Adding 16% sales tax
+    const annualPrice = Math.floor(priceWithTax * 0.88 * 12);
+    return annualPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const getSavingsAmount = (price) => {
+    const priceWithTax = price * 1.16; // Adding 16% sales tax
+    const savings = Math.floor(priceWithTax * 0.12 * 12);
+    return savings.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const getMonthlyPriceWithTax = (price) => {
+    const priceWithTax = price * 1.16; // Adding 16% sales tax
+    return Math.round(priceWithTax).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  // Add keyframes for pulse animation
+  useEffect(() => {
+    const styleSheet = document.styleSheets[0];
+    const keyframes = `
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 18px rgba(248, 248, 248, 0.4), 0 0 10px rgba(248, 248, 248, 0.3);
+        }
+        100% {
+          box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
+        }
+      }
+    `;
+    
+    try {
+      styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+    } catch (e) {
+      console.error("Failed to insert keyframes rule:", e);
+    }
+  }, []);
+
+  const faqs = [
+    {
+      question: "What's included in the working hours?",
+      answer: "Our standard working hours are 176 hours per month, based on 8 hours per day, 22 days per month. This includes development, meetings, planning, and any project-related activities."
+    },
+    {
+      question: "Can I upgrade or downgrade my plan?",
+      answer: "Yes, you can change your plan at any time. We'll prorate the charges and adjust your billing accordingly. Please note that downgrading might require adjusting the team composition."
+    },
+    {
+      question: "Do you offer custom team compositions?",
+      answer: "Absolutely! Our Tailored Enterprise plan allows you to build a custom team that perfectly matches your project needs. Contact us to discuss your specific requirements."
+    },
+    {
+      question: "What's your payment structure?",
+      answer: "We require a downpayment (25-30% depending on the plan) followed by monthly payments. All prices include 16% sales tax. Annual plans receive a 12% discount."
+    },
+    {
+      question: "How do project iterations work?",
+      answer: "Iterations vary by plan. Essential Launch has limited iterations, Growth Partnership includes up to 2 iterations per week, and Enterprise plans offer flexible iteration cycles based on your needs."
+    },
+    {
+      question: "What happens if I need more resources?",
+      answer: "You can easily scale your team up or down based on project demands. Contact your project manager to discuss resource adjustments, and we'll accommodate your needs quickly."
+    }
+  ];
+
+  const toggleFAQ = (index) => {
+    setOpenFAQ(openFAQ === index ? null : index);
+  };
+
+  return (
+    <PricingWrapper>
+      <Title>Our Pricing</Title>
+      <Subtitle>
+        Choose the perfect plan for your business needs. All of our plans include dedicated resources
+        working efficiently to bring your vision to life globally, with teams serving clients in the USA, UK, Europe, Australia, and Dubai.
+      </Subtitle>
+      
+      <CountdownContainer>
+        <CountdownHeader>
+          <PulsingDot />LIMITED TIME OFFER: Lock in 2025 Rates
+        </CountdownHeader>
+        <CountdownTimerDisplay>
+          <CountdownUnit>
+            <CountdownNumber>{countdown.days}</CountdownNumber>
+            <CountdownLabel>Days</CountdownLabel>
+          </CountdownUnit>
+          <CountdownUnit>
+            <CountdownNumber>{countdown.hours}</CountdownNumber>
+            <CountdownLabel>Hours</CountdownLabel>
+          </CountdownUnit>
+          <CountdownUnit>
+            <CountdownNumber>{countdown.minutes}</CountdownNumber>
+            <CountdownLabel>Minutes</CountdownLabel>
+          </CountdownUnit>
+          <CountdownUnit>
+            <CountdownNumber>{countdown.seconds}</CountdownNumber>
+            <CountdownLabel>Seconds</CountdownLabel>
+          </CountdownUnit>
+        </CountdownTimerDisplay>
+        <CountdownUrgency>
+          Prices will increase on January 1, 2026. Act now to secure current rates!
+        </CountdownUrgency>
+        <CountdownButton to="/contact-us">
+          Lock in Current Rates
+        </CountdownButton>
+      </CountdownContainer>
+      
+      <BillingToggleContainer>
+        <BillingOption active={!isAnnual} onClick={() => setIsAnnual(false)}>Monthly</BillingOption>
+        <ToggleSwitch isOn={isAnnual} onClick={() => setIsAnnual(!isAnnual)} />
+        <BillingOption active={isAnnual} onClick={() => setIsAnnual(true)}>Annually</BillingOption>
+        {isAnnual && <SaveBadge>Save 12%</SaveBadge>}
+      </BillingToggleContainer>
+      
+      <PricingGrid>
+        <PricingCard>
+          <PlanName>Essential Launch</PlanName>
+          <PlanDescription>
+            Perfect for startups and small businesses looking to build an MVP with a lean budget.
+          </PlanDescription>
+          
+          <PriceContainer>
+            {isAnnual && <StrikethroughPrice>${getMonthlyPriceWithTax(1584)}</StrikethroughPrice>}
+            <Price>${getMonthlyPrice(1584)}<sup>*</sup></Price>
+            <PriceDescription>
+              per month {isAnnual && `billed annually ($${getAnnualTotal(1584)})`}
+            </PriceDescription>
+            {isAnnual && <PriceDescription>You save ${getSavingsAmount(1584)}</PriceDescription>}
+            <PriceDescription style={{ fontSize: '0.8rem', opacity: '0.8' }}>* Inclusive of sales tax</PriceDescription>
+          </PriceContainer>
+          
+          <FeatureList>
+            <FeatureItem><FaCheck />Low-No Code Developer with 2-3 years experience</FeatureItem>
+            <FeatureItem><FaCheck />UI/UX Designer with 2-3 years experience</FeatureItem>
+            <FeatureItem><FaCheck />Technical Project Manager (part-time)</FeatureItem>
+            <FeatureItem><FaCheck />Basic requirements gathering & planning</FeatureItem>
+            <FeatureItem><FaCheck />Bi-weekly progress meetings</FeatureItem>
+            <FeatureItem><FaCheck />Basic Q/A testing & bug fixes</FeatureItem>
+            <FeatureItem><FaCheck />Access to company Slack channel</FeatureItem>
+            <FeatureItem><FaCheck />176 working hours per month*</FeatureItem>
+            <FeatureItem><FaCheck />30% downpayment + 16% Sales Tax</FeatureItem>
+            <FeatureItem><FaCheck />24/7 online availability in your time zone</FeatureItem>
+          </FeatureList>
+          
+          <SelectButton to="/contact-us">Get Started</SelectButton>
+        </PricingCard>
+        
+        <PricingCard featured>
+          <PlanName>
+            Growth Partnership
+            <FeatureBadge>MOST POPULAR</FeatureBadge>
+          </PlanName>
+          <PlanDescription>
+            Ideal for businesses ready to build high-quality, market-competitive products that scale.
+          </PlanDescription>
+          
+          <PriceContainer>
+            {isAnnual && <StrikethroughPrice>${getMonthlyPriceWithTax(3168)}</StrikethroughPrice>}
+            <Price>${getMonthlyPrice(3168)}<sup>*</sup></Price>
+            <PriceDescription>
+              per month {isAnnual && `billed annually ($${getAnnualTotal(3168)})`}
+            </PriceDescription>
+            {isAnnual && <PriceDescription>You save ${getSavingsAmount(3168)}</PriceDescription>}
+            <PriceDescription style={{ fontSize: '0.8rem', opacity: '0.8' }}>* Inclusive of sales tax</PriceDescription>
+          </PriceContainer>
+          
+          <FeatureList>
+            <FeatureItem><FaCheck />Senior Engineer with 5-7+ years experience</FeatureItem>
+            <FeatureItem><FaCheck />Senior UI/UX Engineer with 5-7+ years experience</FeatureItem>
+            <FeatureItem><FaCheck />Technical Project Manager (full-time)</FeatureItem>
+            <FeatureItem><FaCheck />Weekly sprints with iterative builds</FeatureItem>
+            <FeatureItem><FaCheck />Up to 3 iterations per sprint</FeatureItem>
+            <FeatureItem><FaCheck />Comprehensive Q/A Testing & CI/CD</FeatureItem>
+            <FeatureItem><FaCheck />Priority Slack channel & support</FeatureItem>
+            <FeatureItem><FaCheck />Technical Product Manager with business insights</FeatureItem>
+            <FeatureItem><FaCheck />176 working hours per month*</FeatureItem>
+            <FeatureItem><FaCheck />25% downpayment + 16% Sales Tax</FeatureItem>
+            <FeatureItem><FaCheck />24/7 online availability in your time zone</FeatureItem>
+          </FeatureList>
+          
+          <SelectButton to="/contact-us">
+            Get Started
+          </SelectButton>
+        </PricingCard>
+        
+        <PricingCard>
+          <PlanName>Tailored Enterprise</PlanName>
+          <PlanDescription>
+            Comprehensive solution for enterprise clients with complex requirements and scalable needs.
+          </PlanDescription>
+          
+          <PriceContainer>
+            <CustomPrice>Custom<sup>*</sup></CustomPrice>
+            <PriceDescription>tailored to your specific needs</PriceDescription>
+            <PriceDescription style={{ fontSize: '0.8rem', opacity: '0.8', marginTop: '5px' }}>* Inclusive of sales tax</PriceDescription>
+          </PriceContainer>
+          
+          <FeatureList>
+            <FeatureItem><FaCheck />Custom team composition & size</FeatureItem>
+            <FeatureItem><FaCheck />Mix of Senior and Lead Engineers</FeatureItem>
+            <FeatureItem><FaCheck />Dedicated Technical Project Manager</FeatureItem>
+            <FeatureItem><FaCheck />Dedicated Technical Product Manager</FeatureItem>
+            <FeatureItem><FaCheck />Flexible sprint cycles & iterations</FeatureItem>
+            <FeatureItem><FaCheck />Enterprise-grade QA & security testing</FeatureItem>
+            <FeatureItem><FaCheck />Dedicated Slack workspace</FeatureItem>
+            <FeatureItem><FaCheck />176 working hours per month*</FeatureItem>
+            <FeatureItem><FaCheck />Priority support & strategic consulting</FeatureItem>
+            <FeatureItem><FaCheck />25% downpayment + 16% Sales Tax</FeatureItem>
+            <FeatureItem><FaCheck />24/7 online availability in your time zone</FeatureItem>
+          </FeatureList>
+          
+          <SelectButton to="/contact-us">Contact Us</SelectButton>
+        </PricingCard>
+      </PricingGrid>
+      
+      <CustomTierWrapper>
+        <CustomTierTitle isOpen={isCustomTeamOpen} onClick={() => setIsCustomTeamOpen(!isCustomTeamOpen)}>
+          <div className="icon-container">
+            <div className="icon"></div>
+          </div>
+          Build Your Custom Team
+        </CustomTierTitle>
+        
+        <CustomTierContent isOpen={isCustomTeamOpen}>
+          <p style={{ 
+            color: 'var(--text-secondary)', 
+            marginBottom: '30px', 
+            fontSize: '1.05rem', 
+            maxWidth: '900px', 
+            lineHeight: '1.7' 
+          }}>
+            Craft your perfect development team by selecting the exact resources you need. 
+            Mix and match different specialties and experience levels to create a tailored solution 
+            that precisely fits your project requirements and budget.
+          </p>
+          
+          <ResourceGrid>
+            {customResources.map(resource => (
+              <ResourceCard key={resource.id}>
+                <ResourceTitle>{resource.name}</ResourceTitle>
+                <ExperienceSelect>
+                  {resource.flatRate ? (
+                    <ExperienceOption selected={true}>
+                      ${resource.flatRate}/h (fixed rate)
+                    </ExperienceOption>
+                  ) : (
+                    <>
+                      <ExperienceOption 
+                        selected={resource.experience === "intermediate"}
+                        onClick={() => resource.experience !== "intermediate" && toggleExperience(resource.id)}
+                      >
+                        Proficient<br/>(${resource.specialRates ? "4.5" : "3"}/h)
+                      </ExperienceOption>
+                      <ExperienceOption 
+                        selected={resource.experience === "veteran"}
+                        onClick={() => resource.experience !== "veteran" && toggleExperience(resource.id)}
+                      >
+                        Expert<br/>(${resource.specialRates ? "9" : "6"}/h)
+                      </ExperienceOption>
+                    </>
+                  )}
+                </ExperienceSelect>
+                <ResourceControls>
+                  <ControlButton onClick={() => updateResourceCount(resource.id, -1)}>−</ControlButton>
+                  <ResourceCount>{resource.count}</ResourceCount>
+                  <ControlButton add onClick={() => updateResourceCount(resource.id, 1)}>+</ControlButton>
+                </ResourceControls>
+              </ResourceCard>
+            ))}
+          </ResourceGrid>
+          
+          <div style={{ 
+            fontSize: '0.95rem', 
+            color: 'var(--text-secondary)', 
+            padding: '10px 15px', 
+            background: 'rgba(255,255,255,0.03)', 
+            borderRadius: '8px',
+            marginBottom: '30px' 
+          }}>
+            <p>
+              <strong>Note:</strong> All team members follow our standard working hours calculation.
+              The monthly cost will vary based on the actual number of working days in each month.
+            </p>
+          </div>
+          
+          <TotalContainer>
+            <TotalText>Estimated Monthly Total</TotalText>
+            <TotalPrice>${calculateTotal().toLocaleString()}</TotalPrice>
+          </TotalContainer>
+          
+          <div style={{ textAlign: 'center' }}>
+            <ContactButton to="/contact-us">Contact Us for Details</ContactButton>
+          </div>
+        </CustomTierContent>
+      </CustomTierWrapper>
+      
+      <InfoSection>
+        <HoursExplanation>
+          <HoursTitle>Working Hours Calculation & Flexible Billing</HoursTitle>
+          <p>
+            Our standard pricing is based on 176 working hours per month (8-hour workday × 22 working days).
+            The actual number of working hours may vary depending on the specific month:
+          </p>
+          <ul style={{ marginTop: '10px', paddingLeft: '20px' }}>
+            <li>Months with fewer than 22 working days (like February) will be billed less</li>
+            <li>Months with more than 22 working days will be billed accordingly</li>
+          </ul>
+          
+          <p style={{ marginTop: '15px' }}>Each of our monthly plans includes these 176 working hours, providing you with dedicated development resources to advance your project.</p>
+          
+          <p>For projects estimated to be completed in less than a month, we only charge for the actual number of hours worked, rather than billing for a full month. This flexible approach ensures you only pay for the development time your project actually requires.</p>
+          
+          <HoursNote>
+            * We always calculate the exact working days in each month, excluding weekends and standard holidays.
+            Your invoice will reflect the precise number of working hours for that billing period.
+            <br/><br/>
+            * The 176 hours are distributed across your team members as needed. For smaller projects, we can also provide partial-month billing based on actual hours utilized.
+          </HoursNote>
+          <div style={{ 
+            marginTop: '15px', 
+            padding: '10px 15px', 
+            background: 'rgba(255,255,255,0.05)', 
+            borderRadius: '6px', 
+            border: '1px solid rgba(255,255,255,0.08)'
+          }}>
+            <strong>Overtime Rates:</strong> Any additional hours beyond the calculated working hours for a given month will be charged at 2× the standard hourly rate. Prior approval will be required for any overtime work.
+          </div>
+        </HoursExplanation>
+        
+        <InfoBlock>
+          <InfoTitle>Important Notes</InfoTitle>
+          <FeatureList>
+            <FeatureItem>A 25-30% downpayment is required before project initiation</FeatureItem>
+            <FeatureItem>All prices are subject to 16% Sales Tax</FeatureItem>
+            <FeatureItem>Additional hours beyond 176/month are billed at 2× the standard rate</FeatureItem>
+            <FeatureItem>10-15% rate increase effective January 1, 2026</FeatureItem>
+            <FeatureItem>Annual plans purchased before Jan 1, 2026 are price-locked for 12 months</FeatureItem>
+            <FeatureItem>We leverage existing assets to optimize costs where appropriate</FeatureItem>
+            <FeatureItem>Custom quotes available for specialized tech stacks</FeatureItem>
+            <FeatureItem>Prices in USD, excluding third-party service costs</FeatureItem>
+            <FeatureItem>All packages include 24/7 availability in your timezone</FeatureItem>
+            <FeatureItem>Flexible payment terms available for long-term contracts</FeatureItem>
+          </FeatureList>
+        </InfoBlock>
+      </InfoSection>
+
+      <ComparisonSection>
+        <ComparisonTitle>Plan Comparison</ComparisonTitle>
+        <ComparisonTable>
+          <TableHeader>
+            <TableHeaderCell>Feature</TableHeaderCell>
+            <TableHeaderCell>Essential Launch</TableHeaderCell>
+            <TableHeaderCell>Growth Partnership</TableHeaderCell>
+            <TableHeaderCell>Tailored Enterprise</TableHeaderCell>
+          </TableHeader>
+          
+          <TableRow>
+            <FeatureCell>Team Experience Level</FeatureCell>
+            <ValueCell data-label="Essential Launch">2-3 years</ValueCell>
+            <ValueCell data-label="Growth Partnership">5-7+ years</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Custom Mix</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Project Management</FeatureCell>
+            <ValueCell data-label="Essential Launch">Part-time</ValueCell>
+            <ValueCell data-label="Growth Partnership">Full-time</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Dedicated</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Meeting Frequency</FeatureCell>
+            <ValueCell data-label="Essential Launch">Bi-weekly</ValueCell>
+            <ValueCell data-label="Growth Partnership">Weekly</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Custom</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Iterations</FeatureCell>
+            <ValueCell data-label="Essential Launch">Limited</ValueCell>
+            <ValueCell data-label="Growth Partnership">2 per week</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Flexible</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>QA Testing</FeatureCell>
+            <ValueCell data-label="Essential Launch">Basic</ValueCell>
+            <ValueCell data-label="Growth Partnership">Thorough</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Comprehensive</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Support Level</FeatureCell>
+            <ValueCell data-label="Essential Launch">Standard</ValueCell>
+            <ValueCell data-label="Growth Partnership">Priority</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">Dedicated</ValueCell>
+          </TableRow>
+          
+          <TableRow>
+            <FeatureCell>Downpayment</FeatureCell>
+            <ValueCell data-label="Essential Launch">30%</ValueCell>
+            <ValueCell data-label="Growth Partnership">25%</ValueCell>
+            <ValueCell data-label="Tailored Enterprise">25%</ValueCell>
+          </TableRow>
+        </ComparisonTable>
+      </ComparisonSection>
+
+      <FAQSection>
+        <FAQTitle>Frequently Asked Questions</FAQTitle>
+        <FAQGrid>
+          {faqs.map((faq, index) => (
+            <FAQItem key={index}>
+              <FAQQuestion isOpen={openFAQ === index} onClick={() => toggleFAQ(index)}>
+                <h3>{faq.question}</h3>
+                {openFAQ === index ? <FaChevronUp /> : <FaChevronDown />}
+              </FAQQuestion>
+              <FAQAnswer isOpen={openFAQ === index}>
+                {faq.answer}
+              </FAQAnswer>
+            </FAQItem>
+          ))}
+        </FAQGrid>
+      </FAQSection>
+    </PricingWrapper>
+  );
+};
+
+export default Pricing; 

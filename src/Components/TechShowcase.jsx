@@ -1,5 +1,6 @@
 ﻿import React, { useState, useEffect, useRef, useCallback } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+import { useLocation } from "react-router-dom";
 import { AiOutlineCheck, AiOutlineClose, AiOutlineCode, AiOutlineCopy, AiOutlineLink, AiOutlineInfoCircle } from 'react-icons/ai';
 import { MdContentCopy, MdOpenInNew } from 'react-icons/md';
 import Lottie from "lottie-react";
@@ -20,6 +21,24 @@ import AIShowcase from "./TechShowcase/AIShowcase";
 import MusicShowcase from "./TechShowcase/MusicShowcase";
 // Import ContentShowcase component
 import ContentShowcase from "./TechShowcase/ContentShowcase";
+
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
+
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
 
 // Global style to prevent copying from code blocks
 const GlobalStyle = styled.div`
@@ -50,6 +69,24 @@ const ShowcaseWrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 30px 30px, 45px 45px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
   @media (max-width: 768px) {
     padding: 100px 6% 120px;
   }
@@ -60,45 +97,45 @@ const ShowcaseWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 4.5rem;
-  font-weight: 800;
-  margin-bottom: 30px;
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
   background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
   position: relative;
   z-index: 1;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: -20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    z-index: 0;
-  }
-
   @media (max-width: 768px) {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 2rem;
+    margin-bottom: 16px;
   }
 `;
 
 const Subtitle = styled.p`
   color: var(--text-secondary);
-  font-size: 1.2rem;
-  line-height: 1.8;
-  margin-bottom: 60px;
-  max-width: 800px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 48px;
+  max-width: 700px;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-bottom: 36px;
+  }
 `;
 
 const TabsContainer = styled.div`
@@ -106,16 +143,49 @@ const TabsContainer = styled.div`
   justify-content: center;
   margin-bottom: 50px;
   border-radius: 12px;
-  background: rgba(25, 25, 25, 0.9);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   padding: 8px;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(251, 182, 4, 0.2);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   flex-wrap: wrap;
+  backdrop-filter: blur(15px);
+  z-index: 100;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 30px 30px, 30px 30px, 15px 15px, 20px 20px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
   
   @media (max-width: 768px) {
     padding: 6px;
@@ -133,7 +203,8 @@ const Tab = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  z-index: 1;
+  z-index: 10;
+  pointer-events: auto;
   
   &:hover {
     background: ${(props) => (props.active ? "rgba(251, 182, 4, 0.15)" : "rgba(251, 182, 4, 0.05)")};
@@ -171,21 +242,56 @@ const ContentSection = styled.div`
 `;
 
 const SectionContent = styled.div`
-  background: var(--card-bg);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border-radius: 16px;
   padding: 30px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border-color);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(251, 182, 4, 0.2);
   margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
+    background-size: 25px 25px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 182, 4, 0.4);
+    border-radius: 50%;
+    animation: ${circuitPulse} 3s ease-in-out infinite;
+  }
   
   h2 {
     margin-top: 0;
-    color: #ff5470;
+    color: #fbb604;
+    position: relative;
+    z-index: 1;
   }
   
   p {
     color: var(--text-secondary);
     line-height: 1.6;
+    position: relative;
+    z-index: 1;
   }
 `;
 
@@ -198,17 +304,54 @@ const CodeShowcaseGrid = styled.div`
 `;
 
 const CodeShowcaseItem = styled.div`
-  background: linear-gradient(145deg, rgba(25, 25, 25, 0.95), rgba(35, 35, 35, 0.95));
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border-radius: 20px;
   overflow: hidden;
   border: 1px solid rgba(251, 182, 4, 0.2);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
   transition: all 0.4s ease;
+  position: relative;
+  backdrop-filter: blur(10px);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
 
   &:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(251, 182, 4, 0.3);
+    
+    &::after {
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+    }
   }
 `;
 
@@ -218,7 +361,9 @@ const CodeShowcaseHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(to right, rgba(25, 25, 25, 0.98), rgba(35, 35, 35, 0.98));
+  background: linear-gradient(to right, rgba(25, 25, 30, 0.98), rgba(35, 35, 40, 0.98));
+  position: relative;
+  z-index: 1;
 `;
 
 const CodeShowcaseTitle = styled.h3`
@@ -229,6 +374,8 @@ const CodeShowcaseTitle = styled.h3`
   align-items: center;
   letter-spacing: 0.5px;
   font-weight: 600;
+  position: relative;
+  z-index: 1;
   
   svg {
     margin-right: 10px;
@@ -243,7 +390,9 @@ const CodeShowcaseDescription = styled.p`
   line-height: 1.6;
   border-bottom: 1px solid rgba(251, 182, 4, 0.1);
   margin: 0;
-  background: rgba(25, 25, 25, 0.5);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.8), rgba(35, 35, 40, 0.8));
+  position: relative;
+  z-index: 1;
 `;
 
 const CodeDemoContainer = styled.div`
@@ -251,6 +400,8 @@ const CodeDemoContainer = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   padding: 20px 28px 28px;
+  position: relative;
+  z-index: 1;
   
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
@@ -261,37 +412,73 @@ const CodeSnippetContainer = styled.div`
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  background: #1a1a1a;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: linear-gradient(145deg, rgba(15, 15, 20, 0.95), rgba(25, 25, 30, 0.95));
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(251, 182, 4, 0.1);
+  backdrop-filter: blur(10px);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.01) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.01) 1px, transparent 1px);
+    background-size: 15px 15px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 4px;
+    height: 4px;
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 50%;
+    animation: ${circuitPulse} 3s ease-in-out infinite;
+    z-index: 2;
+  }
 `;
 
 const CodeHeader = styled.div`
-  background: #252525;
+  background: linear-gradient(145deg, rgba(35, 35, 40, 0.95), rgba(45, 45, 50, 0.95));
   padding: 12px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 0.8rem;
   color: #e0e0e0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.1);
+  position: relative;
+  z-index: 1;
 `;
 
 const CodeFileName = styled.span`
   display: flex;
   align-items: center;
   font-weight: 500;
+  position: relative;
+  z-index: 1;
 `;
 
 const CodeLanguage = styled.span`
-  background: rgba(255, 84, 112, 0.2);
+  background: rgba(251, 182, 4, 0.2);
   padding: 3px 10px;
   border-radius: 4px;
-  color: #ff5470;
+  color: #fbb604;
   font-weight: 600;
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  position: relative;
+  z-index: 1;
 `;
 
 const PreBlock = styled.pre`
@@ -303,6 +490,8 @@ const PreBlock = styled.pre`
   line-height: 1.5;
   max-height: 350px;
   color: #ffffff;
+  position: relative;
+  z-index: 1;
   
   &::-webkit-scrollbar {
     width: 8px;
@@ -310,17 +499,17 @@ const PreBlock = styled.pre`
   }
   
   &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(251, 182, 4, 0.05);
     border-radius: 10px;
   }
   
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(251, 182, 4, 0.15);
     border-radius: 10px;
   }
   
   &::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(251, 182, 4, 0.25);
   }
   
   /* Set all code to white */
@@ -330,26 +519,43 @@ const PreBlock = styled.pre`
 `;
 
 const DemoContainer = styled.div`
-  background: #1a1a1a;
+  background: linear-gradient(145deg, rgba(15, 15, 20, 0.95), rgba(25, 25, 30, 0.95));
   border-radius: 12px;
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(251, 182, 4, 0.1);
   overflow: hidden;
   position: relative;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
   
-  &:before {
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  &::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(to right, #ff5470, #ff8a5b);
+    background: linear-gradient(to right, #fbb604, #f99b04);
     z-index: 2;
   }
 `;
@@ -450,7 +656,42 @@ const FeatureCardDemo = () => {
 // Mobile App Demos - Now moved to MobileAppsShowcase.jsx component
 
 export default function TechShowcase() {
+  const location = useLocation();
   const [activeCategory, setActiveCategory] = useState('Websites');
+
+  // Handle URL parameters to set active tab
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const tab = urlParams.get('tab');
+    
+    if (tab) {
+      switch (tab) {
+        case 'websites':
+          setActiveCategory('Websites');
+          break;
+        case 'mobile-apps':
+          setActiveCategory('Mobile Apps');
+          break;
+        case 'ui-ux':
+          setActiveCategory('UI/UX');
+          break;
+        case 'games':
+          setActiveCategory('Games');
+          break;
+        case 'music':
+          setActiveCategory('Music');
+          break;
+        case 'ai':
+          setActiveCategory('AI');
+          break;
+        case 'content':
+          setActiveCategory('Content');
+          break;
+        default:
+          setActiveCategory('Websites');
+      }
+    }
+  }, [location]);
 
   const handleTabClick = (category) => {
     setActiveCategory(category);

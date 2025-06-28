@@ -16,6 +16,7 @@ import AboutUs from "./Components/AboutUs";
 import OurWork from "./Components/OurWork";
 import Projects from "./pages/Projects";
 import HivekeyProject from "./pages/HivekeyProject";
+import Careers from "./pages/Careers";
 import TechShowcase from "./Components/TechShowcase";
 import Pricing from "./Components/Pricing";
 import Testimonials from "./Components/Testimonials";
@@ -90,6 +91,9 @@ const AppContent = () => {
             
             {/* Tech Showcase Page */}
             <Route path="/tech-showcase" element={<TechShowcase />} />
+            
+            {/* Careers Page */}
+            <Route path="/careers" element={<Careers />} />
             
             {/* Pricing Page */}
             <Route path="/pricing" element={<Pricing />} />

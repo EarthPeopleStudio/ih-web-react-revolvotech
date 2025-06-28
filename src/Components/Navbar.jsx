@@ -37,10 +37,39 @@ const Logo = styled(Link)`
   align-items: center;
   transition: ${designSystem.effects.animations.transition};
   opacity: 0.95;
+  position: relative;
   
   &:hover {
     transform: scale(1.05);
     opacity: 1;
+    
+    img {
+      animation: arrowFlick 0.3s ease-out;
+    }
+  }
+  
+  /* Arrow flick animation */
+  @keyframes arrowFlick {
+    0% { transform: translateX(0); }
+    30% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+  }
+  
+  /* Subtle glow effect */
+  &:hover::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 235, 59, 0.2) 0%, transparent 70%);
+    z-index: -1;
+    animation: logoGlow 0.6s ease-out;
+  }
+  
+  @keyframes logoGlow {
+    0% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0; transform: scale(1.3); }
   }
 `;
 
@@ -146,19 +175,19 @@ const NavButton = styled(Link)`
   display: inline-block;
   text-align: center;
   font-size: ${designSystem.typography.scale.button.fontSize};
-  background: linear-gradient(135deg, #fbb604, #f99b04, #d39404);
+  background: linear-gradient(135deg, #FFCA28, #fbb604, #f99b04);
   color: ${designSystem.colors.neutral.black};
   border-radius: 12px;
   padding: ${designSystem.spacing.md} ${designSystem.spacing.lg};
   font-weight: ${designSystem.typography.scale.button.fontWeight};
   letter-spacing: ${designSystem.typography.scale.button.letterSpacing};
-  box-shadow: ${designSystem.effects.shadows.glow};
+  box-shadow: 0 8px 25px rgba(255, 202, 40, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
   transition: ${designSystem.effects.animations.transitionSmooth};
   
-  /* Pulsing animation */
-  animation: pulseGold 2s infinite ease-in-out;
+  /* Subtle pulsing animation */
+  animation: pulseGold 3s infinite ease-in-out;
   
   &:before {
     content: '';
@@ -174,7 +203,7 @@ const NavButton = styled(Link)`
   
   &:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: ${designSystem.effects.shadows.glowHover};
+    box-shadow: 0 15px 40px rgba(255, 202, 40, 0.4), 0 8px 20px rgba(0, 0, 0, 0.3);
     filter: brightness(1.1);
     
     &:before {
@@ -188,18 +217,19 @@ const NavButton = styled(Link)`
   
   @keyframes pulseGold {
     0% {
-      box-shadow: ${designSystem.effects.shadows.glow};
+      box-shadow: 0 8px 25px rgba(255, 202, 40, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2);
     }
     50% {
-      box-shadow: ${designSystem.effects.shadows.glowHover};
+      box-shadow: 0 12px 35px rgba(255, 202, 40, 0.4), 0 6px 15px rgba(0, 0, 0, 0.25);
     }
     100% {
-      box-shadow: ${designSystem.effects.shadows.glow};
+      box-shadow: 0 8px 25px rgba(255, 202, 40, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2);
     }
   }
 
   @media (max-width: ${designSystem.breakpoints.tablet}) {
     margin-left: 0;
+    margin-top: ${designSystem.spacing.md};
   }
 `;
 
@@ -224,11 +254,54 @@ const MenuButton = styled.button`
   }
 `;
 
+// Custom hook for cursor glow effect
+const useCursorGlow = () => {
+  useEffect(() => {
+    const cursor = document.createElement('div');
+    cursor.className = 'cursor-glow';
+    cursor.style.cssText = `
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, rgba(224, 178, 59, 0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: screen;
+      transition: transform 0.1s ease;
+      opacity: 0;
+    `;
+    document.body.appendChild(cursor);
+
+    const handleMouseMove = (e) => {
+      cursor.style.left = e.clientX - 10 + 'px';
+      cursor.style.top = e.clientY - 10 + 'px';
+      cursor.style.opacity = '1';
+    };
+
+    const handleMouseLeave = () => {
+      cursor.style.opacity = '0';
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.body.removeChild(cursor);
+    };
+  }, []);
+};
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { currentPath } = useContext(PathContext);
   const { setCurrentAnimation } = useAnimation();
+
+  // Activate cursor glow effect
+  useCursorGlow();
 
   const handleButtonHover = (isHovered) => {
     setCurrentAnimation(isHovered ? 'Shrug' : 'Grin');
@@ -318,6 +391,16 @@ const Navbar = () => {
             onClick={closeMenu}
           >
             Tech Showcase
+          </StyledLink>
+        </li>
+        <li>
+          <StyledLink 
+            to="/careers"
+            onMouseEnter={() => handleButtonHover(true)}
+            onMouseLeave={() => handleButtonHover(false)}
+            onClick={closeMenu}
+          >
+            Careers
           </StyledLink>
         </li>
         <li>

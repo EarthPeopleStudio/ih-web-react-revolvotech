@@ -1,15 +1,155 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { keyframes, css } from "styled-components";
 import { Link } from "react-router-dom";
 import { FaCheck, FaTimes, FaChevronDown, FaChevronUp } from "react-icons/fa";
+
+const circuitPulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(251, 182, 4, 0.1); }
+`;
+
+const digitalFlicker = keyframes`
+  0%, 100% { opacity: 1; }
+  2% { opacity: 0.8; }
+  4% { opacity: 1; }
+  6% { opacity: 0.9; }
+  8% { opacity: 1; }
+`;
+
+const sparkle = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(180deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(360deg);
+  }
+`;
+
+const sparkleTrail = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+`;
+
+const electricPulse = keyframes`
+  0%, 100% { 
+    opacity: 0.3;
+    transform: translateX(0) scale(1);
+  }
+  25% { 
+    opacity: 0.6;
+    transform: translateX(2px) scale(1.1);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: translateX(-1px) scale(0.9);
+  }
+  75% { 
+    opacity: 0.5;
+    transform: translateX(1px) scale(1.05);
+  }
+`;
+
+const electricCrackle = keyframes`
+  0%, 100% { 
+    opacity: 0;
+    stroke-dashoffset: 100;
+  }
+  30% { 
+    opacity: 0.8;
+    stroke-dashoffset: 50;
+  }
+  60% { 
+    opacity: 0.4;
+    stroke-dashoffset: 0;
+  }
+`;
+
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
+const thunderBolt = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  5% {
+    opacity: 1;
+    transform: scale(1) rotate(-15deg);
+  }
+  10% {
+    transform: scale(0.8) rotate(15deg);
+  }
+  15% {
+    transform: scale(1.2) rotate(-15deg);
+  }
+  20%, 100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+`;
+
+const thunderTrail = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-50%) scale(0);
+  }
+  5% {
+    opacity: 0.5;
+    transform: translateY(-50%) translateX(-50%) scale(1);
+  }
+  10% {
+    opacity: 0.3;
+    transform: translateY(-50%) translateX(-50%) scale(0.8);
+  }
+  20%, 100% {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-50%) scale(0);
+  }
+`;
 
 const PricingWrapper = styled.div`
   padding: 120px 8% 80px;
   color: var(--text-primary);
   min-height: 100vh;
   position: relative;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
+    background-size: 60px 60px, 60px 60px, 30px 30px, 45px 45px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
   
   @media (max-width: 768px) {
     padding: 100px 6% 120px;
@@ -20,70 +160,138 @@ const PricingWrapper = styled.div`
   }
 `;
 
+const HeroSection = styled.section`
+  text-align: center;
+  margin-bottom: 80px;
+  position: relative;
+  z-index: 1;
+  
+  @media (max-width: 768px) {
+    margin-bottom: 60px;
+  }
+`;
+
 const Title = styled.h1`
-  font-size: 4.5rem;
-  font-weight: 800;
-  margin-bottom: 30px;
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 24px;
   background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
   position: relative;
   z-index: 1;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: -20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
-    z-index: 0;
-  }
-
   @media (max-width: 768px) {
-    font-size: 3rem;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 2rem;
+    margin-bottom: 16px;
   }
 `;
 
 const Subtitle = styled.p`
   color: var(--text-secondary);
-  font-size: 1.3rem;
-  line-height: 1.8;
-  margin-bottom: 60px;
-  max-width: 800px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 48px;
+  max-width: 700px;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1;
   
   @media (max-width: 768px) {
-    font-size: 1.1rem;
-    margin-bottom: 40px;
+    font-size: 1rem;
+    margin-bottom: 36px;
   }
 `;
 
 const HoursExplanation = styled.div`
-  background: linear-gradient(to right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
-  border: 1px solid var(--border-color);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border: 1px solid rgba(251, 182, 4, 0.2);
   border-radius: 16px;
-  padding: 25px 30px;
-  margin-bottom: 35px;
+  padding: 24px 28px;
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  animation: ${fadeIn} 0.8s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+  }
+  
+  /* Circuit lines */
+  &:before:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    width: 2px;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(251, 182, 4, 0.2), transparent);
+    transform: translateY(-50%);
+  }
 `;
 
 const HoursTitle = styled.h3`
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  position: relative;
+  display: inline-block;
   font-weight: 600;
+  z-index: 1;
+  
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 60%;
+    height: 2px;
+    background: #fbb604;
+    border-radius: 1px;
+  }
 `;
 
 const HoursNote = styled.p`
@@ -93,18 +301,55 @@ const HoursNote = styled.p`
   margin-top: 10px;
   font-style: italic;
   opacity: 0.85;
+  position: relative;
+  z-index: 1;
 `;
 
 const AdvantageBanner = styled.div`
-  background: linear-gradient(to bottom right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 35px 40px;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  border-radius: 20px;
+  padding: 50px 40px;
   margin-bottom: 60px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  position: relative;
+  backdrop-filter: blur(10px);
+  animation: ${fadeIn} 0.8s ease;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
+  }
   
   @media (max-width: 768px) {
-    padding: 25px 20px;
+    padding: 40px 30px;
+    margin-bottom: 50px;
   }
 `;
 
@@ -113,6 +358,8 @@ const AdvantageTitle = styled.h2`
   color: var(--text-primary);
   margin-bottom: 20px;
   display: inline-block;
+  position: relative;
+  z-index: 1;
 `;
 
 const AdvantageText = styled.p`
@@ -125,186 +372,294 @@ const AdvantageText = styled.p`
 const PricingGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-bottom: 80px;
+  gap: 32px;
+  margin-bottom: 60px;
   position: relative;
   z-index: 1;
+  animation: ${fadeIn} 0.8s ease 0.2s both;
+  align-items: start;
 
   @media (max-width: 1200px) {
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 28px;
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 `;
 
 const PricingCard = styled.div`
-  background: linear-gradient(145deg, rgba(25, 25, 25, 0.95), rgba(35, 35, 35, 0.95));
-  border-radius: 24px;
-  padding: 40px;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.98), rgba(35, 35, 40, 0.98));
+  border-radius: 20px;
+  padding: 40px 32px;
   display: flex;
   flex-direction: column;
   position: relative;
-  border: 1px solid rgba(251, 182, 4, 0.2);
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  border: 1px solid rgba(251, 182, 4, 0.3);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(251, 182, 4, 0.1);
   overflow: hidden;
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
-  
-  ${props => props.featured && `
-    background: linear-gradient(145deg, rgba(30, 30, 30, 0.98), rgba(40, 40, 40, 0.98));
-    transform: scale(1.05);
-    border: 2px solid #fbb604;
-    box-shadow: 
-      0 20px 60px rgba(251, 182, 4, 0.15),
-      0 0 0 1px rgba(251, 182, 4, 0.1);
-    z-index: 2;
-    
-    &:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 6px;
-      background: linear-gradient(135deg, #fbb604, #f99b04);
-    }
-  `}
-  
-  &:hover {
-    transform: ${props => props.featured ? 'translateY(-10px) scale(1.05)' : 'translateY(-10px)'};
-    box-shadow: 0 25px 60px rgba(251, 182, 4, 0.2);
-    border-color: rgba(251, 182, 4, 0.5);
-  }
-  
-  &:before {
-    content: "";
+  height: auto;
+  min-height: 650px;
+  max-height: none;
+  animation: ${fadeIn} 0.8s ease both;
+  backdrop-filter: blur(10px);
+
+  /* Base styles for effects container */
+  .effects-container {
     position: absolute;
     top: 0;
+    left: 0;
     right: 0;
     bottom: 0;
-    left: 0;
-    z-index: -1;
-    background: linear-gradient(135deg, rgba(251, 182, 4, 0.05), transparent);
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 5;
   }
-  
-  &:hover:before {
-    opacity: 1;
+
+  /* Spark effects for first card (Spark) */
+  &:first-child {
+    .spark {
+      position: absolute;
+      font-size: 12px;
+      color: #fbb604;
+      text-shadow: 0 0 5px rgba(251, 182, 4, 0.6);
+      opacity: 0;
+    }
+
+    .spark-1 {
+      top: 20px;
+      left: 20px;
+      animation: ${sparkle} 3s ease-in-out infinite;
+      &:before { content: '✦'; }
+    }
+
+    .spark-2 {
+      top: 40px;
+      right: 30px;
+      animation: ${sparkle} 3s ease-in-out infinite 1s;
+      &:before { content: '✧'; }
+    }
+
+    .spark-3 {
+      bottom: 30px;
+      left: 40px;
+      animation: ${sparkle} 3s ease-in-out infinite 1.5s;
+      &:before { content: '⋆'; }
+    }
+
+    .spark-4 {
+      bottom: 40px;
+      right: 20px;
+      animation: ${sparkle} 3s ease-in-out infinite 2s;
+      &:before { content: '✦'; }
+    }
+
+    .spark-trail {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(251, 182, 4, 0.2) 0%, rgba(251, 182, 4, 0) 70%);
+      opacity: 0;
+    }
+
+    .spark-trail-1 {
+      top: 30px;
+      left: 30px;
+      animation: ${sparkleTrail} 3s ease-in-out infinite;
+    }
+
+    .spark-trail-2 {
+      bottom: 30px;
+      right: 30px;
+      animation: ${sparkleTrail} 3s ease-in-out infinite 1.5s;
+    }
+
+    &:hover {
+      .spark-1, .spark-2, .spark-3, .spark-4 {
+        animation-duration: 2s;
+      }
+      .spark-trail-1, .spark-trail-2 {
+        animation-duration: 2s;
+      }
+    }
   }
+
+  /* Thunder effects for second card (Charge) */
+  &:nth-child(2) {
+    .thunder {
+      position: absolute;
+      font-size: 28px;
+      color: #fbb604;
+      text-shadow: 0 0 15px rgba(251, 182, 4, 0.8);
+      opacity: 0;
+      &:before { content: '⚡'; }
+    }
+
+    .thunder-1 {
+      top: 20px;
+      left: 20px;
+      animation: ${thunderBolt} 4s ease-in-out infinite;
+    }
+
+    .thunder-2 {
+      bottom: 20px;
+      right: 20px;
+      animation: ${thunderBolt} 4s ease-in-out infinite 2s;
+    }
+
+    .thunder-trail {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(251, 182, 4, 0.3) 0%, rgba(251, 182, 4, 0) 70%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .thunder-trail-1 {
+      top: 50%;
+      left: 0;
+      animation: ${thunderTrail} 4s ease-in-out infinite;
+    }
+
+    .thunder-trail-2 {
+      top: 50%;
+      right: 0;
+      animation: ${thunderTrail} 4s ease-in-out infinite 2s;
+    }
+
+    &:hover {
+      .thunder-1, .thunder-2 {
+        animation-duration: 2.5s;
+      }
+      .thunder-trail-1, .thunder-trail-2 {
+        animation-duration: 2.5s;
+      }
+    }
+  }
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 
+      0 25px 70px rgba(251, 182, 4, 0.2),
+      0 0 20px rgba(251, 182, 4, 0.3);
+    border-color: rgba(251, 182, 4, 0.6);
+  }
+
+  ${props => props.$featured && css`
+    border: 2px solid #fbb604;
+    box-shadow: 
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(251, 182, 4, 0.3);
+  `}
 `;
 
 const PlanName = styled.h2`
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: 16px;
-  color: #fbb604;
+  margin-bottom: 12px;
+  color: var(--text-primary);
   position: relative;
-  display: inline-block;
-  
-  &:after {
-    content: "";
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: linear-gradient(135deg, #fbb604, #f99b04);
-    border-radius: 2px;
-  }
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  justify-content: center;
+  min-height: 60px;
+  padding-top: 15px;
+  padding-right: 30px;
 `;
 
 const FeatureBadge = styled.span`
-  position: absolute;
-  top: -12px;
-  right: -30px;
   background: linear-gradient(135deg, #fbb604, #f99b04);
   color: #000;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   padding: 8px 16px;
   border-radius: 20px;
   font-weight: 700;
-  transform: rotate(12deg);
-  box-shadow: 0 5px 15px rgba(251, 182, 4, 0.4);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
-  
-  &:before {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 8px;
-    height: 8px;
-    background: inherit;
-    border-radius: 2px;
-    rotate: 45deg;
-    z-index: -1;
-  }
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(251, 182, 4, 0.3);
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  z-index: 5;
 `;
 
 const PlanDescription = styled.p`
   color: var(--text-secondary);
-  font-size: 1.1rem;
+  font-size: 1rem;
   line-height: 1.6;
-  margin-bottom: 30px;
+  margin-bottom: 28px;
   flex-grow: 0;
-  opacity: 0.9;
+  opacity: 0.85;
+  text-align: center;
 `;
 
 const PriceContainer = styled.div`
-  margin-bottom: 30px;
-  margin-top: 0;
-  text-align: left;
+  margin-bottom: 32px;
+  margin-top: 12px;
+  text-align: center;
 `;
 
 const StrikethroughPrice = styled.div`
   color: var(--text-secondary);
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   text-decoration: line-through;
-  opacity: 0.7;
-  margin-bottom: 5px;
+  opacity: 0.6;
+  margin-bottom: 8px;
+  font-weight: 500;
 `;
 
 const Price = styled.div`
-  font-size: 3.5rem;
+  font-size: 3.2rem;
   font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 5px;
+  color: #fbb604;
+  margin-bottom: 8px;
   line-height: 1;
+  text-shadow: 0 2px 8px rgba(251, 182, 4, 0.3);
   
   sup {
     font-size: 1rem;
     top: -1.5em;
-    margin-left: 2px;
+    margin-left: 3px;
   }
 `;
 
 const PriceDescription = styled.p`
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: 0.85rem;
   margin-bottom: 2px;
   margin-top: 2px;
-  opacity: 0.9;
+  opacity: 0.7;
 `;
 
 const CustomPrice = styled.div`
-  font-size: 3.5rem;
+  font-size: 3.2rem;
   font-weight: 800;
-  color: var(--text-primary);
-  margin-bottom: 5px;
+  color: #fbb604;
+  margin-bottom: 8px;
   line-height: 1;
+  text-shadow: 0 2px 8px rgba(251, 182, 4, 0.3);
   
   sup {
     font-size: 1rem;
     top: -1.5em;
-    margin-left: 2px;
+    margin-left: 3px;
   }
 `;
 
 const FeatureList = styled.ul`
   list-style-type: none;
   padding: 0;
-  margin: 0 0 35px 0;
+  margin: 0 0 32px 0;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -314,8 +669,8 @@ const FeatureList = styled.ul`
 
 const FeatureItem = styled.li`
   color: var(--text-secondary);
-  padding: 8px 0;
-  font-size: 1rem;
+  padding: 6px 0;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -338,21 +693,25 @@ const CrossedFeatureItem = styled(FeatureItem)`
 `;
 
 const SelectButton = styled(Link)`
-  background: linear-gradient(135deg, #fbb604, #f99b04, #d39404);
+  background: linear-gradient(135deg, #fbb604, #f99b04);
   color: #000;
   border: none;
-  border-radius: 16px;
-  padding: 18px 32px;
+  border-radius: 12px;
+  padding: 16px 24px;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   text-decoration: none;
-  display: inline-block;
+  display: block;
   text-align: center;
-  box-shadow: 0 8px 25px rgba(251, 182, 4, 0.3), 0 0 20px rgba(251, 182, 4, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 6px 20px rgba(251, 182, 4, 0.3);
   position: relative;
   overflow: hidden;
+  margin-top: auto;
+  flex-shrink: 0;
   
   &:before {
     content: '';
@@ -366,8 +725,8 @@ const SelectButton = styled(Link)`
   }
   
   &:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(251, 182, 4, 0.4), 0 0 30px rgba(251, 182, 4, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(251, 182, 4, 0.4);
     filter: brightness(1.1);
     
     &:before {
@@ -377,68 +736,82 @@ const SelectButton = styled(Link)`
 `;
 
 const CustomTierWrapper = styled.div`
-  background: rgba(25, 25, 25, 0.6);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border: 1px solid rgba(251, 182, 4, 0.2);
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 0;
-  margin-top: 80px;
+  margin-top: 60px;
+  margin-bottom: 60px;
   position: relative;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  transition: all 0.3s ease;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
   
-  &:before {
-    content: "";
+  &::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 6px;
-    background: linear-gradient(135deg, #fbb604, #f99b04);
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 0 15px rgba(251, 182, 4, 0.5);
-    z-index: 3;
-  }
-  
-  &:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8), rgba(40, 40, 40, 0.9));
-    opacity: 0;
-    transition: opacity 0.6s ease;
-    z-index: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.6;
     pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
   }
   
-  &:hover:after {
-    opacity: 1;
+  @media (max-width: 768px) {
+    margin-top: 40px;
+    margin-bottom: 40px;
   }
 `;
 
 const CustomTierTitle = styled.h2`
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   font-weight: 700;
-  margin-bottom: ${props => props.isOpen ? '30px' : '0'};
+  margin-bottom: ${props => props.$isOpen ? '24px' : '0'};
   color: var(--text-primary);
   display: flex;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 40px;
-  border-radius: 20px 20px 0 0;
-  background: transparent;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  padding: 32px 28px;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(135deg, rgba(251, 182, 4, 0.05), rgba(251, 182, 4, 0.02));
   position: relative;
   z-index: 2;
+  text-align: center;
+  letter-spacing: 0.5px;
   
   &:hover {
+    background: linear-gradient(135deg, rgba(251, 182, 4, 0.1), rgba(251, 182, 4, 0.05));
+    
     .icon-container {
-      box-shadow: 0 0 15px rgba(251, 182, 4, 0.4);
-      background: rgba(251, 182, 4, 0.1);
+      background: rgba(251, 182, 4, 0.2);
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(251, 182, 4, 0.3);
     }
   }
   
@@ -446,168 +819,286 @@ const CustomTierTitle = styled.h2`
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 30px;
-    height: 30px;
-    margin-right: 15px;
-    background: transparent;
+    width: 32px;
+    height: 32px;
+    margin-right: 16px;
+    background: rgba(251, 182, 4, 0.1);
     border: 2px solid #fbb604;
     border-radius: 50%;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 2px 8px rgba(251, 182, 4, 0.2);
   }
   
-  .icon {
+      .icon {
     position: relative;
     width: 14px;
     height: 2px;
     background: #fbb604;
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: all 0.3s ease;
+    border-radius: 2px;
+    transform: ${props => props.$isOpen ? 'rotate(45deg)' : 'rotate(0deg)'};
     
     &:before {
       content: '';
       position: absolute;
+      top: 0;
+      left: 0;
       width: 14px;
       height: 2px;
       background: #fbb604;
-      transform: ${props => props.isOpen ? 'rotate(0deg)' : 'rotate(90deg)'};
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      border-radius: 2px;
+      transform: ${props => props.$isOpen ? 'rotate(90deg)' : 'rotate(90deg)'};
+      transition: all 0.3s ease;
     }
   }
 `;
 
 const CustomTierContent = styled.div`
-  max-height: ${props => props.isOpen ? '2000px' : '0'};
-  opacity: ${props => props.isOpen ? '1' : '0'};
+  max-height: ${props => props.$isOpen ? '2000px' : '0'};
+  opacity: ${props => props.$isOpen ? '1' : '0'};
   overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  padding: ${props => props.isOpen ? '0 40px 40px' : '0 40px'};
+  transition: all 0.3s ease;
+  padding: ${props => props.$isOpen ? '0 28px 28px' : '0 28px'};
   position: relative;
   z-index: 2;
   
-  /* Separate transition for max-height to make collapse smoother */
-  transition-property: max-height, opacity, padding;
-  transition-duration: ${props => props.isOpen ? '0.6s' : '0.4s'}, 0.4s, 0.3s;
-  transition-delay: 0s, ${props => props.isOpen ? '0s' : '0.1s'}, 0s;
+  @media (max-width: 768px) {
+    padding: ${props => props.$isOpen ? '0 20px 20px' : '0 20px'};
+  }
 `;
 
 const ResourceGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 40px;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 45px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 16px;
+  position: relative;
+  z-index: 1;
 `;
 
 const ResourceCard = styled.div`
-  background: rgba(0, 0, 0, 0.2);
+  background: linear-gradient(145deg, rgba(15, 15, 20, 0.95), rgba(25, 25, 30, 0.95));
   border-radius: 12px;
-  padding: 22px;
-  border: 1px solid var(--border-color);
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.03) 1.5px, transparent 1.5px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.03) 1.5px, transparent 1.5px);
+    background-size: 15px 15px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 4px;
+    height: 4px;
+    background: rgba(251, 182, 4, 0.4);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+  }
   
   &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-    border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(20, 20, 20, 0.6);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    border-color: rgba(251, 182, 4, 0.4);
+    
+    &::before {
+      opacity: 0.7;
+    }
+    
+    &::after {
+      background: rgba(251, 182, 4, 0.6);
+      animation: ${circuitPulse} 2s ease-in-out infinite;
+    }
   }
 `;
 
 const ResourceTitle = styled.h3`
-  font-size: 1.2rem;
-  margin-bottom: 15px;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
   color: var(--text-primary);
-  border-left: 3px solid #fbb604;
-  padding-left: 10px;
-`;
-
-const ResourceControls = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 15px;
-  background: rgba(0, 0, 0, 0.15);
-  padding: 6px 10px;
-  border-radius: 6px;
-`;
-
-const ControlButton = styled.button`
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
-  border: none;
-  background: ${props => props.add ? "rgba(74, 74, 74, 0.5)" : "rgba(42, 42, 42, 0.5)"};
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-
-  &:hover {
-    background: ${props => props.add ? "rgba(85, 85, 85, 0.7)" : "rgba(51, 51, 51, 0.7)"};
-    transform: ${props => props.add ? "scale(1.05)" : "scale(0.95)"};
-  }
-`;
-
-const ResourceCount = styled.span`
-  font-size: 1.2rem;
-  color: var(--text-primary);
-  min-width: 30px;
-  text-align: center;
   font-weight: 600;
+  position: relative;
+  padding-left: 12px;
+  line-height: 1.4;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 14px;
+    background: linear-gradient(135deg, #fbb604, #f99b04);
+    border-radius: 1px;
+    box-shadow: 0 2px 8px rgba(251, 182, 4, 0.3);
+  }
 `;
 
 const ExperienceSelect = styled.div`
   display: flex;
   gap: 2px;
-  margin-top: 10px;
+  margin-top: 8px;
+  margin-bottom: 12px;
   padding: 4px;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.15);
   border-radius: 6px;
+  border: 1px solid rgba(251, 182, 4, 0.1);
 `;
 
 const ExperienceOption = styled.button`
-  padding: 6px 10px;
+  padding: 6px 8px;
   border-radius: 4px;
   font-size: 0.8rem;
   border: none;
-  background: ${props => props.selected ? "rgba(255, 255, 255, 0.1)" : "transparent"};
-  color: ${props => props.selected ? "var(--text-primary)" : "var(--text-secondary)"};
-  font-weight: ${props => props.selected ? "500" : "400"};
+  background: ${props => props.selected ? "linear-gradient(135deg, rgba(251, 182, 4, 0.15), rgba(251, 182, 4, 0.08))" : "transparent"};
+  color: ${props => props.selected ? "#fbb604" : "var(--text-secondary)"};
+  font-weight: ${props => props.selected ? "600" : "400"};
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   flex: 1;
   text-align: center;
+  line-height: 1.2;
+  border: 1px solid ${props => props.selected ? "rgba(251, 182, 4, 0.3)" : "transparent"};
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: ${props => props.selected ? "linear-gradient(135deg, rgba(251, 182, 4, 0.2), rgba(251, 182, 4, 0.1))" : "rgba(251, 182, 4, 0.05)"};
+    color: ${props => props.selected ? "#ffffff" : "#fbb604"};
+    border-color: rgba(251, 182, 4, 0.2);
   }
+`;
+
+const ResourceControls = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: auto;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(251, 182, 4, 0.1);
+`;
+
+const ControlButton = styled.button`
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(251, 182, 4, 0.4);
+  background: ${props => props.$add ? "linear-gradient(135deg, rgba(251, 182, 4, 0.15), rgba(251, 182, 4, 0.08))" : "linear-gradient(135deg, rgba(80, 80, 85, 0.9), rgba(60, 60, 65, 0.9))"};
+  color: ${props => props.$add ? "#fbb604" : "#fff"};
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1;
+  user-select: none;
+
+  &:hover {
+    background: ${props => props.$add ? "linear-gradient(135deg, rgba(251, 182, 4, 0.25), rgba(251, 182, 4, 0.15))" : "linear-gradient(135deg, rgba(90, 90, 95, 1), rgba(70, 70, 75, 1))"};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    border-color: rgba(251, 182, 4, 0.7);
+    color: ${props => props.$add ? "#ffffff" : "#fbb604"};
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+`;
+
+const ResourceCount = styled.span`
+  font-size: 1.2rem;
+  color: #fbb604;
+  min-width: 32px;
+  text-align: center;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(251, 182, 4, 0.3);
 `;
 
 const TotalContainer = styled.div`
   margin-top: 40px;
-  padding: 30px 40px;
+  padding: 32px 40px;
   border-radius: 16px;
-  background: linear-gradient(to right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  max-width: 800px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  max-width: 900px;
   margin: 40px auto 0;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 30px 30px, 30px 30px, 15px 15px, 25px 25px;
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+  }
   
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
     text-align: center;
+    padding: 24px 20px;
   }
 `;
 
@@ -662,37 +1153,101 @@ const ContactButton = styled(Link)`
 
 const InfoSection = styled.div`
   margin-top: 80px;
+  margin-bottom: 80px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: 62% 36%;
+  gap: 2%;
+  padding: 0 16px;
+  align-items: start;
+  animation: ${fadeIn} 0.8s ease 0.2s both;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+  }
 `;
 
 const InfoTitle = styled.h3`
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   color: var(--text-primary);
-  margin-bottom: 25px;
+  margin-bottom: 16px;
   position: relative;
   display: inline-block;
+  font-weight: 600;
   
   &:after {
     content: "";
     position: absolute;
-    bottom: -10px;
+    bottom: -6px;
     left: 0;
-    width: 70%;
-    height: 3px;
-    background: white;
-    border-radius: 2px;
+    width: 60%;
+    height: 2px;
+    background: #fbb604;
+    border-radius: 1px;
   }
 `;
 
 const InfoBlock = styled.div`
-  background: linear-gradient(to bottom right, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
-  border-radius: 18px;
-  padding: 40px 50px;
-  margin-bottom: 30px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border-radius: 16px;
+  padding: 24px 28px;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.025) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+  }
+  
+  /* Circuit lines */
+  &:before:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    width: 2px;
+    height: 30px;
+    background: linear-gradient(to bottom, rgba(251, 182, 4, 0.2), transparent);
+    transform: translateY(-50%);
+  }
   
   @media (max-width: 768px) {
-    padding: 30px 25px;
+    padding: 20px 20px;
   }
 `;
 
@@ -731,79 +1286,72 @@ const DiscountText = styled.p`
 `;
 
 const CountdownContainer = styled.div`
-  background: linear-gradient(45deg, rgba(251, 182, 4, 0.08), rgba(249, 155, 4, 0.12));
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border: 1px solid rgba(251, 182, 4, 0.2);
   border-radius: 20px;
-  padding: 35px;
+  padding: 40px 32px;
   margin-bottom: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  overflow: hidden;
-  transform: perspective(1000px) rotateX(2deg);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: ${fadeIn} 0.8s ease;
+  overflow: hidden;
   
-  &:before {
-    content: "";
+  &::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 6px;
-    background: linear-gradient(135deg, #fbb604, #f99b04);
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 0 15px rgba(251, 182, 4, 0.5);
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.015) 1px, transparent 1px),
+      radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 20px 20px, 30px 30px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
   }
   
-  &:after {
-    content: "";
+  &::after {
+    content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at top right, rgba(248, 248, 248, 0.12), transparent 70%);
-    pointer-events: none;
+    top: 15px;
+    right: 15px;
+    width: 8px;
+    height: 8px;
+    background: rgba(251, 182, 4, 0.5);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+    z-index: 2;
   }
   
   @media (max-width: 768px) {
-    padding: 30px 25px;
-    transform: perspective(1000px) rotateX(1deg);
+    padding: 32px 24px;
   }
 `;
 
 const CountdownHeader = styled.h3`
   color: #fbb604;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 600;
   margin-bottom: 20px;
   text-align: center;
   position: relative;
-  z-index: 1;
-  
-  @media (max-width: 768px) {
-    font-size: 1.3rem;
-  }
-`;
-
-const CountdownUrgency = styled.p`
-  color: rgba(248, 248, 248, 0.9);
-  font-size: 1.2rem;
-  text-align: center;
-  margin-top: 25px;
-  position: relative;
-  z-index: 1;
-  font-weight: 600;
-  text-transform: uppercase;
+  z-index: 2;
   letter-spacing: 0.5px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   
   @media (max-width: 768px) {
-    font-size: 1.1rem;
-    margin-top: 18px;
+    font-size: 1.2rem;
   }
 `;
 
@@ -812,9 +1360,9 @@ const CountdownTimerDisplay = styled.div`
   justify-content: center;
   align-items: center;
   gap: 20px;
-  margin: 15px 0;
+  margin: 16px 0;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   
   @media (max-width: 768px) {
     gap: 12px;
@@ -834,65 +1382,103 @@ const CountdownUnit = styled.div`
 `;
 
 const CountdownNumber = styled.div`
-  background: rgba(20, 20, 20, 0.7);
-  color: #f8f8f8;
-  font-size: 2.4rem;
-  font-weight: 800;
+  background: linear-gradient(145deg, rgba(20, 20, 25, 0.9), rgba(30, 30, 35, 0.9));
+  color: #fbb604;
+  font-size: 2.2rem;
+  font-weight: 700;
   border-radius: 12px;
-  min-width: 85px;
-  height: 85px;
+  min-width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), inset 0 2px 4px rgba(248, 248, 248, 0.1);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.4), 
+    inset 0 1px 3px rgba(251, 182, 4, 0.1);
   position: relative;
-  border: 1px solid rgba(248, 248, 248, 0.15);
+  border: 1px solid rgba(251, 182, 4, 0.2);
   letter-spacing: 1px;
-  clip-path: polygon(5% 0, 95% 0, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0 95%, 0 5%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   
   &:before {
     content: "";
     position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: rgba(248, 248, 248, 0.1);
+    top: 6px;
+    left: 6px;
+    width: 4px;
+    height: 4px;
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 50%;
   }
   
   @media (max-width: 768px) {
-    font-size: 2rem;
-    min-width: 75px;
-    height: 75px;
+    font-size: 1.8rem;
+    min-width: 70px;
+    height: 70px;
   }
 `;
 
 const CountdownLabel = styled.div`
-  color: rgba(248, 248, 248, 0.8);
-  font-size: 0.9rem;
-  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  margin-top: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  font-weight: 500;
+`;
+
+const CountdownUrgency = styled.p`
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  text-align: center;
+  margin-top: 20px;
+  position: relative;
+  z-index: 2;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+  
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    margin-top: 16px;
+  }
 `;
 
 const CountdownButton = styled(Link)`
-  background: #f8f8f8;
-  color: black;
-  padding: 12px 25px;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #fbb604, #f99b04);
+  color: #000;
+  padding: 14px 28px;
+  border-radius: 12px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
   display: inline-block;
   text-decoration: none;
   text-align: center;
-  margin-top: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  margin-top: 25px;
+  box-shadow: 0 8px 20px rgba(251, 182, 4, 0.3);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
   
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 25px rgba(251, 182, 4, 0.4);
+    
+    &::before {
+      left: 100%;
+    }
   }
 `;
 
@@ -946,62 +1532,60 @@ const BillingToggleContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 60px;
+  margin-bottom: 48px;
   position: relative;
-  gap: 20px;
+  gap: 0;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border-radius: 50px;
+  padding: 8px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  animation: ${fadeIn} 0.8s ease 0.1s both;
+  z-index: 2;
 `;
 
 const BillingOption = styled.span`
   font-size: 1.1rem;
-  color: ${props => props.active ? '#fbb604' : 'var(--text-secondary)'};
-  font-weight: ${props => props.active ? '600' : '400'};
+  color: ${props => props.$active ? '#000' : 'var(--text-secondary)'};
+  font-weight: 600;
   transition: all 0.3s ease;
   cursor: pointer;
+  padding: 12px 24px;
+  border-radius: 25px;
+  background: ${props => props.$active ? 'linear-gradient(135deg, #fbb604, #f99b04)' : 'transparent'};
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+  box-shadow: ${props => props.$active ? '0 4px 15px rgba(251, 182, 4, 0.3)' : 'none'};
   
   &:hover {
-    color: ${props => !props.active && '#fbb604'};
+    color: ${props => !props.$active ? '#fbb604' : '#000'};
+    background: ${props => !props.$active ? 'rgba(251, 182, 4, 0.1)' : 'linear-gradient(135deg, #fbb604, #f99b04)'};
   }
 `;
 
 const ToggleSwitch = styled.div`
-  width: 56px;
-  height: 28px;
-  background: ${props => props.isOn ? 'linear-gradient(135deg, #fbb604, #f99b04)' : 'rgba(255, 255, 255, 0.1)'};
-  border-radius: 14px;
-  position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:before {
-    content: '';
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    background: white;
-    border-radius: 50%;
-    top: 2px;
-    left: ${props => props.isOn ? '30px' : '2px'};
-    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  &:hover {
-    &:before {
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-  }
+  display: none;
 `;
 
 const SaveBadge = styled.span`
   position: absolute;
-  right: -80px;
+  top: -15px;
+  right: 20px;
   background: linear-gradient(135deg, #fbb604, #f99b04);
   color: #000;
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 8px 16px;
+  border-radius: 20px;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
+  z-index: 5;
+  box-shadow: 0 6px 20px rgba(251, 182, 4, 0.4);
   animation: pulse 2s infinite;
+  white-space: nowrap;
   
   @keyframes pulse {
     0% {
@@ -1017,32 +1601,72 @@ const SaveBadge = styled.span`
 `;
 
 const ComparisonSection = styled.div`
-  margin-top: 100px;
-  margin-bottom: 80px;
+  margin-top: 80px;
+  margin-bottom: 60px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 16px;
+  animation: ${fadeIn} 0.8s ease 0.4s both;
+  
+  @media (max-width: 768px) {
+    margin-top: 60px;
+    margin-bottom: 40px;
+  }
 `;
 
 const ComparisonTitle = styled.h2`
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 32px;
   color: #fbb604;
 `;
 
 const ComparisonTable = styled.div`
-  background: rgba(25, 25, 25, 0.6);
-  border-radius: 24px;
-  border: 1px solid rgba(251, 182, 4, 0.2);
+  background: rgba(25, 25, 30, 0.8);
+  border-radius: 16px;
+  border: 1px solid rgba(251, 182, 4, 0.15);
   overflow: hidden;
   backdrop-filter: blur(10px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.01) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.01) 1px, transparent 1px),
+      radial-gradient(circle at 50% 50%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
+    background-size: 25px 25px, 25px 25px, 12.5px 12.5px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 6px;
+    height: 6px;
+    background: rgba(251, 182, 4, 0.4);
+    border-radius: 50%;
+    animation: ${circuitPulse} 4s ease-in-out infinite;
+  }
 `;
 
 const TableHeader = styled.div`
   display: grid;
   grid-template-columns: 2fr repeat(3, 1fr);
-  padding: 25px;
-  background: rgba(251, 182, 4, 0.1);
-  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+  padding: 20px;
+  background: rgba(251, 182, 4, 0.08);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.15);
   
   @media (max-width: 768px) {
     display: none;
@@ -1063,7 +1687,7 @@ const TableHeaderCell = styled.div`
 const TableRow = styled.div`
   display: grid;
   grid-template-columns: 2fr repeat(3, 1fr);
-  padding: 20px 25px;
+  padding: 16px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   align-items: center;
   
@@ -1073,8 +1697,8 @@ const TableRow = styled.div`
   
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 15px;
+    gap: 8px;
+    padding: 12px;
     text-align: center;
     
     &:not(:last-child) {
@@ -1119,38 +1743,77 @@ const ValueCell = styled.div`
 `;
 
 const FAQSection = styled.div`
-  margin-top: 100px;
-  margin-bottom: 80px;
+  margin-top: 80px;
+  margin-bottom: 60px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 16px;
+  animation: ${fadeIn} 0.8s ease 0.6s both;
+  
+  @media (max-width: 768px) {
+    margin-top: 60px;
+    margin-bottom: 40px;
+  }
 `;
 
 const FAQTitle = styled.h2`
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 600;
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 32px;
   color: #fbb604;
 `;
 
 const FAQGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 30px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+    gap: 12px;
   }
 `;
 
 const FAQItem = styled.div`
-  background: rgba(25, 25, 25, 0.6);
-  border: 1px solid rgba(251, 182, 4, 0.2);
-  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  border: 1px solid rgba(251, 182, 4, 0.15);
+  border-radius: 12px;
   overflow: hidden;
   backdrop-filter: blur(10px);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
+    background-size: 15px 15px;
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 4px;
+    height: 4px;
+    background: rgba(251, 182, 4, 0.3);
+    border-radius: 50%;
+    animation: ${circuitPulse} 3s ease-in-out infinite;
+  }
 `;
 
 const FAQQuestion = styled.div`
-  padding: 25px;
+  padding: 16px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1162,58 +1825,142 @@ const FAQQuestion = styled.div`
   }
   
   h3 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
-    padding-right: 20px;
+    padding-right: 16px;
   }
   
   svg {
     color: #fbb604;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     transition: transform 0.3s ease;
-    transform: ${props => props.isOpen ? 'rotate(180deg)' : 'rotate(0)'};
+    transform: ${props => props.$isOpen ? 'rotate(180deg)' : 'rotate(0)'};
   }
 `;
 
 const FAQAnswer = styled.div`
-  padding: ${props => props.isOpen ? '0 25px 25px' : '0 25px'};
+  padding: ${props => props.$isOpen ? '0 20px 20px' : '0 20px'};
   color: var(--text-secondary);
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.6;
-  max-height: ${props => props.isOpen ? '500px' : '0'};
-  opacity: ${props => props.isOpen ? '1' : '0'};
+  max-height: ${props => props.$isOpen ? '500px' : '0'};
+  opacity: ${props => props.$isOpen ? '1' : '0'};
   transition: all 0.3s ease;
   overflow: hidden;
 `;
 
 const resources = [
-  { id: 1, name: "Front-End Web Developer", count: 0, experience: "intermediate" },
-  { id: 2, name: "Back-End Web Developer", count: 0, experience: "intermediate" },
-  { id: 3, name: "Full-Stack Web Developer", count: 0, experience: "intermediate", specialRates: true },
-  { id: 4, name: "Mobile App Developer", count: 0, experience: "intermediate" },
-  { id: 5, name: "Game Developer", count: 0, experience: "intermediate" },
-  { id: 6, name: "UI/UX Designer", count: 0, experience: "intermediate" },
-  { id: 7, name: "2D Artist", count: 0, experience: "intermediate" },
-  { id: 8, name: "3D Artist", count: 0, experience: "intermediate" },
-  { id: 9, name: "2D Animator", count: 0, experience: "intermediate" },
-  { id: 10, name: "3D Animator", count: 0, experience: "intermediate" },
-  { id: 11, name: "Sound Engineer", count: 0, experience: "intermediate" },
-  { id: 12, name: "SQA Engineer", count: 0, experience: "intermediate" },
-  { id: 13, name: "Technical Content Writer", count: 0, experience: "intermediate" },
-  { id: 14, name: "SEO Writer", count: 0, experience: "intermediate" },
-  { id: 15, name: "ASO Writer", count: 0, experience: "intermediate" },
-  { id: 16, name: "Social Media Marketer", count: 0, experience: "intermediate" },
-  { id: 17, name: "Virtual Assistant", count: 0, experience: "intermediate" },
-  { id: 18, name: "AI Engineer", count: 0, experience: "intermediate" },
-  { id: 19, name: "IoT Engineer", count: 0, experience: "intermediate" },
-  { id: 20, name: "DevOps Engineer", count: 0, experience: "intermediate" },
-  { id: 21, name: "Cyber Security Engineer", count: 0, experience: "intermediate" },
-  { id: 22, name: "Technical Support Specialist", count: 0, experience: "intermediate" },
-  { id: 23, name: "Technical Project Manager", count: 0, experience: "intermediate", flatRate: 3 },
-  { id: 24, name: "Technical Product Manager", count: 0, experience: "intermediate", flatRate: 3 },
+  // Management Roles
+  { id: 1, name: "Technical Project Manager", count: 0, experience: "intermediate", flatRate: 3 },
+  { id: 2, name: "Technical Product Manager", count: 0, experience: "intermediate", flatRate: 3 },
+  
+  // Senior Technical Roles
+  { id: 3, name: "AI Engineer", count: 0, experience: "intermediate", specialRates: true, rates: { intermediate: 5, veteran: 10 } },
+  { id: 4, name: "Blockchain/Web3 Developer", count: 0, experience: "intermediate", specialRates: true, rates: { intermediate: 5, veteran: 10 } },
+  { id: 5, name: "DevOps Engineer", count: 0, experience: "intermediate", specialRates: true, rates: { intermediate: 4.5, veteran: 9 } },
+  { id: 6, name: "Cyber Security Engineer", count: 0, experience: "intermediate", specialRates: true, rates: { intermediate: 4.5, veteran: 9 } },
+  
+  // Core Development
+  { id: 7, name: "Full-Stack Web Developer", count: 0, experience: "intermediate", specialRates: true, rates: { intermediate: 4.5, veteran: 9 } },
+  { id: 8, name: "Back-End Web Developer", count: 0, experience: "intermediate", specialRates: true, rates: { intermediate: 4, veteran: 8 } },
+  { id: 9, name: "Front-End Web Developer", count: 0, experience: "intermediate", specialRates: true, rates: { intermediate: 3.5, veteran: 7 } },
+  { id: 10, name: "Mobile App Developer", count: 0, experience: "intermediate", specialRates: true, rates: { intermediate: 4, veteran: 8 } },
+  { id: 11, name: "Game Developer", count: 0, experience: "intermediate", rates: { intermediate: 3, veteran: 6 } },
+  { id: 12, name: "IoT Engineer", count: 0, experience: "intermediate", specialRates: true, rates: { intermediate: 4, veteran: 8 } },
+  
+  // Design & Creative
+  { id: 13, name: "UI/UX Designer", count: 0, experience: "intermediate", rates: { intermediate: 3, veteran: 6 } },
+  { id: 14, name: "3D Artist", count: 0, experience: "intermediate", rates: { intermediate: 3, veteran: 6 } },
+  { id: 15, name: "3D Animator", count: 0, experience: "intermediate", rates: { intermediate: 3, veteran: 6 } },
+  { id: 16, name: "2D Artist", count: 0, experience: "intermediate", rates: { intermediate: 2.5, veteran: 5 } },
+  { id: 17, name: "2D Animator", count: 0, experience: "intermediate", rates: { intermediate: 2.5, veteran: 5 } },
+  { id: 18, name: "Sound Engineer", count: 0, experience: "intermediate", rates: { intermediate: 2.5, veteran: 5 } },
+  
+  // Quality & Support
+  { id: 19, name: "SQA Engineer", count: 0, experience: "intermediate", rates: { intermediate: 2.5, veteran: 5 } },
+  { id: 20, name: "Technical Support Specialist", count: 0, experience: "intermediate", rates: { intermediate: 2, veteran: 4 } },
+  
+  // Content & Marketing
+  { id: 21, name: "Technical Content Writer", count: 0, experience: "intermediate", rates: { intermediate: 2, veteran: 4 } },
+  { id: 22, name: "SEO Writer", count: 0, experience: "intermediate", rates: { intermediate: 2, veteran: 4 } },
+  { id: 23, name: "ASO Writer", count: 0, experience: "intermediate", rates: { intermediate: 2, veteran: 4 } },
+  { id: 24, name: "Social Media Marketer", count: 0, experience: "intermediate", rates: { intermediate: 2, veteran: 4 } },
+  
+  // Administrative
+  { id: 25, name: "Virtual Assistant", count: 0, experience: "intermediate", rates: { intermediate: 1.5, veteran: 3 } }
 ];
+
+const ResourceSummary = styled.div`
+  margin: 30px 0;
+  background: linear-gradient(145deg, rgba(20, 20, 25, 0.95), rgba(30, 30, 35, 0.95));
+  border-radius: 16px;
+  border: 1px solid rgba(251, 182, 4, 0.2);
+  overflow: hidden;
+  
+  &:empty {
+    display: none;
+  }
+`;
+
+const SummaryHeader = styled.div`
+  padding: 16px 24px;
+  background: rgba(251, 182, 4, 0.08);
+  border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+  font-weight: 600;
+  color: #fbb604;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+  
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
+const SummaryRow = styled.div`
+  padding: 12px 24px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  &:hover {
+    background: rgba(251, 182, 4, 0.05);
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px;
+    text-align: center;
+    
+    > *:not(:first-child) {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+  }
+`;
+
+const SummaryLabel = styled.div`
+  color: var(--text-primary);
+  font-weight: ${props => props.$isTotal ? '600' : 'normal'};
+  font-size: ${props => props.$isTotal ? '1.1rem' : '1rem'};
+`;
+
+const SummaryValue = styled.div`
+  color: ${props => props.$highlight ? '#fbb604' : 'var(--text-secondary)'};
+  font-weight: ${props => props.$highlight ? '600' : 'normal'};
+  text-align: ${props => props.$align || 'left'};
+`;
 
 const Pricing = () => {
   const [customResources, setCustomResources] = useState(resources);
@@ -1270,9 +2017,9 @@ const Pricing = () => {
         return total + (resource.count * resource.flatRate * hourlyRate);
       }
       
-      const rate = resource.specialRates
-        ? (resource.experience === "intermediate" ? 4.5 : 9)
-        : (resource.experience === "intermediate" ? 3 : 6);
+      const rate = resource.rates ? 
+        (resource.experience === "intermediate" ? resource.rates.intermediate : resource.rates.veteran) : 
+        (resource.experience === "intermediate" ? 3 : 6);
         
       return total + (resource.count * rate * hourlyRate);
     }, 0);
@@ -1327,6 +2074,10 @@ const Pricing = () => {
 
   const faqs = [
     {
+      question: "What if my budget is lower than the listed prices?",
+      answer: "Please contact us regardless of your budget! We understand that every business has different financial capabilities, and we're committed to finding solutions that work for you. We can work together to create a custom plan that fits your budget while still delivering value to your project."
+    },
+    {
       question: "What's included in the working hours?",
       answer: "Our standard working hours are 176 hours per month, based on 8 hours per day, 22 days per month. This includes development, meetings, planning, and any project-related activities."
     },
@@ -1336,7 +2087,7 @@ const Pricing = () => {
     },
     {
       question: "Do you offer custom team compositions?",
-      answer: "Absolutely! Our Tailored Enterprise plan allows you to build a custom team that perfectly matches your project needs. Contact us to discuss your specific requirements."
+      answer: "Absolutely! Our Blitz plan allows you to build a custom team that perfectly matches your project needs. Contact us to discuss your specific requirements."
     },
     {
       question: "What's your payment structure?",
@@ -1344,7 +2095,7 @@ const Pricing = () => {
     },
     {
       question: "How do project iterations work?",
-      answer: "Iterations vary by plan. Essential Launch has limited iterations, Growth Partnership includes up to 2 iterations per week, and Enterprise plans offer flexible iteration cycles based on your needs."
+      answer: "Iterations vary by plan. Spark has limited iterations, Charge includes up to 2 iterations per week, and Blitz plans offer flexible iteration cycles based on your needs."
     },
     {
       question: "What happens if I need more resources?",
@@ -1358,52 +2109,61 @@ const Pricing = () => {
 
   return (
     <PricingWrapper>
-      <Title>Our Pricing</Title>
-      <Subtitle>
-        Choose the perfect plan for your business needs. All of our plans include dedicated resources
-        working efficiently to bring your vision to life globally, with teams serving clients in the USA, UK, Europe, Australia, and Dubai.
-      </Subtitle>
-      
-      <CountdownContainer>
-        <CountdownHeader>
-          <PulsingDot />LIMITED TIME OFFER: Lock in 2025 Rates
-        </CountdownHeader>
-        <CountdownTimerDisplay>
-          <CountdownUnit>
-            <CountdownNumber>{countdown.days}</CountdownNumber>
-            <CountdownLabel>Days</CountdownLabel>
-          </CountdownUnit>
-          <CountdownUnit>
-            <CountdownNumber>{countdown.hours}</CountdownNumber>
-            <CountdownLabel>Hours</CountdownLabel>
-          </CountdownUnit>
-          <CountdownUnit>
-            <CountdownNumber>{countdown.minutes}</CountdownNumber>
-            <CountdownLabel>Minutes</CountdownLabel>
-          </CountdownUnit>
-          <CountdownUnit>
-            <CountdownNumber>{countdown.seconds}</CountdownNumber>
-            <CountdownLabel>Seconds</CountdownLabel>
-          </CountdownUnit>
-        </CountdownTimerDisplay>
-        <CountdownUrgency>
-          Prices will increase on January 1, 2026. Act now to secure current rates!
-        </CountdownUrgency>
-        <CountdownButton to="/contact-us">
-          Lock in Current Rates
-        </CountdownButton>
-      </CountdownContainer>
-      
-      <BillingToggleContainer>
-        <BillingOption active={!isAnnual} onClick={() => setIsAnnual(false)}>Monthly</BillingOption>
-        <ToggleSwitch isOn={isAnnual} onClick={() => setIsAnnual(!isAnnual)} />
-        <BillingOption active={isAnnual} onClick={() => setIsAnnual(true)}>Annually</BillingOption>
-        {isAnnual && <SaveBadge>Save 12%</SaveBadge>}
-      </BillingToggleContainer>
+      <HeroSection>
+        <Title>Our Pricing</Title>
+        <Subtitle>
+          Choose the perfect plan for your business needs. All of our plans include dedicated resources
+          working efficiently to bring your vision to life globally, with teams serving clients in the USA, UK, Europe, Australia, and Dubai.
+        </Subtitle>
+        
+        <CountdownContainer>
+          <CountdownHeader>
+            ⚡ Special Pricing - Limited Time Offer
+          </CountdownHeader>
+          <CountdownTimerDisplay>
+            <CountdownUnit>
+              <CountdownNumber>{countdown.days}</CountdownNumber>
+              <CountdownLabel>Days</CountdownLabel>
+            </CountdownUnit>
+            <CountdownUnit>
+              <CountdownNumber>{countdown.hours}</CountdownNumber>
+              <CountdownLabel>Hours</CountdownLabel>
+            </CountdownUnit>
+            <CountdownUnit>
+              <CountdownNumber>{countdown.minutes}</CountdownNumber>
+              <CountdownLabel>Minutes</CountdownLabel>
+            </CountdownUnit>
+            <CountdownUnit>
+              <CountdownNumber>{countdown.seconds}</CountdownNumber>
+              <CountdownLabel>Seconds</CountdownLabel>
+            </CountdownUnit>
+          </CountdownTimerDisplay>
+          <CountdownUrgency>
+            Lock in current pricing before rates increase January 1st, 2026. Save up to $1,200 annually on your development partnership.
+          </CountdownUrgency>
+          <CountdownButton to="/contact-us">
+            Secure Your Pricing
+          </CountdownButton>
+        </CountdownContainer>
+        
+        <BillingToggleContainer>
+          <BillingOption $active={!isAnnual} onClick={() => setIsAnnual(false)}>Monthly</BillingOption>
+          <BillingOption $active={isAnnual} onClick={() => setIsAnnual(true)}>Annually</BillingOption>
+          {isAnnual && <SaveBadge>Save 12%</SaveBadge>}
+        </BillingToggleContainer>
+      </HeroSection>
       
       <PricingGrid>
         <PricingCard>
-          <PlanName>Essential Launch</PlanName>
+          <div className="effects-container">
+            <div className="spark spark-1"></div>
+            <div className="spark spark-2"></div>
+            <div className="spark spark-3"></div>
+            <div className="spark spark-4"></div>
+            <div className="spark-trail spark-trail-1"></div>
+            <div className="spark-trail spark-trail-2"></div>
+          </div>
+          <PlanName>Spark</PlanName>
           <PlanDescription>
             Perfect for startups and small businesses looking to build an MVP with a lean budget.
           </PlanDescription>
@@ -1434,9 +2194,15 @@ const Pricing = () => {
           <SelectButton to="/contact-us">Get Started</SelectButton>
         </PricingCard>
         
-        <PricingCard featured>
+        <PricingCard $featured>
+          <div className="effects-container">
+            <div className="thunder thunder-1"></div>
+            <div className="thunder thunder-2"></div>
+            <div className="thunder-trail thunder-trail-1"></div>
+            <div className="thunder-trail thunder-trail-2"></div>
+          </div>
           <PlanName>
-            Growth Partnership
+            Charge
             <FeatureBadge>MOST POPULAR</FeatureBadge>
           </PlanName>
           <PlanDescription>
@@ -1473,7 +2239,7 @@ const Pricing = () => {
         </PricingCard>
         
         <PricingCard>
-          <PlanName>Tailored Enterprise</PlanName>
+          <PlanName>Blitz</PlanName>
           <PlanDescription>
             Comprehensive solution for enterprise clients with complex requirements and scalable needs.
           </PlanDescription>
@@ -1503,24 +2269,26 @@ const Pricing = () => {
       </PricingGrid>
       
       <CustomTierWrapper>
-        <CustomTierTitle isOpen={isCustomTeamOpen} onClick={() => setIsCustomTeamOpen(!isCustomTeamOpen)}>
+        <CustomTierTitle $isOpen={isCustomTeamOpen} onClick={() => setIsCustomTeamOpen(!isCustomTeamOpen)}>
           <div className="icon-container">
             <div className="icon"></div>
           </div>
           Build Your Custom Team
         </CustomTierTitle>
         
-        <CustomTierContent isOpen={isCustomTeamOpen}>
+        <CustomTierContent $isOpen={isCustomTeamOpen}>
           <p style={{ 
             color: 'var(--text-secondary)', 
-            marginBottom: '30px', 
-            fontSize: '1.05rem', 
-            maxWidth: '900px', 
-            lineHeight: '1.7' 
+            marginBottom: '35px', 
+            fontSize: '1.1rem', 
+            maxWidth: '700px', 
+            lineHeight: '1.6',
+            textAlign: 'center',
+            margin: '0 auto 35px auto',
+            fontWeight: '400'
           }}>
             Craft your perfect development team by selecting the exact resources you need. 
-            Mix and match different specialties and experience levels to create a tailored solution 
-            that precisely fits your project requirements and budget.
+            Mix and match different specialties and experience levels to create a tailored solution.
           </p>
           
           <ResourceGrid>
@@ -1538,13 +2306,13 @@ const Pricing = () => {
                         selected={resource.experience === "intermediate"}
                         onClick={() => resource.experience !== "intermediate" && toggleExperience(resource.id)}
                       >
-                        Proficient<br/>(${resource.specialRates ? "4.5" : "3"}/h)
+                        Standard<br/>(${resource.rates ? resource.rates.intermediate : "3"}/h)
                       </ExperienceOption>
                       <ExperienceOption 
                         selected={resource.experience === "veteran"}
                         onClick={() => resource.experience !== "veteran" && toggleExperience(resource.id)}
                       >
-                        Expert<br/>(${resource.specialRates ? "9" : "6"}/h)
+                        Expert<br/>(${resource.rates ? resource.rates.veteran : "6"}/h)
                       </ExperienceOption>
                     </>
                   )}
@@ -1552,25 +2320,73 @@ const Pricing = () => {
                 <ResourceControls>
                   <ControlButton onClick={() => updateResourceCount(resource.id, -1)}>−</ControlButton>
                   <ResourceCount>{resource.count}</ResourceCount>
-                  <ControlButton add onClick={() => updateResourceCount(resource.id, 1)}>+</ControlButton>
+                  <ControlButton $add onClick={() => updateResourceCount(resource.id, 1)}>+</ControlButton>
                 </ResourceControls>
               </ResourceCard>
             ))}
           </ResourceGrid>
           
           <div style={{ 
-            fontSize: '0.95rem', 
+            fontSize: '0.9rem', 
             color: 'var(--text-secondary)', 
-            padding: '10px 15px', 
-            background: 'rgba(255,255,255,0.03)', 
-            borderRadius: '8px',
-            marginBottom: '30px' 
+            padding: '16px 20px', 
+            background: 'linear-gradient(135deg, rgba(251, 182, 4, 0.08), rgba(251, 182, 4, 0.04))', 
+            borderRadius: '12px',
+            marginBottom: '35px',
+            border: '1px solid rgba(251, 182, 4, 0.15)',
+            textAlign: 'center',
+            maxWidth: '600px',
+            margin: '0 auto 35px auto'
           }}>
-            <p>
-              <strong>Note:</strong> All team members follow our standard working hours calculation.
-              The monthly cost will vary based on the actual number of working days in each month.
+            <p style={{ margin: 0, lineHeight: '1.5' }}>
+              <strong style={{ color: '#fbb604' }}>Note:</strong> Pricing based on 176 working hours per month. 
+              Monthly cost varies with actual working days.
             </p>
           </div>
+          
+          {customResources.some(r => r.count > 0) && (
+            <ResourceSummary>
+              <SummaryHeader>
+                <div>Resource</div>
+                <div>Experience</div>
+                <div>Rate/Hour</div>
+                <div>Monthly Hours</div>
+              </SummaryHeader>
+              {customResources.map(resource => {
+                if (resource.count > 0) {
+                  const rate = resource.flatRate ? 
+                    resource.flatRate : 
+                    (resource.rates ? 
+                      (resource.experience === "intermediate" ? resource.rates.intermediate : resource.rates.veteran) : 
+                      (resource.experience === "intermediate" ? 3 : 6));
+                      
+                  return (
+                    <SummaryRow key={resource.id}>
+                      <SummaryLabel>{resource.name} × {resource.count}</SummaryLabel>
+                      <SummaryValue>
+                        {resource.flatRate ? "Fixed Rate" : (resource.experience === "intermediate" ? "Standard" : "Expert")}
+                      </SummaryValue>
+                      <SummaryValue>${rate}/h</SummaryValue>
+                      <SummaryValue>{176 * resource.count}</SummaryValue>
+                    </SummaryRow>
+                  );
+                }
+                return null;
+              })}
+              <SummaryRow style={{ background: 'rgba(251, 182, 4, 0.08)' }}>
+                <SummaryLabel $isTotal>Total Resources</SummaryLabel>
+                <SummaryValue>
+                  {customResources.reduce((sum, r) => sum + r.count, 0)} team members
+                </SummaryValue>
+                <SummaryValue>
+                  Avg: ${(calculateTotal() / (176 * customResources.reduce((sum, r) => sum + r.count, 0) || 1)).toFixed(2)}/h
+                </SummaryValue>
+                <SummaryValue $highlight $align="left">
+                  {176 * customResources.reduce((sum, r) => sum + r.count, 0)} hours
+                </SummaryValue>
+              </SummaryRow>
+            </ResourceSummary>
+          )}
           
           <TotalContainer>
             <TotalText>Estimated Monthly Total</TotalText>
@@ -1638,58 +2454,58 @@ const Pricing = () => {
         <ComparisonTable>
           <TableHeader>
             <TableHeaderCell>Feature</TableHeaderCell>
-            <TableHeaderCell>Essential Launch</TableHeaderCell>
-            <TableHeaderCell>Growth Partnership</TableHeaderCell>
-            <TableHeaderCell>Tailored Enterprise</TableHeaderCell>
+            <TableHeaderCell>Spark</TableHeaderCell>
+            <TableHeaderCell>Charge</TableHeaderCell>
+            <TableHeaderCell>Blitz</TableHeaderCell>
           </TableHeader>
           
           <TableRow>
             <FeatureCell>Team Experience Level</FeatureCell>
-            <ValueCell data-label="Essential Launch">2-3 years</ValueCell>
-            <ValueCell data-label="Growth Partnership">5-7+ years</ValueCell>
-            <ValueCell data-label="Tailored Enterprise">Custom Mix</ValueCell>
+            <ValueCell data-label="Spark">2-3 years</ValueCell>
+            <ValueCell data-label="Charge">5-7+ years</ValueCell>
+            <ValueCell data-label="Blitz">Custom Mix</ValueCell>
           </TableRow>
           
           <TableRow>
             <FeatureCell>Project Management</FeatureCell>
-            <ValueCell data-label="Essential Launch">Part-time</ValueCell>
-            <ValueCell data-label="Growth Partnership">Full-time</ValueCell>
-            <ValueCell data-label="Tailored Enterprise">Dedicated</ValueCell>
+            <ValueCell data-label="Spark">Part-time</ValueCell>
+            <ValueCell data-label="Charge">Full-time</ValueCell>
+            <ValueCell data-label="Blitz">Dedicated</ValueCell>
           </TableRow>
           
           <TableRow>
             <FeatureCell>Meeting Frequency</FeatureCell>
-            <ValueCell data-label="Essential Launch">Bi-weekly</ValueCell>
-            <ValueCell data-label="Growth Partnership">Weekly</ValueCell>
-            <ValueCell data-label="Tailored Enterprise">Custom</ValueCell>
+            <ValueCell data-label="Spark">Bi-weekly</ValueCell>
+            <ValueCell data-label="Charge">Weekly</ValueCell>
+            <ValueCell data-label="Blitz">Custom</ValueCell>
           </TableRow>
           
           <TableRow>
             <FeatureCell>Iterations</FeatureCell>
-            <ValueCell data-label="Essential Launch">Limited</ValueCell>
-            <ValueCell data-label="Growth Partnership">2 per week</ValueCell>
-            <ValueCell data-label="Tailored Enterprise">Flexible</ValueCell>
+            <ValueCell data-label="Spark">Limited</ValueCell>
+            <ValueCell data-label="Charge">2 per week</ValueCell>
+            <ValueCell data-label="Blitz">Flexible</ValueCell>
           </TableRow>
           
           <TableRow>
             <FeatureCell>QA Testing</FeatureCell>
-            <ValueCell data-label="Essential Launch">Basic</ValueCell>
-            <ValueCell data-label="Growth Partnership">Thorough</ValueCell>
-            <ValueCell data-label="Tailored Enterprise">Comprehensive</ValueCell>
+            <ValueCell data-label="Spark">Basic</ValueCell>
+            <ValueCell data-label="Charge">Thorough</ValueCell>
+            <ValueCell data-label="Blitz">Comprehensive</ValueCell>
           </TableRow>
           
           <TableRow>
             <FeatureCell>Support Level</FeatureCell>
-            <ValueCell data-label="Essential Launch">Standard</ValueCell>
-            <ValueCell data-label="Growth Partnership">Priority</ValueCell>
-            <ValueCell data-label="Tailored Enterprise">Dedicated</ValueCell>
+            <ValueCell data-label="Spark">Standard</ValueCell>
+            <ValueCell data-label="Charge">Priority</ValueCell>
+            <ValueCell data-label="Blitz">Dedicated</ValueCell>
           </TableRow>
           
           <TableRow>
             <FeatureCell>Downpayment</FeatureCell>
-            <ValueCell data-label="Essential Launch">30%</ValueCell>
-            <ValueCell data-label="Growth Partnership">25%</ValueCell>
-            <ValueCell data-label="Tailored Enterprise">25%</ValueCell>
+            <ValueCell data-label="Spark">30%</ValueCell>
+            <ValueCell data-label="Charge">25%</ValueCell>
+            <ValueCell data-label="Blitz">25%</ValueCell>
           </TableRow>
         </ComparisonTable>
       </ComparisonSection>
@@ -1699,11 +2515,11 @@ const Pricing = () => {
         <FAQGrid>
           {faqs.map((faq, index) => (
             <FAQItem key={index}>
-              <FAQQuestion isOpen={openFAQ === index} onClick={() => toggleFAQ(index)}>
+              <FAQQuestion $isOpen={openFAQ === index} onClick={() => toggleFAQ(index)}>
                 <h3>{faq.question}</h3>
                 {openFAQ === index ? <FaChevronUp /> : <FaChevronDown />}
               </FAQQuestion>
-              <FAQAnswer isOpen={openFAQ === index}>
+              <FAQAnswer $isOpen={openFAQ === index}>
                 {faq.answer}
               </FAQAnswer>
             </FAQItem>
@@ -1714,4 +2530,4 @@ const Pricing = () => {
   );
 };
 
-export default Pricing; 
+export default Pricing;
