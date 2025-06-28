@@ -205,7 +205,7 @@ const PreBlock = styled.pre`
   word-break: break-word;
   word-wrap: break-word;
   flex: 1;
-  max-height: 400px;
+  max-height: 600px;
   
   &::-webkit-scrollbar {
     width: 8px;
@@ -849,7 +849,7 @@ const SEOAnalyzerDemo = () => {
           padding: '15px',
           background: 'rgba(25, 25, 35, 0.8)',
           borderRadius: '8px',
-          animation: 'fadeIn 0.4s ease-out',
+          animation: 'fadeIn 0.8s ease-out',
           flex: 1,
           overflow: 'auto'
         }}>
@@ -1609,7 +1609,7 @@ const HeadlineGeneratorDemo = () => {
           borderRadius: '8px',
           flex: 1,
           overflow: 'auto',
-          animation: 'fadeIn 0.4s ease-out'
+                      animation: 'fadeIn 0.8s ease-out'
         }} className="headline-results">
           {headlines.map((headline, index) => (
             <div 
@@ -1622,7 +1622,7 @@ const HeadlineGeneratorDemo = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                animation: `fadeIn 0.3s ease-out ${index * 0.1}s`,
+                animation: `fadeIn 0.8s ease-out ${index * 0.1}s`,
                 transform: 'scale(1)',
                 transition: 'all 0.2s ease',
                 position: 'relative',

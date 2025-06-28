@@ -535,6 +535,11 @@ const Projects = () => {
     }
   }, [activeTab]);
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -552,14 +557,14 @@ const Projects = () => {
   return (
     <ProjectsWrapper>
       <HeroSection>
-        <Title>Our Project Portfolio</Title>
+        <Title>Our Projects</Title>
         <Subtitle>
-          Discover our collection of innovative digital solutions that transform ideas into 
-          extraordinary experiences. From cutting-edge applications to stunning websites, 
-          each project reflects our passion for excellence and innovation.
+          Explore our diverse portfolio showcasing innovative web applications, mobile solutions, 
+          and cutting-edge digital experiences crafted with precision and creativity.
         </Subtitle>
       </HeroSection>
       
+      <div style={{ animation: 'fadeIn 0.8s ease' }}>
       <TabsContainer>
         <Tab 
           active={activeTab === "All"} 
@@ -662,6 +667,7 @@ const Projects = () => {
           <FaRocket /> Start Your Project
         </ActionButton>
       </ProjectsActionSection>
+      </div>
     </ProjectsWrapper>
   );
 };

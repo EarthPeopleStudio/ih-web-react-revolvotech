@@ -364,6 +364,11 @@ const ContactEmail = styled.a`
 `;
 
 const Careers = () => {
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const values = [
     {
       icon: <FaUsers />,
@@ -389,6 +394,11 @@ const Careers = () => {
       icon: <FaLightbulb />,
       title: "Growth",
       description: "We invest in our team's continuous learning and professional development."
+    },
+    {
+      icon: <FaRocket />,
+      title: "Innovation",
+      description: "We push boundaries and embrace cutting-edge technologies to deliver solutions that define the future."
     }
   ];
 
@@ -397,19 +407,22 @@ const Careers = () => {
       <HeroSection>
         <Title>Join Our Team</Title>
         <Subtitle>
-          Be part of a dynamic team that's shaping the future of digital innovation. 
-          We're passionate about creating exceptional experiences and building amazing products.
+          Ready to join a team that doesn't just follow trends, but sets them? 
+          We're looking for game-changers who turn complex challenges into elegant solutions 
+          and help us craft digital experiences that matter.
         </Subtitle>
       </HeroSection>
 
+      <div style={{ animation: 'fadeIn 0.8s ease' }}>
       <StatusCard>
-        <StatusIcon>🤷</StatusIcon>
-        <StatusTitle>Currently No Openings</StatusTitle>
+        <StatusIcon>🚀</StatusIcon>
+        <StatusTitle>Building the Future</StatusTitle>
         <StatusMessage>
-          We're not actively hiring at the moment, but we're always growing!
+          We're not actively hiring right now, but exceptional talent doesn't wait for job postings.
         </StatusMessage>
         <StatusSubtext>
-          Stay tuned for exciting opportunities. We'll be expanding our team soon and would love to hear from talented individuals who share our passion for innovation.
+          We're constantly evolving and expanding. If you're the kind of person who could help us 
+          reach new heights, we want to know about you before we even realize we need you.
         </StatusSubtext>
       </StatusCard>
 
@@ -427,15 +440,20 @@ const Careers = () => {
       </ValuesSection>
 
       <ContactSection>
-        <ContactTitle>Interested in Future Opportunities?</ContactTitle>
+        <ContactTitle>Think We Could Use Your Talent?</ContactTitle>
         <ContactText>
-          Even though we don't have openings right now, we'd love to connect with passionate developers, 
-          designers, and innovators for future opportunities.
+          We're always on the lookout for exceptional individuals who can elevate our game. 
+          If you believe your skills could help us grow our company and push boundaries, 
+          we'd love to hear <strong style={{ color: '#fbb604' }}>why you think you're that person</strong>.
+          <br /><br />
+          Don't just tell us what you can do — <strong style={{ color: '#FFEB3B' }}>show us what makes you extraordinary</strong>. 
+          Impress us with your passion, creativity, and vision for what we could build together.
         </ContactText>
         <ContactEmail href="mailto:job@revolvo.tech">
           job@revolvo.tech
         </ContactEmail>
       </ContactSection>
+      </div>
     </CareersWrapper>
   );
 };

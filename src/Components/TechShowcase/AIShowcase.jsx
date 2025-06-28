@@ -128,6 +128,7 @@ const CodeDemoContainer = styled.div`
   z-index: 1;
   flex: 1;
   overflow: hidden;
+  min-height: 400px;
   
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
@@ -144,6 +145,7 @@ const CodeSnippetContainer = styled.div`
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  min-width: 0; /* Prevents flex item from overflowing */
   
   @media (max-width: 968px) {
     border-right: none;
@@ -191,6 +193,8 @@ const DemoContainer = styled.div`
   justify-content: center;
   min-height: 200px;
   border: 1px solid rgba(251, 182, 4, 0.1);
+  min-width: 0; /* Prevents flex item from overflowing */
+  overflow: hidden; /* Ensures content doesn't break out */
 `;
 
 const PreBlock = styled.pre`
@@ -353,8 +357,8 @@ const SmartChatDemo = () => {
   
   return (
     <div style={{
-      maxWidth: '100%',
-      height: '500px',
+      width: '100%',
+      height: '450px',
       border: '1px solid rgba(255, 255, 255, 0.08)',
       borderRadius: '12px',
       background: 'linear-gradient(to bottom, #1e1e2d, #1a1a27)',
@@ -367,49 +371,50 @@ const SmartChatDemo = () => {
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
-          alignItems: 'center',
-        padding: '16px 20px',
+        alignItems: 'center',
+        padding: '12px 16px',
         borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
         background: 'rgba(30, 30, 45, 0.6)',
-        backdropFilter: 'blur(10px)'
+        backdropFilter: 'blur(10px)',
+        flexShrink: 0
         }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '12px',
+            width: '32px',
+            height: '32px',
+            borderRadius: '10px',
             background: 'linear-gradient(135deg, #FFEB3B, #fbb604)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginRight: '12px',
+            marginRight: '10px',
             boxShadow: '0 4px 12px rgba(255, 235, 59, 0.25)'
           }}>
-            <AiOutlineRobot color="#000" size={20} />
+            <AiOutlineRobot color="#000" size={16} />
           </div>
           <div>
             <div style={{
               fontWeight: 700, 
-              fontSize: '15px',
+              fontSize: '14px',
               letterSpacing: '0.2px',
               background: 'linear-gradient(to right, #fff, #ddd)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>AI Assistant</div>
             <div style={{
-              fontSize: '12px',
+              fontSize: '11px',
               color: status === 'ready' ? '#4caf50' : status === 'thinking' ? '#ff9800' : '#2196f3',
               display: 'flex',
               alignItems: 'center',
-              marginTop: '3px'
+              marginTop: '2px'
             }}>
               <span style={{
-                width: '8px',
-                height: '8px',
+                width: '6px',
+                height: '6px',
                 borderRadius: '50%',
                 background: status === 'ready' ? '#4caf50' : status === 'thinking' ? '#ff9800' : '#2196f3',
-                marginRight: '5px',
-                boxShadow: `0 0 10px ${status === 'ready' ? '#4caf50' : status === 'thinking' ? '#ff9800' : '#2196f3'}`
+                marginRight: '4px',
+                boxShadow: `0 0 8px ${status === 'ready' ? '#4caf50' : status === 'thinking' ? '#ff9800' : '#2196f3'}`
               }}></span>
               {status === 'ready' ? 'Online' : status === 'thinking' ? 'Thinking...' : 'Typing...'}
             </div>
@@ -422,11 +427,11 @@ const SmartChatDemo = () => {
             border: '1px solid rgba(255, 255, 255, 0.1)',
             color: '#ddd',
             cursor: 'pointer',
-            fontSize: '12px',
+            fontSize: '11px',
             display: 'flex',
             alignItems: 'center',
-            padding: '8px 12px',
-            borderRadius: '8px',
+            padding: '6px 10px',
+            borderRadius: '6px',
             transition: 'all 0.2s ease',
             fontWeight: '500'
           }}
@@ -441,10 +446,10 @@ const SmartChatDemo = () => {
       <div style={{
           flex: 1,
           overflowY: 'auto',
-        padding: '20px',
+        padding: '16px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px',
+          gap: '12px',
         scrollbarWidth: 'thin',
         scrollbarColor: '#3a3a4a #1a1a27',
         backgroundImage: 'radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0) 60%), radial-gradient(circle at 85% 25%, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0) 60%)'
@@ -454,19 +459,19 @@ const SmartChatDemo = () => {
               display: 'flex',
               flexDirection: 'column',
               alignSelf: message.role === 'user' ? 'flex-end' : 'flex-start',
-            maxWidth: '85%',
-            animation: 'fadeIn 0.3s ease'
+            maxWidth: '90%',
+            animation: 'fadeIn 0.8s ease'
           }}>
             <div style={{
               display: 'flex',
               alignItems: 'flex-start',
-              gap: '12px'
+              gap: '8px'
             }}>
               {message.role === 'assistant' && (
                 <div style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '10px',
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '8px',
                   background: 'linear-gradient(135deg, #FFEB3B, #fbb604)',
                   display: 'flex',
                   alignItems: 'center',
@@ -474,7 +479,7 @@ const SmartChatDemo = () => {
                   flexShrink: 0,
                   boxShadow: '0 4px 12px rgba(255, 235, 59, 0.15)'
                 }}>
-                  <AiOutlineRobot color="#000" size={18} />
+                  <AiOutlineRobot color="#000" size={14} />
                 </div>
               )}
               <div style={{
@@ -529,7 +534,7 @@ const SmartChatDemo = () => {
             alignItems: 'flex-start',
             gap: '12px',
             maxWidth: '85%',
-            animation: 'fadeIn 0.3s ease'
+            animation: 'fadeIn 0.8s ease'
           }}>
             <div style={{
               width: '32px',
@@ -590,19 +595,20 @@ const SmartChatDemo = () => {
       
       {/* Input area */}
         <div style={{
-        padding: '16px 20px 20px',
+        padding: '12px 16px 14px',
         borderTop: '1px solid rgba(255, 255, 255, 0.08)',
         background: 'rgba(30, 30, 45, 0.6)',
-        backdropFilter: 'blur(10px)'
+        backdropFilter: 'blur(10px)',
+        flexShrink: 0
       }}>
         {/* Suggested queries */}
         {messages.length < 3 && (
           <div style={{
           display: 'flex',
-            gap: '10px',
-            marginBottom: '16px',
+            gap: '8px',
+            marginBottom: '12px',
           overflowX: 'auto',
-            padding: '5px 0',
+            padding: '2px 0',
             scrollbarWidth: 'thin',
             scrollbarColor: '#3a3a4a #1a1a27'
         }}>
@@ -613,9 +619,9 @@ const SmartChatDemo = () => {
               style={{
                   background: 'rgba(255, 255, 255, 0.07)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '10px',
-                  padding: '8px 16px',
-                  fontSize: '12px',
+                  borderRadius: '8px',
+                  padding: '6px 12px',
+                  fontSize: '11px',
                   color: '#eee',
                 cursor: 'pointer',
                   whiteSpace: 'nowrap',
@@ -625,7 +631,7 @@ const SmartChatDemo = () => {
                 onMouseOver={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)';
                   e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.background = 'rgba(255, 255, 255, 0.07)';
@@ -642,7 +648,7 @@ const SmartChatDemo = () => {
         {/* Input form */}
       <form onSubmit={handleSubmit} style={{
         display: 'flex',
-          gap: '12px'
+          gap: '8px'
       }}>
         <input
           type="text"
@@ -651,32 +657,32 @@ const SmartChatDemo = () => {
           placeholder="Type a message..."
           style={{
             flex: 1,
-              padding: '14px 18px',
-              borderRadius: '12px',
+              padding: '10px 14px',
+              borderRadius: '10px',
             border: '1px solid rgba(255, 255, 255, 0.1)',
               background: 'rgba(45, 45, 60, 0.6)',
               color: '#fff',
-              fontSize: '14px',
+              fontSize: '13px',
             outline: 'none',
               transition: 'all 0.2s ease',
-              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)'
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.1)'
             }}
             onFocus={(e) => {
               e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-              e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+              e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)';
             }}
             onBlur={(e) => {
               e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-              e.target.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+              e.target.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.1)';
             }}
           />
           <button
             type="submit"
             disabled={!input.trim() || isTyping}
             style={{
-              width: '48px',
-              height: '48px',
-              borderRadius: '12px',
+              width: '40px',
+              height: '40px',
+              borderRadius: '10px',
               border: 'none',
               background: input.trim() 
                 ? 'linear-gradient(135deg, #FFEB3B, #fbb604)' 
@@ -689,23 +695,23 @@ const SmartChatDemo = () => {
               transition: 'all 0.2s ease',
               opacity: input.trim() && !isTyping ? 1 : 0.5,
               boxShadow: input.trim() && !isTyping 
-                ? '0 4px 12px rgba(255, 235, 59, 0.25)' 
+                ? '0 2px 8px rgba(255, 235, 59, 0.25)' 
                 : 'none'
             }}
             onMouseOver={(e) => {
               if (input.trim() && !isTyping) {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 15px rgba(255, 235, 59, 0.3)';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 10px rgba(255, 235, 59, 0.3)';
               }
             }}
             onMouseOut={(e) => {
               if (input.trim() && !isTyping) {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 235, 59, 0.25)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(255, 235, 59, 0.25)';
               }
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="22" y1="2" x2="11" y2="13"></line>
               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
           </svg>

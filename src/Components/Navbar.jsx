@@ -3,7 +3,7 @@ import styled from "styled-components";
 import logoImg from "../assets/revolvo-logo.png";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { designSystem } from "../themes";
 import { PathContext } from "../App";
 import { useAnimation } from "./AnimationContext";
@@ -152,7 +152,7 @@ const StyledLink = styled(Link)`
   &:after {
     content: "";
     position: absolute;
-    width: 0;
+    width: ${props => props.$isActive ? "100%" : "0"};
     height: 2px;
     bottom: -2px;
     left: 0;
@@ -299,6 +299,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const { currentPath } = useContext(PathContext);
   const { setCurrentAnimation } = useAnimation();
+  const location = useLocation();
 
   // Activate cursor glow effect
   useCursorGlow();
@@ -352,13 +353,20 @@ const Navbar = () => {
       </MenuButton>
 
       <NavMenu $isOpen={isOpen}>
-        <StyledLink to="/" onClick={closeMenu}>Home</StyledLink>
+        <StyledLink 
+          to="/" 
+          onClick={closeMenu} 
+          $isActive={location.pathname === "/"}
+        >
+          Home
+        </StyledLink>
         <li>
           <StyledLink 
             to="/projects"
             onMouseEnter={() => handleButtonHover(true)}
             onMouseLeave={() => handleButtonHover(false)}
             onClick={closeMenu}
+            $isActive={location.pathname === "/projects"}
           >
             Projects
           </StyledLink>
@@ -369,6 +377,7 @@ const Navbar = () => {
             onMouseEnter={() => handleButtonHover(true)}
             onMouseLeave={() => handleButtonHover(false)}
             onClick={closeMenu}
+            $isActive={location.pathname === "/pricing"}
           >
             Pricing
           </StyledLink>
@@ -379,6 +388,7 @@ const Navbar = () => {
             onMouseEnter={() => handleButtonHover(true)}
             onMouseLeave={() => handleButtonHover(false)}
             onClick={closeMenu}
+            $isActive={location.pathname === "/testimonials"}
           >
             Testimonials
           </StyledLink>
@@ -388,7 +398,13 @@ const Navbar = () => {
             to="/tech-showcase"
             onMouseEnter={() => handleButtonHover(true)}
             onMouseLeave={() => handleButtonHover(false)}
-            onClick={closeMenu}
+            onClick={() => {
+              closeMenu();
+              setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'auto' });
+              }, 100);
+            }}
+            $isActive={location.pathname === "/tech-showcase"}
           >
             Tech Showcase
           </StyledLink>
@@ -399,6 +415,7 @@ const Navbar = () => {
             onMouseEnter={() => handleButtonHover(true)}
             onMouseLeave={() => handleButtonHover(false)}
             onClick={closeMenu}
+            $isActive={location.pathname === "/careers"}
           >
             Careers
           </StyledLink>
@@ -409,6 +426,7 @@ const Navbar = () => {
             onMouseEnter={() => handleButtonHover(true)}
             onMouseLeave={() => handleButtonHover(false)}
             onClick={closeMenu}
+            $isActive={location.pathname === "/blog"}
           >
             Blog
           </StyledLink>

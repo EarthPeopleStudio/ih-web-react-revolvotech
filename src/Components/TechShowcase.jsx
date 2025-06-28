@@ -233,7 +233,7 @@ const Tab = styled.button`
 
 const ContentSection = styled.div`
   display: ${props => props.active ? 'block' : 'none'};
-  animation: ${props => props.active ? 'fadeIn 0.5s ease' : 'none'};
+  animation: ${props => props.active ? 'fadeIn 0.8s ease' : 'none'};
   
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -659,6 +659,18 @@ export default function TechShowcase() {
   const location = useLocation();
   const [activeCategory, setActiveCategory] = useState('Websites');
 
+  const handleTabClick = (category) => {
+    // Store current scroll position to prevent any shifts
+    const currentScroll = window.pageYOffset;
+    
+    setActiveCategory(category);
+    
+    // Immediately prevent any scroll changes during content switch
+    requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+    });
+  };
+
   // Handle URL parameters to set active tab
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -691,12 +703,10 @@ export default function TechShowcase() {
           setActiveCategory('Websites');
       }
     }
+    
+    // Scroll handled by the activeCategory useEffect
   }, [location]);
 
-  const handleTabClick = (category) => {
-    setActiveCategory(category);
-  };
-  
   // Add event listener to prevent keyboard copy shortcuts
   useEffect(() => {
     const preventCopyShortcuts = (e) => {

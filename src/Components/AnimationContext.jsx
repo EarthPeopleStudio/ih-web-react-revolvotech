@@ -63,12 +63,16 @@ export const AnimationProvider = ({ children }) => {
   const [currentAnimation, setCurrentAnimation] = useState('Idle');
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // Define the default animation constant
+  const DEFAULT_ANIMATION = 'Idle';
+
   const value = {
     currentAnimation,
     setCurrentAnimation,
     isAnimating,
     setIsAnimating,
-    motionPresets
+    motionPresets,
+    DEFAULT_ANIMATION
   };
 
   return (

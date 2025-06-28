@@ -187,89 +187,93 @@ const List = styled.ul`
 const CookiePolicy = () => {
   const navigate = useNavigate();
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <CookieWrapper>
       <Title>Cookie Policy</Title>
-      <LastUpdated>Last Updated: March 15, 2024</LastUpdated>
+      <LastUpdated>Last Updated: December 15, 2024</LastUpdated>
 
-      <Paragraph>
-        Revolvo Tech Pvt Ltd. ("Revolvo Tech", "we", "our", or "us") uses cookies and similar tracking technologies on our website (revolvo.tech) and across all our products and services—including mobile and desktop applications, games, and other software platforms (collectively, the "Services"). This Cookie Policy explains what cookies are, how we use them, and your choices regarding their use.
-      </Paragraph>
+      <div style={{ animation: 'fadeIn 0.8s ease' }}>
+        <Section>
+          <Paragraph>
+            Revolvo Tech Pvt Ltd. ("Revolvo Tech", "we", "our", or "us") uses cookies and similar tracking technologies on our website (revolvo.tech) and across all our products and services—including mobile and desktop applications, games, and other software platforms (collectively, the "Services"). This Cookie Policy explains what cookies are, how we use them, and your choices regarding their use.
+          </Paragraph>
+        </Section>
 
-      <Section>
-        <SectionTitle>1. What Are Cookies?</SectionTitle>
-        <Paragraph>
-          Cookies are small text files placed on your device by a website or application. They enable the Service to remember your actions and preferences (such as login details, language settings, and other display preferences) over a period of time, so you don't have to re-enter them whenever you revisit the Service.
-        </Paragraph>
-      </Section>
+        <Section>
+          <SectionTitle>1. What Are Cookies?</SectionTitle>
+          <Paragraph>
+            Cookies are small text files placed on your device by a website or application. They enable the Service to remember your actions and preferences (such as login details, language settings, and other display preferences) over a period of time, so you don't have to re-enter them whenever you revisit the Service.
+          </Paragraph>
+        </Section>
 
-      <Section>
-        <SectionTitle>2. How We Use Cookies</SectionTitle>
-        <Paragraph>
-          We use cookies and similar technologies for several purposes:
-        </Paragraph>
-        <Paragraph>
-          <strong>Essential Cookies:</strong> To enable basic functions such as security, network management, and accessibility. These cookies are essential to ensure the proper operation of our Services.
-        </Paragraph>
-        <Paragraph>
-          <strong>Performance and Analytics Cookies:</strong> To analyze how our Services are used, improve performance, and help us understand user behavior (e.g., pages visited, session duration, and clickstream data).
-        </Paragraph>
-        <Paragraph>
-          <strong>Functional Cookies:</strong> To remember your preferences and provide a more personalized experience across our platforms.
-        </Paragraph>
-        <Paragraph>
-          <strong>Advertising Cookies:</strong> To deliver targeted advertisements and measure the effectiveness of our marketing campaigns across our products and services. These may include cookies set by third parties that work with us.
-        </Paragraph>
-      </Section>
+        <Section>
+          <SectionTitle>2. How We Use Cookies</SectionTitle>
+          <Paragraph>
+            We use cookies and similar technologies for several purposes:
+          </Paragraph>
+          <List>
+            <li><strong>Essential Cookies:</strong> To enable basic functions such as security, network management, and accessibility. These cookies are essential to ensure the proper operation of our Services.</li>
+            <li><strong>Performance and Analytics Cookies:</strong> To analyze how our Services are used, improve performance, and help us understand user behavior (e.g., pages visited, session duration, and clickstream data).</li>
+            <li><strong>Functional Cookies:</strong> To remember your preferences and provide a more personalized experience across our platforms.</li>
+            <li><strong>Advertising Cookies:</strong> To deliver targeted advertisements and measure the effectiveness of our marketing campaigns across our products and services. These may include cookies set by third parties that work with us.</li>
+          </List>
+        </Section>
 
-      <Section>
-        <SectionTitle>3. Types of Cookies We Use</SectionTitle>
-        <Paragraph>
-          <strong>First-Party Cookies:</strong> Set by Revolvo Tech directly when you use our Services.
-        </Paragraph>
-        <Paragraph>
-          <strong>Third-Party Cookies:</strong> Set by our trusted partners and service providers (e.g., analytics tools, advertising networks) to help us analyze usage and serve personalized ads. We encourage you to review the privacy policies of these third parties for further details.
-        </Paragraph>
-      </Section>
+        <Section>
+          <SectionTitle>3. Types of Cookies We Use</SectionTitle>
+          <List>
+            <li><strong>First-Party Cookies:</strong> Set by Revolvo Tech directly when you use our Services.</li>
+            <li><strong>Third-Party Cookies:</strong> Set by our trusted partners and service providers (e.g., analytics tools, advertising networks) to help us analyze usage and serve personalized ads. We encourage you to review the privacy policies of these third parties for further details.</li>
+          </List>
+        </Section>
 
-      <Section>
-        <SectionTitle>4. Your Choices Regarding Cookies</SectionTitle>
-        <Paragraph>
-          Most web browsers allow you to control cookies through their settings. You can:
-        </Paragraph>
-        <Paragraph>
-          <strong>Accept or Reject Cookies:</strong> Adjust your browser settings to accept, reject, or delete cookies. Note that blocking certain cookies may affect your ability to use our Services fully.
-        </Paragraph>
-        <Paragraph>
-          <strong>Cookie Consent Tools:</strong> Many of our Services include built-in options to manage your cookie preferences (such as a "Cookie Settings" or "Do Not Track" option).
-        </Paragraph>
-        <Paragraph>
-          For further guidance on managing cookies, please refer to your browser's help documentation.
-        </Paragraph>
-      </Section>
+        <Section>
+          <SectionTitle>4. Your Choices Regarding Cookies</SectionTitle>
+          <Paragraph>
+            Most web browsers allow you to control cookies through their settings. You can:
+          </Paragraph>
+          <List>
+            <li><strong>Accept or Reject Cookies:</strong> Adjust your browser settings to accept, reject, or delete cookies. Note that blocking certain cookies may affect your ability to use our Services fully.</li>
+            <li><strong>Cookie Consent Tools:</strong> Many of our Services include built-in options to manage your cookie preferences (such as a "Cookie Settings" or "Do Not Track" option).</li>
+          </List>
+          <Paragraph>
+            For further guidance on managing cookies, please refer to your browser's help documentation.
+          </Paragraph>
+        </Section>
 
-      <Section>
-        <SectionTitle>5. Changes to Our Cookie Policy</SectionTitle>
-        <Paragraph>
-          We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will post any changes on this page and indicate the updated "Last Updated" date. We encourage you to review this Cookie Policy periodically.
-        </Paragraph>
-      </Section>
+        <Section>
+          <SectionTitle>5. Changes to Our Cookie Policy</SectionTitle>
+          <Paragraph>
+            We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will post any changes on this page and indicate the updated "Last Updated" date. We encourage you to review this Cookie Policy periodically.
+          </Paragraph>
+        </Section>
 
-      <Section>
-        <SectionTitle>6. Contact Us</SectionTitle>
-        <Paragraph>
-          If you have any questions about this Cookie Policy or our use of cookies, please contact us:
-        </Paragraph>
-        <Paragraph>
-          Website: revolvo.tech
-          <br />
-          General Inquiries: hey@revolvo.tech
-          <br />
-          User Support: help@revolvo.tech
-          <br />
-          Legal: legal@revolvo.tech
-        </Paragraph>
-      </Section>
+        <Section>
+          <SectionTitle>6. Contact Us</SectionTitle>
+          <Paragraph>
+            If you have any questions about this Cookie Policy or our use of cookies, please contact us:
+          </Paragraph>
+          <div style={{ 
+            padding: '20px', 
+            background: 'rgba(251, 182, 4, 0.05)', 
+            borderRadius: '8px',
+            border: '1px solid rgba(251, 182, 4, 0.2)',
+            marginTop: '15px'
+          }}>
+            <List>
+              <li><strong>Website:</strong> revolvo.tech</li>
+              <li><strong>General Inquiries:</strong> <a href="mailto:hey@revolvo.tech" style={{ color: '#fbb604', textDecoration: 'none', fontWeight: '600' }}>hey@revolvo.tech</a></li>
+              <li><strong>User Support:</strong> <a href="mailto:help@revolvo.tech" style={{ color: '#fbb604', textDecoration: 'none', fontWeight: '600' }}>help@revolvo.tech</a></li>
+              <li><strong>Legal:</strong> <a href="mailto:legal@revolvo.tech" style={{ color: '#fbb604', textDecoration: 'none', fontWeight: '600' }}>legal@revolvo.tech</a></li>
+            </List>
+          </div>
+        </Section>
+      </div>
     </CookieWrapper>
   );
 };

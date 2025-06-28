@@ -239,67 +239,61 @@ const CircuitAccent = styled.div`
 const AboutUs = () => {
   const navigate = useNavigate();
 
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <AboutWrapper>
       <CircuitAccent />
-      <Title>About Us</Title>
+      <Title>About Revolvo Tech</Title>
       <Subtitle>Welcome to Revolvo Tech</Subtitle>
       
       <Paragraph>
         At Revolvo Tech, we are passionate about turning ideas into innovative software solutions. Based in Islamabad, Pakistan and operating remotely from Tampere, Finland, we offer comprehensive software development services and create cutting-edge products that empower businesses and individuals around the world.
       </Paragraph>
 
-      <Section>
-        <SectionTitle>Who We Are</SectionTitle>
-        <Paragraph>
-          Revolvo Tech is a dynamic software development company committed to delivering high-quality digital products and services. Whether you need custom software tailored to your business needs or a ready-to-use product that stands out in the market, our team of experts is here to help you innovate and succeed.
-        </Paragraph>
-      </Section>
+      <div style={{ animation: 'fadeIn 0.8s ease' }}>
+        <Section>
+          <SectionTitle>Who We Are</SectionTitle>
+          <Paragraph>
+            Revolvo Tech is a dynamic software development company committed to delivering high-quality digital products and services. Whether you need custom software tailored to your business needs or a ready-to-use product that stands out in the market, our team of experts is here to help you innovate and succeed.
+          </Paragraph>
+        </Section>
 
-      <Section>
-        <SectionTitle>What We Do</SectionTitle>
-        <List>
-          <li>
-            <strong>Custom Software Development:</strong> We work closely with our clients to design, develop, and deploy bespoke software solutions that streamline operations, enhance user experience, and drive business growth.
-          </li>
-          <li>
-            <strong>Product Development:</strong> From mobile apps to desktop applications, games to enterprise platforms, we build products that combine functionality with an intuitive design.
-          </li>
-          <li>
-            <strong>End-to-End Services:</strong> Our expertise spans the entire software development lifecycle—from initial concept and design through to development, testing, and ongoing support.
-          </li>
-        </List>
-      </Section>
+        <Section>
+          <SectionTitle>What We Do</SectionTitle>
+          <List>
+            <li><strong>Custom Software Development:</strong> We work closely with our clients to design, develop, and deploy bespoke software solutions that streamline operations, enhance user experience, and drive business growth.</li>
+            <li><strong>Product Development:</strong> From mobile apps to desktop applications, games to enterprise platforms, we build products that combine functionality with an intuitive design.</li>
+            <li><strong>End-to-End Services:</strong> Our expertise spans the entire software development lifecycle—from initial concept and design through to development, testing, and ongoing support.</li>
+          </List>
+        </Section>
 
-      <Section>
-        <SectionTitle>Our Mission</SectionTitle>
-        <Paragraph>
-          Our mission is to create reliable, innovative, and user-friendly software that transforms the way our clients do business. We believe in leveraging technology to solve complex challenges and improve everyday life.
-        </Paragraph>
-      </Section>
+        <Section>
+          <SectionTitle>Our Mission</SectionTitle>
+          <Paragraph>
+            Our mission is to create reliable, innovative, and user-friendly software that transforms the way our clients do business. We believe in leveraging technology to solve complex challenges and improve everyday life.
+          </Paragraph>
+        </Section>
 
-      <Section>
-        <SectionTitle>Why Choose Us</SectionTitle>
-        <List>
-          <li>
-            <strong>Expertise & Innovation:</strong> With a team of skilled professionals and years of industry experience, we combine technical excellence with creative problem-solving.
-          </li>
-          <li>
-            <strong>Client-Centric Approach:</strong> We work collaboratively with our clients, ensuring that every solution is tailored to meet your unique needs and goals.
-          </li>
-          <li>
-            <strong>Quality & Integrity:</strong> Our commitment to quality, security, and transparency sets us apart as a trusted partner in your digital journey.
-          </li>
-        </List>
-      </Section>
+        <Section>
+          <SectionTitle>Why Choose Us</SectionTitle>
+          <List>
+            <li><strong>Expertise & Innovation:</strong> With a team of skilled professionals and years of industry experience, we combine technical excellence with creative problem-solving.</li>
+            <li><strong>Client-Centric Approach:</strong> We work collaboratively with our clients, ensuring that every solution is tailored to meet your unique needs and goals.</li>
+            <li><strong>Quality & Integrity:</strong> Our commitment to quality, security, and transparency sets us apart as a trusted partner in your digital journey.</li>
+          </List>
+        </Section>
 
-      <Section>
-        <SectionTitle>Get in Touch</SectionTitle>
-        <Paragraph>
-          Have questions or want to discuss a project? Feel free to reach out to us at{" "}
-          <ContactLink href="mailto:hey@revolvo.tech">hey@revolvo.tech</ContactLink>
-        </Paragraph>
-      </Section>
+        <Section>
+          <SectionTitle>Get in Touch</SectionTitle>
+          <Paragraph>
+            Have questions or want to discuss a project? Feel free to reach out to us at <ContactLink href="mailto:hey@revolvo.tech">hey@revolvo.tech</ContactLink>
+          </Paragraph>
+        </Section>
+      </div>
     </AboutWrapper>
   );
 };

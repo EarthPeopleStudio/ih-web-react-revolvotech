@@ -35,7 +35,6 @@ const ProjectWrapper = styled.div`
   background: var(--bg-primary);
   padding: 120px 5% 80px;
   position: relative;
-  animation: ${fadeIn} 0.8s ease-out;
   
   &::before {
     content: '';
@@ -119,6 +118,9 @@ const MainImage = styled.div`
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
   position: relative;
+  animation: ${fadeIn} 0.8s ease-out;
+  animation-delay: 0.2s;
+  animation-fill-mode: both;
   
   &::after {
     content: '';
@@ -152,6 +154,9 @@ const MainImage = styled.div`
 
 const StepsSection = styled.div`
   margin: 100px 0;
+  animation: ${fadeIn} 0.8s ease-out;
+  animation-delay: 0.4s;
+  animation-fill-mode: both;
 `;
 
 const StepsGrid = styled.div`
@@ -254,6 +259,9 @@ const SecurityHighlight = styled.div`
   position: relative;
   overflow: hidden;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  animation: ${fadeIn} 0.8s ease-out;
+  animation-delay: 0.6s;
+  animation-fill-mode: both;
 
   &::before {
     content: '';
@@ -324,6 +332,9 @@ const FeaturesSection = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 40px;
   margin: 80px 0;
+  animation: ${fadeIn} 0.8s ease-out;
+  animation-delay: 0.8s;
+  animation-fill-mode: both;
 `;
 
 const FeatureCard = styled.div`
@@ -357,6 +368,9 @@ const FeatureDescription = styled.p`
 const DownloadSection = styled.div`
   text-align: center;
   margin: 80px 0;
+  animation: ${fadeIn} 0.8s ease-out;
+  animation-delay: 1.0s;
+  animation-fill-mode: both;
 `;
 
 const DownloadTitle = styled.h2`
@@ -399,6 +413,11 @@ const DownloadButton = styled.a`
 `;
 
 const HivekeyProject = () => {
+  // Scroll to top when component mounts
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <ProjectWrapper>
       <ContentContainer>

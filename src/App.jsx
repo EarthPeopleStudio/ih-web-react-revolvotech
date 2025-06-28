@@ -21,7 +21,9 @@ import TechShowcase from "./Components/TechShowcase";
 import Pricing from "./Components/Pricing";
 import Testimonials from "./Components/Testimonials";
 import BlogSection from "./Components/BlogSection";
+import BlogPost from "./Components/BlogPost";
 import TechCarousel from "./Components/TechCarousel";
+import SkeletonLoader from "./Components/SkeletonLoader";
 import { darkTheme, themeToVars } from "./themes";
 import { AnimationProvider } from './Components/AnimationContext';
 import ContactUs from './Components/ContactUs';
@@ -45,10 +47,63 @@ const ContentWrapper = styled.div`
 const AppContent = () => {
   const location = useLocation();
   const [currentPath, setCurrentPath] = useState(location.pathname);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Loading Page");
+  const [loadingSubtext, setLoadingSubtext] = useState("Initializing components...");
+  const [loadingKey, setLoadingKey] = useState(0);
   
   useEffect(() => {
-    setCurrentPath(location.pathname);
-  }, [location]);
+    // Show loading when route changes
+    if (currentPath !== location.pathname) {
+      setIsLoading(true);
+      setLoadingKey(prev => prev + 1); // Force skeleton reset on each navigation
+      
+      // Set custom loading messages based on route
+      const getLoadingMessage = (pathname) => {
+        switch(pathname) {
+          case '/':
+            return { message: "Loading Home", subtext: "Initializing 3D experience..." };
+          case '/about-us':
+            return { message: "Loading About Us", subtext: "Preparing team information..." };
+          case '/our-work':
+            return { message: "Loading Our Work", subtext: "Showcasing our projects..." };
+          case '/tech-showcase':
+            return { message: "Loading Tech Showcase", subtext: "Setting up interactive demos..." };
+          case '/pricing':
+            return { message: "Loading Pricing", subtext: "Calculating your perfect plan..." };
+          case '/contact-us':
+            return { message: "Loading Contact", subtext: "Preparing contact form..." };
+          case '/blog':
+            return { message: "Loading Blog", subtext: "Fetching latest articles..." };
+          case '/projects':
+            return { message: "Loading Projects", subtext: "Displaying our portfolio..." };
+          case '/careers':
+            return { message: "Loading Careers", subtext: "Finding opportunities..." };
+          case '/testimonials':
+            return { message: "Loading Testimonials", subtext: "Loading client reviews..." };
+          default:
+            if (pathname.startsWith('/blog/')) {
+              return { message: "Loading Article", subtext: "Preparing blog post..." };
+            } else if (pathname.startsWith('/projects/')) {
+              return { message: "Loading Project", subtext: "Showcasing project details..." };
+            }
+            return { message: "Loading Page", subtext: "Initializing components..." };
+        }
+      };
+      
+      const { message, subtext } = getLoadingMessage(location.pathname);
+      setLoadingMessage(message);
+      setLoadingSubtext(subtext);
+      
+      // Simulate loading time for better UX
+      const timer = setTimeout(() => {
+        setCurrentPath(location.pathname);
+        setIsLoading(false);
+      }, 800); // 800ms loading time
+      
+      return () => clearTimeout(timer);
+    }
+  }, [location, currentPath]);
 
   return (
     <PathContext.Provider value={currentPath}>
@@ -56,7 +111,15 @@ const AppContent = () => {
         <SubtleBackground />
         <ContentWrapper>
           <Navbar />
-          <Routes>
+          {isLoading && (
+            <SkeletonLoader 
+              key={loadingKey}
+              message={loadingMessage} 
+              subtext={loadingSubtext} 
+            />
+          )}
+          {!isLoading && (
+            <Routes>
             {/* Home Page */}
             <Route
               path="/"
@@ -106,8 +169,12 @@ const AppContent = () => {
             
             {/* Blog Page */}
             <Route path="/blog" element={<BlogSection />} />
-          </Routes>
-          <Footer />
+            
+            {/* Individual Blog Post */}
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            </Routes>
+          )}
+          {!isLoading && <Footer />}
         </ContentWrapper>
       </AppWrapper>
     </PathContext.Provider>

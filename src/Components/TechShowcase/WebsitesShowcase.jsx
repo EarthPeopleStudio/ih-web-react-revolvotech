@@ -216,7 +216,7 @@ const PreBlock = styled.pre`
 `;
 
 const DemoContainer = styled.div`
-  padding: 20px;
+  padding: ${props => props.isSecondDemo ? '20px 75px 20px 15px' : '20px 65px 20px 15px'};
   background: linear-gradient(145deg, rgba(30, 30, 35, 0.9), rgba(40, 40, 45, 0.9));
   border-radius: 12px;
   display: flex;
@@ -1211,7 +1211,7 @@ const Portfolio = () => {
 export default Portfolio;`} 
             />
           </CodeSnippetContainer>
-          <DemoContainer>
+          <DemoContainer isSecondDemo>
             <DemoWrapper>
               <CreativeAgencyDashboard />
             </DemoWrapper>

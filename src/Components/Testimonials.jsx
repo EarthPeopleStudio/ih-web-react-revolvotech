@@ -215,6 +215,9 @@ const CarouselWrapper = styled.div`
   border: 1px solid rgba(251, 182, 4, 0.2);
   backdrop-filter: blur(15px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: ${fadeIn} 0.8s ease-out;
+  animation-delay: 0.2s;
+  animation-fill-mode: both;
   
   &::before {
     content: '';
@@ -566,7 +569,7 @@ const TestimonialCard = styled.div`
   padding: 35px;
   border: 1px solid rgba(251, 182, 4, 0.2);
   transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-  animation: ${fadeIn} 0.5s ease;
+  animation: ${fadeIn} 0.8s ease;
   animation-delay: ${props => props.delay || '0s'};
   animation-fill-mode: both;
   display: flex;
@@ -885,6 +888,11 @@ const Testimonials = () => {
 
   const handleMouseEnter = () => setIsAutoPlaying(false);
   const handleMouseLeave = () => setIsAutoPlaying(true);
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (!numTestimonials) {
     return (

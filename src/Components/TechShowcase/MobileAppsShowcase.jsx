@@ -32,7 +32,7 @@ const CodeShowcaseItem = styled.div`
   transition: all 0.4s ease;
   position: relative;
   backdrop-filter: blur(10px);
-  max-height: 600px;
+  max-height: 900px;
   display: flex;
   flex-direction: column;
 
@@ -194,7 +194,7 @@ const PreBlock = styled.pre`
   word-break: break-word;
   word-wrap: break-word;
   flex: 1;
-  max-height: 400px;
+  max-height: 600px;
   
   &::-webkit-scrollbar {
     width: 8px;
@@ -226,7 +226,7 @@ const DemoContainer = styled.div`
   border: 1px solid rgba(251, 182, 4, 0.1);
   overflow: hidden;
   box-sizing: border-box;
-  max-height: 800px;
+  max-height: 1100px;
   
   /* Ensure all child elements scale properly */
   > * {
@@ -323,7 +323,7 @@ const MobileNavigationDemo = () => {
   }, [activeTab]);
   
   const demoContainerStyle = {
-    width: '260px',
+    width: '300px',
     height: '624px',
     background: 'linear-gradient(165deg, #1e40af 0%, #3b82f6 100%)',
     borderRadius: '36px',
@@ -723,7 +723,7 @@ const MobileNavigationDemo = () => {
           boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
           border: '1px solid rgba(255, 255, 255, 0.05)',
           transition: 'all 0.3s ease',
-          animation: `fadeIn 0.5s ease forwards ${index * 0.1}s`,
+          animation: `fadeIn 0.8s ease forwards ${index * 0.1}s`,
           opacity: 0.9,
         }}>
           <div style={{ 
@@ -1084,7 +1084,7 @@ const FlutterCardDemo = () => {
   }, []);
   
   const demoContainerStyle = {
-    width: '260px',
+    width: '300px',
     height: '624px',
     background: 'linear-gradient(165deg, #7c2d12 0%, #ea580c 100%)',
     borderRadius: '36px',

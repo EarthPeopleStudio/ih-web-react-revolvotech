@@ -21,9 +21,17 @@ const sparkle = keyframes`
     opacity: 0;
     transform: scale(0) rotate(0deg);
   }
-  50% {
+  25% {
     opacity: 1;
-    transform: scale(1.2) rotate(180deg);
+    transform: scale(1) rotate(90deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.8) rotate(180deg);
+  }
+  75% {
+    opacity: 1;
+    transform: scale(1.2) rotate(270deg);
   }
   100% {
     opacity: 0;
@@ -34,15 +42,15 @@ const sparkle = keyframes`
 const sparkleTrail = keyframes`
   0% {
     opacity: 0;
-    transform: scale(0.2);
+    transform: scale(0);
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.6;
     transform: scale(1);
   }
   100% {
     opacity: 0;
-    transform: scale(0.2);
+    transform: scale(1.5);
   }
 `;
 
@@ -65,65 +73,64 @@ const electricPulse = keyframes`
   }
 `;
 
-const electricCrackle = keyframes`
-  0%, 100% { 
-    opacity: 0;
-    stroke-dashoffset: 100;
-  }
-  30% { 
-    opacity: 0.8;
-    stroke-dashoffset: 50;
-  }
-  60% { 
-    opacity: 0.4;
-    stroke-dashoffset: 0;
-  }
-`;
-
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const thunderBolt = keyframes`
+const subtleThunderBolt = keyframes`
   0% {
     opacity: 0;
     transform: scale(0) rotate(0deg);
   }
-  5% {
-    opacity: 1;
-    transform: scale(1) rotate(-15deg);
+  8% {
+    opacity: 0.8;
+    transform: scale(1) rotate(-10deg);
   }
-  10% {
-    transform: scale(0.8) rotate(15deg);
+  12% {
+    transform: scale(0.9) rotate(10deg);
   }
-  15% {
-    transform: scale(1.2) rotate(-15deg);
+  16% {
+    transform: scale(1.1) rotate(-10deg);
   }
-  20%, 100% {
+  25%, 100% {
     opacity: 0;
     transform: scale(0) rotate(0deg);
   }
 `;
 
-const thunderTrail = keyframes`
+// Enhanced spark effects
+const floatingParticle = keyframes`
   0% {
     opacity: 0;
-    transform: translateY(-50%) translateX(-50%) scale(0);
+    transform: translateY(30px) scale(0);
   }
-  5% {
-    opacity: 0.5;
-    transform: translateY(-50%) translateX(-50%) scale(1);
+  20% {
+    opacity: 1;
+    transform: translateY(15px) scale(1);
   }
-  10% {
-    opacity: 0.3;
-    transform: translateY(-50%) translateX(-50%) scale(0.8);
+  80% {
+    opacity: 0.8;
+    transform: translateY(-15px) scale(0.8);
   }
-  20%, 100% {
+  100% {
     opacity: 0;
-    transform: translateY(-50%) translateX(-50%) scale(0);
+    transform: translateY(-40px) scale(0);
   }
 `;
+
+const twinkle = keyframes`
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
+
 
 const PricingWrapper = styled.div`
   padding: 120px 8% 80px;
@@ -217,7 +224,7 @@ const HoursExplanation = styled.div`
   background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border: 1px solid rgba(251, 182, 4, 0.2);
   border-radius: 16px;
-  padding: 24px 28px;
+  padding: 28px 32px;
   color: var(--text-secondary);
   font-size: 1rem;
   line-height: 1.6;
@@ -225,9 +232,9 @@ const HoursExplanation = styled.div`
   backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   animation: ${fadeIn} 0.8s ease;
 
   &::before {
@@ -276,7 +283,7 @@ const HoursExplanation = styled.div`
 const HoursTitle = styled.h3`
   font-size: 1.4rem;
   color: var(--text-primary);
-  margin-bottom: 16px;
+  margin-bottom: 24px;
   position: relative;
   display: inline-block;
   font-weight: 600;
@@ -285,7 +292,7 @@ const HoursTitle = styled.h3`
   &:after {
     content: "";
     position: absolute;
-    bottom: -6px;
+    bottom: -8px;
     left: 0;
     width: 60%;
     height: 2px;
@@ -420,42 +427,113 @@ const PricingCard = styled.div`
     z-index: 5;
   }
 
-  /* Spark effects for first card (Spark) */
+  /* Enhanced Spark effects for first card (Spark) */
   &:first-child {
     .spark {
       position: absolute;
       font-size: 12px;
       color: #fbb604;
-      text-shadow: 0 0 5px rgba(251, 182, 4, 0.6);
+      text-shadow: 0 0 8px rgba(251, 182, 4, 0.8);
       opacity: 0;
     }
 
     .spark-1 {
       top: 20px;
       left: 20px;
-      animation: ${sparkle} 3s ease-in-out infinite;
+      animation: ${sparkle} 2s ease-in-out infinite;
       &:before { content: '✦'; }
     }
 
     .spark-2 {
       top: 40px;
       right: 30px;
-      animation: ${sparkle} 3s ease-in-out infinite 1s;
+      animation: ${sparkle} 2.5s ease-in-out infinite 0.5s;
       &:before { content: '✧'; }
     }
 
     .spark-3 {
       bottom: 30px;
       left: 40px;
-      animation: ${sparkle} 3s ease-in-out infinite 1.5s;
+      animation: ${sparkle} 2.2s ease-in-out infinite 1s;
       &:before { content: '⋆'; }
     }
 
     .spark-4 {
       bottom: 40px;
       right: 20px;
-      animation: ${sparkle} 3s ease-in-out infinite 2s;
+      animation: ${sparkle} 2.8s ease-in-out infinite 1.5s;
       &:before { content: '✦'; }
+    }
+
+    /* New floating particles */
+    .floating-particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #fbb604;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(251, 182, 4, 0.6);
+      animation: ${floatingParticle} 3s ease-in-out infinite;
+    }
+
+    .floating-particle-1 {
+      left: 15%;
+      bottom: 0;
+      animation-delay: 0s;
+    }
+
+    .floating-particle-2 {
+      left: 35%;
+      bottom: 0;
+      animation-delay: 1s;
+    }
+
+    .floating-particle-3 {
+      left: 65%;
+      bottom: 0;
+      animation-delay: 2s;
+    }
+
+    .floating-particle-4 {
+      left: 85%;
+      bottom: 0;
+      animation-delay: 0.5s;
+    }
+
+    /* Twinkling stars */
+    .twinkle {
+      position: absolute;
+      font-size: 8px;
+      color: #fbb604;
+      animation: ${twinkle} 1.5s ease-in-out infinite;
+    }
+
+    .twinkle-1 {
+      top: 15%;
+      left: 10%;
+      animation-delay: 0s;
+      &:before { content: '✨'; }
+    }
+
+    .twinkle-2 {
+      top: 25%;
+      right: 15%;
+      animation-delay: 0.8s;
+      &:before { content: '⭐'; }
+    }
+
+    .twinkle-3 {
+      bottom: 20%;
+      left: 15%;
+      animation-delay: 1.6s;
+      &:before { content: '✨'; }
+    }
+
+    .twinkle-4 {
+      bottom: 15%;
+      right: 10%;
+      animation-delay: 2.4s;
+      &:before { content: '⭐'; }
     }
 
     .spark-trail {
@@ -463,7 +541,7 @@ const PricingCard = styled.div`
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(251, 182, 4, 0.2) 0%, rgba(251, 182, 4, 0) 70%);
+      background: radial-gradient(circle, rgba(251, 182, 4, 0.3) 0%, rgba(251, 182, 4, 0) 70%);
       opacity: 0;
     }
 
@@ -481,65 +559,256 @@ const PricingCard = styled.div`
 
     &:hover {
       .spark-1, .spark-2, .spark-3, .spark-4 {
+        animation-duration: 1.5s;
+      }
+      .floating-particle {
         animation-duration: 2s;
       }
-      .spark-trail-1, .spark-trail-2 {
-        animation-duration: 2s;
+      .twinkle {
+        animation-duration: 1s;
       }
     }
   }
 
-  /* Thunder effects for second card (Charge) */
+  /* Enhanced Electric effects for second card (Charge) - more lightning */
   &:nth-child(2) {
-    .thunder {
+    position: relative;
+
+    /* Subtle electric sparkles */
+    .electric-sparkle {
       position: absolute;
-      font-size: 28px;
-      color: #fbb604;
-      text-shadow: 0 0 15px rgba(251, 182, 4, 0.8);
-      opacity: 0;
-      &:before { content: '⚡'; }
-    }
-
-    .thunder-1 {
-      top: 20px;
-      left: 20px;
-      animation: ${thunderBolt} 4s ease-in-out infinite;
-    }
-
-    .thunder-2 {
-      bottom: 20px;
-      right: 20px;
-      animation: ${thunderBolt} 4s ease-in-out infinite 2s;
-    }
-
-    .thunder-trail {
-      position: absolute;
-      width: 80px;
-      height: 80px;
+      width: 3px;
+      height: 3px;
+      background: #fbb604;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(251, 182, 4, 0.3) 0%, rgba(251, 182, 4, 0) 70%);
       opacity: 0;
+      box-shadow: 0 0 6px rgba(251, 182, 4, 0.8);
+      animation: ${sparkle} 4s ease-in-out infinite;
       pointer-events: none;
     }
 
-    .thunder-trail-1 {
-      top: 50%;
-      left: 0;
-      animation: ${thunderTrail} 4s ease-in-out infinite;
+    .electric-sparkle-1 {
+      top: 15%;
+      left: 10%;
+      animation-delay: 0s;
     }
 
-    .thunder-trail-2 {
+    .electric-sparkle-2 {
+      top: 25%;
+      right: 15%;
+      animation-delay: 1.2s;
+    }
+
+    .electric-sparkle-3 {
+      bottom: 20%;
+      left: 20%;
+      animation-delay: 2.4s;
+    }
+
+    .electric-sparkle-4 {
+      bottom: 35%;
+      right: 8%;
+      animation-delay: 3.6s;
+    }
+
+    .electric-sparkle-5 {
+      top: 45%;
+      left: 8%;
+      animation-delay: 1.8s;
+    }
+
+    .electric-sparkle-6 {
+      top: 60%;
+      right: 12%;
+      animation-delay: 0.6s;
+    }
+
+    .electric-sparkle-7 {
+      top: 35%;
+      right: 25%;
+      animation-delay: 2.8s;
+    }
+
+    .electric-sparkle-8 {
+      bottom: 50%;
+      left: 12%;
+      animation-delay: 4.2s;
+    }
+
+    /* Small electric particles floating upward */
+    .electric-particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(251, 182, 4, 0.7);
+      border-radius: 50%;
+      opacity: 0;
+      animation: ${floatingParticle} 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .electric-particle-1 {
+      bottom: 25%;
+      left: 15%;
+      animation-delay: 0.5s;
+    }
+
+    .electric-particle-2 {
+      bottom: 30%;
+      right: 20%;
+      animation-delay: 2.5s;
+    }
+
+    .electric-particle-3 {
+      bottom: 15%;
+      left: 25%;
+      animation-delay: 4s;
+    }
+
+    .electric-particle-4 {
+      bottom: 40%;
+      right: 10%;
+      animation-delay: 1.5s;
+    }
+
+    .electric-particle-5 {
+      bottom: 35%;
+      left: 30%;
+      animation-delay: 3.5s;
+    }
+
+    /* Enhanced electric twinkles - more lightning bolts */
+    .electric-twinkle {
+      position: absolute;
+      font-size: 10px;
+      color: rgba(251, 182, 4, 0.7);
+      opacity: 0;
+      animation: ${twinkle} 3s ease-in-out infinite;
+      pointer-events: none;
+      &:before { content: '⚡'; }
+    }
+
+    .electric-twinkle-1 {
+      top: 30%;
+      left: 12%;
+      animation-delay: 1s;
+    }
+
+    .electric-twinkle-2 {
+      bottom: 40%;
+      right: 15%;
+      animation-delay: 3s;
+    }
+
+    .electric-twinkle-3 {
+      top: 70%;
+      left: 18%;
+      animation-delay: 5s;
+    }
+
+    .electric-twinkle-4 {
       top: 50%;
-      right: 0;
-      animation: ${thunderTrail} 4s ease-in-out infinite 2s;
+      right: 8%;
+      animation-delay: 2s;
+    }
+
+    .electric-twinkle-5 {
+      bottom: 25%;
+      left: 8%;
+      animation-delay: 4s;
+    }
+
+    .electric-twinkle-6 {
+      top: 80%;
+      right: 20%;
+      animation-delay: 6s;
+    }
+
+    /* Lightning streak effects */
+    .lightning-streak {
+      position: absolute;
+      width: 1px;
+      height: 20px;
+      background: linear-gradient(to bottom, rgba(251, 182, 4, 0.8), transparent);
+      opacity: 0;
+      animation: ${sparkle} 3s ease-in-out infinite;
+      pointer-events: none;
+      transform: rotate(25deg);
+    }
+
+    .lightning-streak-1 {
+      top: 20%;
+      left: 18%;
+      animation-delay: 1.5s;
+    }
+
+    .lightning-streak-2 {
+      bottom: 30%;
+      right: 22%;
+      animation-delay: 3.5s;
+      transform: rotate(-25deg);
+    }
+
+    .lightning-streak-3 {
+      top: 55%;
+      left: 25%;
+      animation-delay: 5.5s;
+      transform: rotate(45deg);
+    }
+
+    /* Refined lightning bolts - perfect size */
+    .lightning-bolt {
+      position: absolute;
+      font-size: 20px;
+      color: #fbb604;
+      text-shadow: 
+        0 0 8px rgba(251, 182, 4, 0.6),
+        0 0 12px rgba(251, 182, 4, 0.4);
+      opacity: 0;
+      animation: ${subtleThunderBolt} 5s ease-in-out infinite;
+      pointer-events: none;
+      &:before { content: '⚡'; }
+    }
+
+    .lightning-bolt-1 {
+      top: 20%;
+      left: 20%;
+      animation-delay: 0.8s;
+    }
+
+    .lightning-bolt-2 {
+      bottom: 25%;
+      right: 18%;
+      animation-delay: 3.2s;
+    }
+
+    .lightning-bolt-3 {
+      top: 60%;
+      left: 15%;
+      animation-delay: 5.8s;
+    }
+
+    .lightning-bolt-4 {
+      top: 40%;
+      right: 20%;
+      animation-delay: 2.4s;
     }
 
     &:hover {
-      .thunder-1, .thunder-2 {
+      .electric-sparkle {
         animation-duration: 2.5s;
       }
-      .thunder-trail-1, .thunder-trail-2 {
-        animation-duration: 2.5s;
+      .electric-particle {
+        animation-duration: 3s;
+      }
+      .electric-twinkle {
+        animation-duration: 2s;
+      }
+      .lightning-streak {
+        animation-duration: 1.8s;
+      }
+      .lightning-bolt {
+        animation-duration: 3s;
       }
     }
   }
@@ -579,18 +848,33 @@ const PlanName = styled.h2`
 const FeatureBadge = styled.span`
   background: linear-gradient(135deg, #fbb604, #f99b04);
   color: #000;
-  font-size: 0.75rem;
-  padding: 8px 16px;
-  border-radius: 20px;
+  font-size: 0.7rem;
+  padding: 6px 14px;
+  border-radius: 16px;
   font-weight: 700;
   letter-spacing: 0.3px;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 0 4px 15px rgba(251, 182, 4, 0.3);
+  box-shadow: 0 4px 15px rgba(251, 182, 4, 0.4);
   position: absolute;
-  top: -12px;
-  right: 20px;
-  z-index: 5;
+  top: -10px;
+  right: 50%;
+  transform: translateX(50%);
+  z-index: 10;
+  border: 2px solid rgba(251, 182, 4, 0.3);
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #fbb604;
+  }
 `;
 
 const PlanDescription = styled.p`
@@ -1161,7 +1445,7 @@ const InfoSection = styled.div`
   grid-template-columns: 62% 36%;
   gap: 2%;
   padding: 0 16px;
-  align-items: start;
+  align-items: stretch;
   animation: ${fadeIn} 0.8s ease 0.2s both;
   
   @media (max-width: 768px) {
@@ -1175,7 +1459,7 @@ const InfoSection = styled.div`
 const InfoTitle = styled.h3`
   font-size: 1.4rem;
   color: var(--text-primary);
-  margin-bottom: 16px;
+  margin-bottom: 24px;
   position: relative;
   display: inline-block;
   font-weight: 600;
@@ -1183,7 +1467,7 @@ const InfoTitle = styled.h3`
   &:after {
     content: "";
     position: absolute;
-    bottom: -6px;
+    bottom: -8px;
     left: 0;
     width: 60%;
     height: 2px;
@@ -1195,7 +1479,7 @@ const InfoTitle = styled.h3`
 const InfoBlock = styled.div`
   background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
   border-radius: 16px;
-  padding: 24px 28px;
+  padding: 28px 32px;
   border: 1px solid rgba(251, 182, 4, 0.2);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
@@ -1203,6 +1487,7 @@ const InfoBlock = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   
   &::before {
     content: '';
@@ -1574,29 +1859,44 @@ const ToggleSwitch = styled.div`
 
 const SaveBadge = styled.span`
   position: absolute;
-  top: -15px;
-  right: 20px;
+  top: -22px;
+  right: 50%;
+  transform: translateX(50%);
   background: linear-gradient(135deg, #fbb604, #f99b04);
   color: #000;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 0.8rem;
   font-weight: 700;
-  z-index: 5;
-  box-shadow: 0 6px 20px rgba(251, 182, 4, 0.4);
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(251, 182, 4, 0.4);
   animation: pulse 2s infinite;
   white-space: nowrap;
+  border: 2px solid rgba(251, 182, 4, 0.3);
   
   @keyframes pulse {
     0% {
-      transform: scale(1);
+      transform: translateX(50%) scale(1);
     }
     50% {
-      transform: scale(1.05);
+      transform: translateX(50%) scale(1.05);
     }
     100% {
-      transform: scale(1);
+      transform: translateX(50%) scale(1);
     }
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #fbb604;
   }
 `;
 
@@ -1813,7 +2113,7 @@ const FAQItem = styled.div`
 `;
 
 const FAQQuestion = styled.div`
-  padding: 16px 20px;
+  padding: 20px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1841,7 +2141,7 @@ const FAQQuestion = styled.div`
 `;
 
 const FAQAnswer = styled.div`
-  padding: ${props => props.$isOpen ? '0 20px 20px' : '0 20px'};
+  padding: ${props => props.$isOpen ? '8px 24px 24px' : '0 24px'};
   color: var(--text-secondary);
   font-size: 0.95rem;
   line-height: 1.6;
@@ -1968,6 +2268,11 @@ const Pricing = () => {
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isCustomTeamOpen, setIsCustomTeamOpen] = useState(false);
   const [openFAQ, setOpenFAQ] = useState(null);
+  
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   useEffect(() => {
     const calculateCountdown = () => {
@@ -2139,7 +2444,7 @@ const Pricing = () => {
             </CountdownUnit>
           </CountdownTimerDisplay>
           <CountdownUrgency>
-            Lock in current pricing before rates increase January 1st, 2026. Save up to $1,200 annually on your development partnership.
+            Lock in current pricing before rates increase January 1st, 2026. Save up to $5,300 annually on your development partnership.
           </CountdownUrgency>
           <CountdownButton to="/contact-us">
             Secure Your Pricing
@@ -2153,6 +2458,7 @@ const Pricing = () => {
         </BillingToggleContainer>
       </HeroSection>
       
+      <div style={{ animation: 'fadeIn 0.8s ease' }}>
       <PricingGrid>
         <PricingCard>
           <div className="effects-container">
@@ -2162,6 +2468,14 @@ const Pricing = () => {
             <div className="spark spark-4"></div>
             <div className="spark-trail spark-trail-1"></div>
             <div className="spark-trail spark-trail-2"></div>
+            <div className="floating-particle floating-particle-1"></div>
+            <div className="floating-particle floating-particle-2"></div>
+            <div className="floating-particle floating-particle-3"></div>
+            <div className="floating-particle floating-particle-4"></div>
+            <div className="twinkle twinkle-1"></div>
+            <div className="twinkle twinkle-2"></div>
+            <div className="twinkle twinkle-3"></div>
+            <div className="twinkle twinkle-4"></div>
           </div>
           <PlanName>Spark</PlanName>
           <PlanDescription>
@@ -2196,14 +2510,36 @@ const Pricing = () => {
         
         <PricingCard $featured>
           <div className="effects-container">
-            <div className="thunder thunder-1"></div>
-            <div className="thunder thunder-2"></div>
-            <div className="thunder-trail thunder-trail-1"></div>
-            <div className="thunder-trail thunder-trail-2"></div>
+            <div className="electric-sparkle electric-sparkle-1"></div>
+            <div className="electric-sparkle electric-sparkle-2"></div>
+            <div className="electric-sparkle electric-sparkle-3"></div>
+            <div className="electric-sparkle electric-sparkle-4"></div>
+            <div className="electric-sparkle electric-sparkle-5"></div>
+            <div className="electric-sparkle electric-sparkle-6"></div>
+            <div className="electric-sparkle electric-sparkle-7"></div>
+            <div className="electric-sparkle electric-sparkle-8"></div>
+            <div className="electric-particle electric-particle-1"></div>
+            <div className="electric-particle electric-particle-2"></div>
+            <div className="electric-particle electric-particle-3"></div>
+            <div className="electric-particle electric-particle-4"></div>
+            <div className="electric-particle electric-particle-5"></div>
+            <div className="electric-twinkle electric-twinkle-1"></div>
+            <div className="electric-twinkle electric-twinkle-2"></div>
+            <div className="electric-twinkle electric-twinkle-3"></div>
+            <div className="electric-twinkle electric-twinkle-4"></div>
+            <div className="electric-twinkle electric-twinkle-5"></div>
+            <div className="electric-twinkle electric-twinkle-6"></div>
+            <div className="lightning-streak lightning-streak-1"></div>
+            <div className="lightning-streak lightning-streak-2"></div>
+            <div className="lightning-streak lightning-streak-3"></div>
+            <div className="lightning-bolt lightning-bolt-1"></div>
+            <div className="lightning-bolt lightning-bolt-2"></div>
+            <div className="lightning-bolt lightning-bolt-3"></div>
+            <div className="lightning-bolt lightning-bolt-4"></div>
           </div>
           <PlanName>
             Charge
-            <FeatureBadge>MOST POPULAR</FeatureBadge>
+            <FeatureBadge>Recommended</FeatureBadge>
           </PlanName>
           <PlanDescription>
             Ideal for businesses ready to build high-quality, market-competitive products that scale.
@@ -2526,6 +2862,7 @@ const Pricing = () => {
           ))}
         </FAQGrid>
       </FAQSection>
+      </div>
     </PricingWrapper>
   );
 };

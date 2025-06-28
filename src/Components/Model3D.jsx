@@ -121,11 +121,13 @@ function Model({ url }) {
       actions[DEFAULT_ANIMATION].setLoop(THREE.LoopPingPong);
       actions[DEFAULT_ANIMATION].setEffectiveTimeScale(1);
 
-      // Set up animation mixing to exclude head and neck bones
-      Object.values(actions).forEach(action => {
-        if (action) {
+      // Set up animation mixing to exclude head and neck bones only for animations that don't allow cursor following
+      const allowedCursorAnimations = [DEFAULT_ANIMATION, 'Shrug', 'Grin'];
+      
+      Object.entries(actions).forEach(([animationName, action]) => {
+        if (action && !allowedCursorAnimations.includes(animationName)) {
           action.getMixer().addEventListener('before', () => {
-            // Preserve head and neck rotations during animations
+            // Preserve head and neck rotations during animations that don't allow cursor following
             if (headBoneRef.current) {
               const currentHeadRotation = {
                 x: headBoneRef.current.rotation.x,
@@ -324,8 +326,9 @@ function Model({ url }) {
       const mouseX = mouseRef.current.x;
       const mouseY = mouseRef.current.y;
 
-      // Only update head rotation if not in a button hover animation or if in allowed animations
-      if (currentAnimation === DEFAULT_ANIMATION || currentAnimation === 'Shrug' || currentAnimation === 'Grin') {
+      // Only update head rotation if in allowed cursor-following animations
+      const allowedCursorAnimations = [DEFAULT_ANIMATION, 'Idle', 'Shrug', 'Grin'];
+      if (allowedCursorAnimations.includes(currentAnimation)) {
         const rotationAmount = Math.PI / 3; // Base rotation amount (60 degrees)
         const horizontalAmount = rotationAmount; // Reduced from 2x to 1x for 50% reduction
 
