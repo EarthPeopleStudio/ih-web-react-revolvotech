@@ -26,37 +26,11 @@ const MobileBackground = styled.div`
   z-index: 0;
   background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
   
-  /* Enhanced Circuit board pattern */
+  /* Simplified circuit board pattern for better performance */
   background-image: 
-    linear-gradient(rgba(251, 182, 4, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(251, 182, 4, 0.08) 1px, transparent 1px),
-    radial-gradient(circle at 25% 25%, rgba(251, 182, 4, 0.04) 2px, transparent 2px),
-    radial-gradient(circle at 75% 75%, rgba(251, 182, 4, 0.03) 1px, transparent 1px);
-  background-size: 30px 30px, 30px 30px, 60px 60px, 40px 40px;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(
-      circle at 20% 80%,
-      rgba(251, 182, 4, 0.06) 0%,
-      transparent 60%
-    ),
-    radial-gradient(
-      circle at 80% 20%,
-      rgba(251, 182, 4, 0.04) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 60% 40%,
-      rgba(251, 182, 4, 0.02) 0%,
-      transparent 40%
-    );
-  }
+    linear-gradient(rgba(251, 182, 4, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(251, 182, 4, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
 `;
 
 const MobileHeader = styled.header`
@@ -65,8 +39,7 @@ const MobileHeader = styled.header`
   left: 0;
   right: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.95);
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.98);
   border-bottom: 1px solid rgba(251, 182, 4, 0.1);
   padding: 15px 20px;
   display: flex;
@@ -104,8 +77,7 @@ const MobileMenu = styled.div`
   right: 0;
   bottom: 0;
   z-index: 2000;
-  background: rgba(0, 0, 0, 0.98);
-  backdrop-filter: blur(15px);
+  background: rgba(0, 0, 0, 0.99);
   transform: translateX(${props => props.$isOpen ? '0' : '100%'});
   transition: transform 0.3s ease-in-out;
   display: flex;
@@ -289,7 +261,6 @@ const ServiceCard = styled.div`
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(10px);
   
   &::before {
     content: '';
@@ -393,7 +364,6 @@ const ShowcaseCard = styled.div`
   overflow: hidden;
   transition: all 0.4s ease;
   position: relative;
-  backdrop-filter: blur(10px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
   
   &::before {
@@ -580,7 +550,6 @@ const PricingCard = styled.div`
   text-align: left;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(10px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   transition: all 0.4s ease;
   
@@ -768,7 +737,6 @@ const CalendlyContainer = styled.div`
   overflow: hidden;
   border: 2px solid rgba(251, 182, 4, 0.3);
   background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
-  backdrop-filter: blur(10px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
   position: relative;
   
@@ -840,7 +808,6 @@ const ProcessCard = styled.div`
   text-align: center;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(8px);
   transition: all 0.4s ease;
   
   &::before {
@@ -986,9 +953,9 @@ const MobileNoticeOverlay = styled.div`
   background: rgba(0, 0, 0, 0.95);
   z-index: 5000;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 20px;
+  padding: 20px 20px 150px 20px;
   opacity: ${props => props.$show ? 1 : 0};
   visibility: ${props => props.$show ? 'visible' : 'hidden'};
   transition: all 0.3s ease;
@@ -1003,43 +970,7 @@ const MobileNoticeModal = styled.div`
   max-width: 320px;
   width: 100%;
   position: relative;
-  backdrop-filter: blur(15px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-      linear-gradient(rgba(251, 182, 4, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(251, 182, 4, 0.02) 1px, transparent 1px),
-      radial-gradient(circle at 30% 70%, rgba(251, 182, 4, 0.015) 1px, transparent 1px);
-    background-size: 18px 18px, 18px 18px, 35px 35px;
-    opacity: 0.6;
-    pointer-events: none;
-    z-index: 0;
-    border-radius: 20px;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 8px;
-    height: 8px;
-    background: rgba(251, 182, 4, 0.8);
-    border-radius: 50%;
-    box-shadow: 0 0 12px rgba(251, 182, 4, 0.6);
-    z-index: 2;
-    animation: ${keyframes`
-      0%, 100% { opacity: 0.8; }
-      50% { opacity: 1; box-shadow: 0 0 18px rgba(251, 182, 4, 0.9); }
-    `} 3s ease-in-out infinite;
-  }
 `;
 
 const MobileNoticeIcon = styled.div`
@@ -1094,40 +1025,6 @@ const ContactSection = styled.section`
   border-top: 1px solid rgba(251, 182, 4, 0.3);
   border-bottom: 1px solid rgba(251, 182, 4, 0.3);
   position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-      linear-gradient(rgba(251, 182, 4, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(251, 182, 4, 0.05) 1px, transparent 1px),
-      radial-gradient(circle at 25% 75%, rgba(251, 182, 4, 0.03) 1px, transparent 1px),
-      radial-gradient(circle at 75% 25%, rgba(251, 182, 4, 0.02) 1px, transparent 1px);
-    background-size: 32px 32px, 32px 32px, 65px 65px, 48px 48px;
-    opacity: 0.8;
-    pointer-events: none;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 10px;
-    height: 10px;
-    background: rgba(251, 182, 4, 0.7);
-    border-radius: 50%;
-    box-shadow: 0 0 15px rgba(251, 182, 4, 0.5);
-    z-index: 2;
-    animation: ${keyframes`
-      0%, 100% { opacity: 0.7; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 20px rgba(251, 182, 4, 0.8); }
-    `} 4s ease-in-out infinite;
-  }
 `;
 
 const ContactForm = styled.form`
@@ -1503,7 +1400,6 @@ const ProductShowcaseMinDemo = () => {
     align-items: center;
     justify-content: center;
     font-size: 28px;
-    backdrop-filter: blur(10px);
   `;
   
   const AddToCartButton = styled.button`
