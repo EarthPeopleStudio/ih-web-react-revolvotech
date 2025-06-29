@@ -86,7 +86,7 @@ const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 50%, #FFEB3B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
@@ -661,10 +661,10 @@ const BlogSection = () => {
     <BlogWrapper>
       <CircuitGrid />
       
-      <Title>Technology Insights</Title>
+      <Title>What We've Learned Building Apps</Title>
       <Subtitle>
-        Cutting-edge insights on offshore development, mobile technologies, and enterprise solutions. 
-        Stay ahead with expert knowledge from our development teams.
+        Real insights from building 200+ successful apps. No fluff, just practical knowledge from our development trenches - 
+        from offshore strategies to mobile frameworks that actually work.
       </Subtitle>
 
       <CategoryFilter>

@@ -84,7 +84,7 @@ const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 50%, #FFEB3B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
@@ -557,10 +557,10 @@ const Projects = () => {
   return (
     <ProjectsWrapper>
       <HeroSection>
-        <Title>Our Projects</Title>
+        <Title>We Made These With Love</Title>
         <Subtitle>
-          Explore our diverse portfolio showcasing innovative web applications, mobile solutions, 
-          and cutting-edge digital experiences crafted with precision and creativity.
+          Every line of code tells a story. Here's our collection of digital dreams brought to life - 
+          innovative web applications, mobile solutions, and cutting-edge experiences crafted with passion and precision.
         </Subtitle>
       </HeroSection>
       

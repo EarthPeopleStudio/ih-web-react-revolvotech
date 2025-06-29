@@ -251,39 +251,45 @@ const AboutUs = () => {
       <Subtitle>Welcome to Revolvo Tech</Subtitle>
       
       <Paragraph>
-        At Revolvo Tech, we are passionate about turning ideas into innovative software solutions. Based in Islamabad, Pakistan and operating remotely from Tampere, Finland, we offer comprehensive software development services and create cutting-edge products that empower businesses and individuals around the world.
+        At Revolvo Tech, we don't just build apps—we build businesses. Specializing in funded startups and growth companies, 
+        we've helped turn ideas into market-ready products that attract investors and drive real revenue. 
+        Based in Islamabad, Pakistan and operating remotely from Tampere, Finland, we serve ambitious entrepreneurs worldwide.
       </Paragraph>
 
       <div style={{ animation: 'fadeIn 0.8s ease' }}>
         <Section>
           <SectionTitle>Who We Are</SectionTitle>
           <Paragraph>
-            Revolvo Tech is a dynamic software development company committed to delivering high-quality digital products and services. Whether you need custom software tailored to your business needs or a ready-to-use product that stands out in the market, our team of experts is here to help you innovate and succeed.
+            Revolvo Tech is a development team that understands the startup journey. We know what investors look for, 
+            what users expect, and how to build products that scale. Whether you're preparing for Series A or 
+            launching your MVP, our team focuses on building technology that drives business results, not just pretty interfaces.
           </Paragraph>
         </Section>
 
         <Section>
           <SectionTitle>What We Do</SectionTitle>
           <List>
-            <li><strong>Custom Software Development:</strong> We work closely with our clients to design, develop, and deploy bespoke software solutions that streamline operations, enhance user experience, and drive business growth.</li>
-            <li><strong>Product Development:</strong> From mobile apps to desktop applications, games to enterprise platforms, we build products that combine functionality with an intuitive design.</li>
-            <li><strong>End-to-End Services:</strong> Our expertise spans the entire software development lifecycle—from initial concept and design through to development, testing, and ongoing support.</li>
+            <li><strong>Startup MVPs:</strong> Rapid prototyping and MVP development designed to validate ideas and attract early-stage funding. We build lean, testable products that prove market fit.</li>
+            <li><strong>Scalable Products:</strong> Full-featured applications built for growth, from mobile apps to web platforms. Designed to handle user growth and feature expansion as your business scales.</li>
+            <li><strong>Investor-Ready Development:</strong> Clean code, comprehensive documentation, and professional architecture that impresses technical due diligence and builds investor confidence.</li>
           </List>
         </Section>
 
         <Section>
           <SectionTitle>Our Mission</SectionTitle>
           <Paragraph>
-            Our mission is to create reliable, innovative, and user-friendly software that transforms the way our clients do business. We believe in leveraging technology to solve complex challenges and improve everyday life.
+            Our mission is to bridge the gap between ambitious ideas and successful businesses. We believe every great company 
+            starts with great technology, and we're here to build the foundation that turns your vision into a fundable, 
+            scalable, profitable reality.
           </Paragraph>
         </Section>
 
         <Section>
           <SectionTitle>Why Choose Us</SectionTitle>
           <List>
-            <li><strong>Expertise & Innovation:</strong> With a team of skilled professionals and years of industry experience, we combine technical excellence with creative problem-solving.</li>
-            <li><strong>Client-Centric Approach:</strong> We work collaboratively with our clients, ensuring that every solution is tailored to meet your unique needs and goals.</li>
-            <li><strong>Quality & Integrity:</strong> Our commitment to quality, security, and transparency sets us apart as a trusted partner in your digital journey.</li>
+            <li><strong>Startup Experience:</strong> We understand the startup ecosystem, from seed funding to Series B. Our team has worked with funded companies and knows what investors expect from technical teams.</li>
+            <li><strong>Business-First Thinking:</strong> Every technical decision is made with your business goals in mind. We don't just code—we contribute to strategy, user experience, and long-term growth planning.</li>
+            <li><strong>Proven Results:</strong> Our clients have successfully raised funding, launched to market, and scaled their user bases. We measure our success by your business outcomes, not just project completion.</li>
           </List>
         </Section>
 

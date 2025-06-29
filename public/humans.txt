@@ -1,0 +1,41 @@
+/* TEAM */
+    CEO & Lead Developer: [Your Name]
+    Contact: info@revolvo.tech
+    Location: Tampere, Finland
+
+/* SITE */
+    Last update: 2025/01/01
+    Language: English
+    Doctype: HTML5
+    IDE: Cursor AI, VS Code
+    
+/* TECHNOLOGY */
+    Frontend: React, Vite, Styled Components
+    3D Graphics: Three.js, React Three Fiber
+    Animation: Framer Motion, Lottie
+    Hosting: Netlify
+    DNS: Hostinger
+    Analytics: Google Analytics 4
+    
+/* THANKS */
+    Special thanks to the open source community
+    for making amazing tools that power the web.
+    
+    React Team - For the amazing framework
+    Three.js Contributors - For bringing 3D to the web
+    Netlify - For seamless hosting and deployment
+    
+/* SERVICES */
+    We specialize in:
+    - Mobile App Development (iOS & Android)
+    - Web Application Development  
+    - AR/VR Solutions
+    - Enterprise Software
+    - Custom Software Development
+    - 3D Interactive Experiences
+    
+    Ready to transform your ideas into reality?
+    Let's build something amazing together!
+    
+    https://revolvo.tech
+    +358 41 7408087 

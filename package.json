@@ -17,6 +17,7 @@
     "@wavesurfer/react": "^1.0.10",
     "face-api.js": "^0.20.0",
     "framer-motion": "^12.6.3",
+    "html2canvas": "^1.4.1",
     "lottie-react": "^2.4.1",
     "postprocessing": "^6.33.0",
     "prismjs": "^1.30.0",

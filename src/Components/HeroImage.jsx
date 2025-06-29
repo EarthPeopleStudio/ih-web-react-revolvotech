@@ -196,6 +196,34 @@ const ModelSection = styled.div`
   }
 `;
 
+const SocialProofBanner = styled.div`
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(25, 25, 30, 0.9);
+  border: 1px solid rgba(251, 182, 4, 0.3);
+  border-radius: 50px;
+  padding: 12px 24px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+  text-align: center;
+  z-index: 10;
+  
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+    padding: 10px 20px;
+    bottom: 15px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+    padding: 8px 16px;
+  }
+`;
+
 const HeroImage = () => {
   const { setCurrentAnimation } = useAnimation();
 
@@ -207,16 +235,27 @@ const HeroImage = () => {
     <HeroWrapper>
       <ContentWrapper>
         <HeroText>
-          Crafting Digital
+          <div style={{
+            fontSize: '1.2rem',
+            fontWeight: '600',
+            letterSpacing: '3px',
+            color: '#fbb604',
+            marginBottom: '20px',
+            textTransform: 'uppercase'
+          }}>
+            PROVEN • FUNDED • RESULTS-DRIVEN
+          </div>
+          Build Apps That
           <br />
-          Magic That
+          Actually Get
           <br />
-          <span>Inspires</span>
+          <span>Funded</span>
         </HeroText>
         <HeroDescription>
-          We transform bold visions into stunning digital realities. From immersive games 
-          to cutting-edge web apps, we craft experiences that captivate, engage, and leave 
-          lasting impressions. Ready to make your mark?
+          Skip the 6-month delays and freelancer roulette. We build investor-ready products 
+          that users love and businesses scale. Clean architecture, rapid iteration, and 100% completion rate.
+          <br/><br/>
+          <strong style={{color: '#fbb604'}}>Limited capacity - selective partnerships only</strong>
         </HeroDescription>
         <ButtonSection>
           <PortfolioBtn 
@@ -224,20 +263,23 @@ const HeroImage = () => {
             onMouseEnter={() => handleButtonHover(true)}
             onMouseLeave={() => handleButtonHover(false)}
           >
-            View Portfolio
+            See $100K+ Portfolio →
           </PortfolioBtn>
           <PricingBtn 
             to="/pricing"
             onMouseEnter={() => handleButtonHover(true)}
             onMouseLeave={() => handleButtonHover(false)}
           >
-            Check Pricing
+            Check Pricing →
           </PricingBtn>
         </ButtonSection>
       </ContentWrapper>
       <ModelSection>
         <AnimatedHero />
       </ModelSection>
+      <SocialProofBanner>
+        Specialized in startup MVPs • Expert in React, Flutter & Game Development • 100% project completion rate
+      </SocialProofBanner>
     </HeroWrapper>
   );
 };

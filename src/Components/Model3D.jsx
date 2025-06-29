@@ -90,24 +90,20 @@ function Model({ url }) {
 
   // Find and store reference to the head, neck and torso bones
   React.useEffect(() => {
-    console.log('Searching for bones in model...');
     scene.traverse((object) => {
       if (object.isBone) {
         const name = object.name.toLowerCase();
         
         // Head bone
         if (name === 'head_06') {
-          console.log('Found head bone:', object.name);
         headBoneRef.current = object;
         }
         // Neck bone
         else if (name === 'neck_05') {
-          console.log('Found neck bone:', object.name);
           neckBoneRef.current = object;
         }
         // Torso/upper back bone
         else if (name === 'upper_back_04') {
-          console.log('Found torso bone:', object.name);
           torsoBoneRef.current = object;
         }
       }
@@ -164,12 +160,10 @@ function Model({ url }) {
         }
       });
     } else {
-      console.warn(`Default animation "${DEFAULT_ANIMATION}" not found, checking for available animations...`);
       // Try to find and play any available animation
       const availableAnimations = Object.keys(actions);
       if (availableAnimations.length > 0) {
         const fallbackAnimation = availableAnimations[0];
-        console.warn(`Using "${fallbackAnimation}" as fallback animation`);
         actions[fallbackAnimation].reset().play();
         actions[fallbackAnimation].setLoop(THREE.LoopPingPong);
         actions[fallbackAnimation].setEffectiveTimeScale(1);
@@ -218,9 +212,6 @@ function Model({ url }) {
 
         const name = child.name;
         
-        // Log mesh names to help with debugging
-        console.log('Mesh name:', child.name, 'Original material:', child.material);
-
         // Only modify colors if the material supports it, avoid cloning to prevent corruption
         if (child.material.color) {
           switch(name) {

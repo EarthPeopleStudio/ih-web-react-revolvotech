@@ -177,16 +177,16 @@ const ContactBanner = () => {
       <FormWrapper>
         <Form>
           <InputGroup>
-            <Input type="text" placeholder="First Name" />
+            <Input type="text" id="firstName" name="firstName" placeholder="First Name" />
           </InputGroup>
           <InputGroup>
-            <Input type="text" placeholder="Last Name" />
+            <Input type="text" id="lastName" name="lastName" placeholder="Last Name" />
           </InputGroup>
           <InputGroup>
-            <Input type="email" placeholder="Email Address" />
+            <Input type="email" id="email" name="email" placeholder="Email Address" />
           </InputGroup>
           <InputGroup>
-            <Select defaultValue="">
+            <Select id="service" name="service" defaultValue="">
               <option value="" disabled>
                 Select Service
               </option>
@@ -197,13 +197,13 @@ const ContactBanner = () => {
             </Select>
           </InputGroup>
           <InputGroup>
-            <Input type="number" placeholder="Budget (USD)" />
+            <Input type="number" id="budget" name="budget" placeholder="Budget (USD)" />
           </InputGroup>
           <InputGroup>
-            <Input type="tel" placeholder="Phone Number" />
+            <Input type="tel" id="phone" name="phone" placeholder="Phone Number" />
           </InputGroup>
           <InputGroup className="full-width">
-            <TextArea placeholder="Tell us about your project..." />
+            <TextArea id="projectDetails" name="projectDetails" placeholder="Tell us about your project..." />
           </InputGroup>
           <PrivacyNotice>
             By submitting this form, you agree to our Privacy Policy and consent

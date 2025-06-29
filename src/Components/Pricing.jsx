@@ -182,7 +182,7 @@ const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 50%, #FFEB3B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
@@ -842,7 +842,6 @@ const PlanName = styled.h2`
   justify-content: center;
   min-height: 60px;
   padding-top: 15px;
-  padding-right: 30px;
 `;
 
 const FeatureBadge = styled.span`
@@ -2353,29 +2352,7 @@ const Pricing = () => {
     return Math.round(priceWithTax).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  // Add keyframes for pulse animation
-  useEffect(() => {
-    const styleSheet = document.styleSheets[0];
-    const keyframes = `
-      @keyframes pulse {
-        0% {
-          box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
-        }
-        50% {
-          box-shadow: 0 0 18px rgba(248, 248, 248, 0.4), 0 0 10px rgba(248, 248, 248, 0.3);
-        }
-        100% {
-          box-shadow: 0 0 15px rgba(248, 248, 248, 0.3), 0 0 8px rgba(248, 248, 248, 0.2);
-        }
-      }
-    `;
-    
-    try {
-      styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
-    } catch (e) {
-      console.error("Failed to insert keyframes rule:", e);
-    }
-  }, []);
+  // Removed problematic keyframes insertion
 
   const faqs = [
     {
@@ -2415,10 +2392,13 @@ const Pricing = () => {
   return (
     <PricingWrapper>
       <HeroSection>
-        <Title>Our Pricing</Title>
+        <Title>Pay 25-30% Upfront, Rest After Completion</Title>
         <Subtitle>
-          Choose the perfect plan for your business needs. All of our plans include dedicated resources
-          working efficiently to bring your vision to life globally, with teams serving clients in the USA, UK, Europe, Australia, and Dubai.
+          <strong>Stop wasting months</strong> on developers who don't deliver. 
+          Our dedicated teams focus on building products that work, scale, and get results faster than typical agencies.
+          <br/><br/>
+          🛡️ <strong>100% Risk-Free:</strong> Full IP ownership from day 1 + 30-day satisfaction guarantee. 
+          If you're not satisfied with our code quality and communication within 30 days, get a full refund.
         </Subtitle>
         
         <CountdownContainer>
@@ -2444,7 +2424,8 @@ const Pricing = () => {
             </CountdownUnit>
           </CountdownTimerDisplay>
           <CountdownUrgency>
-            Lock in current pricing before rates increase January 1st, 2026. Save up to $5,300 annually on your development partnership.
+            🔥 Prices increase January 1st, 2026. Lock in current rates now. 
+            Exclusive partnerships for select clients only.
           </CountdownUrgency>
           <CountdownButton to="/contact-us">
             Secure Your Pricing
@@ -2479,7 +2460,8 @@ const Pricing = () => {
           </div>
           <PlanName>Spark</PlanName>
           <PlanDescription>
-            Perfect for startups and small businesses looking to build an MVP with a lean budget.
+            Perfect for startups who need a solid MVP to validate their idea and attract investors. 
+            <strong> Built for speed and investor presentations.</strong>
           </PlanDescription>
           
           <PriceContainer>
@@ -2501,7 +2483,8 @@ const Pricing = () => {
             <FeatureItem><FaCheck />Basic Q/A testing & bug fixes</FeatureItem>
             <FeatureItem><FaCheck />Access to company Slack channel</FeatureItem>
             <FeatureItem><FaCheck />176 working hours per month*</FeatureItem>
-            <FeatureItem><FaCheck />30% downpayment + 16% Sales Tax</FeatureItem>
+            <FeatureItem><FaCheck />Payment: 30% upfront, 70% after completion</FeatureItem>
+            <FeatureItem><FaCheck />All prices include 16% Sales Tax</FeatureItem>
             <FeatureItem><FaCheck />24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
@@ -2542,7 +2525,8 @@ const Pricing = () => {
             <FeatureBadge>Recommended</FeatureBadge>
           </PlanName>
           <PlanDescription>
-            Ideal for businesses ready to build high-quality, market-competitive products that scale.
+            For growing companies ready to build market-ready products that scale. 
+            <strong> Premium development with senior expertise and rapid iteration.</strong>
           </PlanDescription>
           
           <PriceContainer>
@@ -2565,7 +2549,8 @@ const Pricing = () => {
             <FeatureItem><FaCheck />Priority Slack channel & support</FeatureItem>
             <FeatureItem><FaCheck />Technical Product Manager with business insights</FeatureItem>
             <FeatureItem><FaCheck />176 working hours per month*</FeatureItem>
-            <FeatureItem><FaCheck />25% downpayment + 16% Sales Tax</FeatureItem>
+            <FeatureItem><FaCheck />Payment: 25% upfront, 75% after completion</FeatureItem>
+            <FeatureItem><FaCheck />All prices include 16% Sales Tax</FeatureItem>
             <FeatureItem><FaCheck />24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           
@@ -2577,7 +2562,8 @@ const Pricing = () => {
         <PricingCard>
           <PlanName>Blitz</PlanName>
           <PlanDescription>
-            Comprehensive solution for enterprise clients with complex requirements and scalable needs.
+            Enterprise-grade development for complex projects with custom requirements. 
+            <strong> Fully customizable team and unlimited technical expertise.</strong>
           </PlanDescription>
           
           <PriceContainer>
@@ -2596,7 +2582,8 @@ const Pricing = () => {
             <FeatureItem><FaCheck />Dedicated Slack workspace</FeatureItem>
             <FeatureItem><FaCheck />176 working hours per month*</FeatureItem>
             <FeatureItem><FaCheck />Priority support & strategic consulting</FeatureItem>
-            <FeatureItem><FaCheck />25% downpayment + 16% Sales Tax</FeatureItem>
+            <FeatureItem><FaCheck />Payment: 25% upfront, 75% after completion</FeatureItem>
+            <FeatureItem><FaCheck />All prices include 16% Sales Tax</FeatureItem>
             <FeatureItem><FaCheck />24/7 online availability in your time zone</FeatureItem>
           </FeatureList>
           

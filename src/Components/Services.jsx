@@ -15,7 +15,11 @@ const Title = styled.h1`
   font-weight: 800;
   text-align: center;
   margin-bottom: 20px;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 
   @media (max-width: 768px) {
     font-size: 2.5rem;
@@ -98,23 +102,23 @@ const Services = () => {
   const services = [
     {
       icon: <BsBrowserSafari />,
-      title: "Web Development",
+      title: "Startup Web Apps",
       description:
-        "Create modern, responsive websites and web applications using cutting-edge technologies and best practices.",
+        "React-based web applications built for rapid scaling. We create MVPs that impress investors and platforms that handle viral growth from day one.",
       hoverColor: "#00ff9d", // Neon Green
     },
     {
       icon: <MdOutlineAppSettingsAlt />,
-      title: "App Development",
+      title: "Mobile Apps That Raise Funding",
       description:
-        "Build powerful mobile applications for iOS and Android platforms with seamless functionality.",
+        "Flutter and React Native apps designed for user retention and growth. Clean code architecture that passes technical due diligence with flying colors.",
       hoverColor: "#00e5ff", // Electric Blue
     },
     {
       icon: <FaGamepad />,
-      title: "Game Development",
+      title: "Interactive Experiences",
       description:
-        "Develop engaging and immersive games across multiple platforms using advanced graphics.",
+        "Unity-powered games and interactive demos that showcase your product vision. Perfect for engaging investors and demonstrating product potential.",
       hoverColor: "#ff3366", // Electric Red
     },
   ];
@@ -123,8 +127,8 @@ const Services = () => {
     <ServicesWrapper id="services">
       <Title>Our Services</Title>
       <Description>
-        We offer comprehensive digital solutions tailored to your needs, from
-        web development to gaming experiences.
+        We specialize in building technology that gets funded. Our focus: rapid MVP development, 
+        investor-ready products, and scalable architecture that grows with your business.
       </Description>
       <ServicesGrid>
         {services.map((service, index) => (

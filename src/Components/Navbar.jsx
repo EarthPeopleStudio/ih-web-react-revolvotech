@@ -434,7 +434,7 @@ const Navbar = () => {
         <NavButton 
           to="/contact-us"
           onClick={closeMenu}
-          isContactPage={currentPath === "/contact-us" ? true : false}
+          $isContactPage={currentPath === "/contact-us" ? true : false}
           onMouseEnter={() => handleButtonHover(true)}
           onMouseLeave={() => handleButtonHover(false)}
         >

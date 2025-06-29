@@ -2,21 +2,32 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://revolvo.com/sitemap.xml
+Sitemap: https://revolvo.tech/sitemap.xml
 
 # Important pages for crawling
+Allow: /about-us
 Allow: /blog
 Allow: /blog/*
 Allow: /projects
+Allow: /projects/*
 Allow: /pricing
 Allow: /testimonials
 Allow: /tech-showcase
 Allow: /contact-us
+Allow: /careers
 
 # Block any sensitive areas (if any)
 Disallow: /admin
 Disallow: /_*
 Disallow: /api
+Disallow: /error_log.txt
 
 # Crawl delay (optional)
-Crawl-delay: 1 
+Crawl-delay: 1
+
+# Special directives for better SEO
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: / 

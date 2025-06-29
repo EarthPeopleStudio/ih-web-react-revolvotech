@@ -71,7 +71,7 @@ const HeroTitle = styled.h1`
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 50%, #FFEB3B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
@@ -579,7 +579,6 @@ const CalendlyContainer = styled.div`
   }
 `;
 
-// Centered Success Modal
 const SuccessOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -591,8 +590,8 @@ const SuccessOverlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 10000;
-  opacity: ${props => props.show ? 1 : 0};
-  visibility: ${props => props.show ? 'visible' : 'hidden'};
+  opacity: ${props => props.$show ? 1 : 0};
+  visibility: ${props => props.$show ? 'visible' : 'hidden'};
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
 `;
@@ -608,7 +607,7 @@ const SuccessModal = styled.div`
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   text-align: center;
   position: relative;
-  transform: ${props => props.show ? 'scale(1) translateY(0)' : 'scale(0.9) translateY(20px)'};
+  transform: ${props => props.$show ? 'scale(1) translateY(0)' : 'scale(0.9) translateY(20px)'};
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   
@@ -629,7 +628,7 @@ const SuccessModal = styled.div`
   }
 
   &:hover {
-    transform: ${props => props.show ? 'scale(1.02) translateY(-2px)' : 'scale(0.9) translateY(20px)'};
+    transform: ${props => props.$show ? 'scale(1.02) translateY(-2px)' : 'scale(0.9) translateY(20px)'};
     border-color: rgba(251, 182, 4, 0.4);
   }
 `;
@@ -749,23 +748,26 @@ const ContactUs = () => {
   return (
     <ContactUsWrapper>
       <HeroSection>
-        <HeroTitle>Contact Us</HeroTitle>
+        <HeroTitle>Get Your App Built Right The First Time</HeroTitle>
         <HeroSubtitle>
-          Ready to transform your vision into reality? We're here to guide you through every step 
-          of your digital journey. From initial concept to final delivery, let's build something extraordinary.
+          Skip the freelancer roulette and 6-month delays. In the next 30 minutes, 
+          we'll show you exactly how to turn your idea into a profitable product that 
+          your users will love (and investors will fund).
+          <br/><br/>
+          <strong style={{color: '#fbb604'}}>📞 Get a free consultation below ↓</strong>
         </HeroSubtitle>
       </HeroSection>
 
       <ProcessSection>
-        <ProcessTitle>Why Choose Our Team Over Freelancers?</ProcessTitle>
+        <ProcessTitle>Why Most Startups Struggle With Freelancers</ProcessTitle>
         <ProcessDescription>
           <ProcessText>
-            <strong>The Freelancer Problem:</strong> Individual freelancers often deliver messy, 
-            unfinished products that frustrate investors. We solve this.
+            <strong>❌ The Freelancer Problem:</strong> Miscommunication, missed deadlines, 
+            abandoned projects, and code so messy it becomes expensive to fix or rebuild.
           </ProcessText>
           <ProcessText style={{ color: '#fbb604' }}>
-            <strong>Our Solution:</strong> Dedicated team with synchronized development, consistent quality, proper code reviews, 
-            and accountability. Let us make your complex ideas seem like a walk in the park.
+            <strong>✅ Our Proven Approach:</strong> Dedicated team, weekly demos, clean code, 
+            and transparent communication. Your project gets done right, on time, every time.
           </ProcessText>
         </ProcessDescription>
         
@@ -908,10 +910,8 @@ const ContactUs = () => {
             </InputGroup>
 
             <SubmitButton type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Sending...' : 'Send Project Details'}
+              {isSubmitting ? 'Sending Message...' : 'Get Free Consultation →'}
             </SubmitButton>
-
-
           </Form>
         </ContactForm>
         
@@ -938,15 +938,15 @@ const ContactUs = () => {
         </CalendlySection>
       </ContactGrid>
 
-      {/* Centered Success Modal */}
-      <SuccessOverlay show={showSuccess} onClick={() => setShowSuccess(false)}>
-        <SuccessModal show={showSuccess} onClick={(e) => e.stopPropagation()}>
+      <SuccessOverlay $show={showSuccess} onClick={() => setShowSuccess(false)}>
+        <SuccessModal $show={showSuccess} onClick={(e) => e.stopPropagation()}>
           <SuccessIcon>
             <FaCheckCircle />
           </SuccessIcon>
-          <SuccessTitle>Message Sent Successfully!</SuccessTitle>
+          <SuccessTitle>Message Sent Successfully! 🚀</SuccessTitle>
           <SuccessMessage>
-            Thank you for reaching out! We've received your project details and will get back to you within 24 hours with next steps.
+            Thank you for reaching out! We've received your project details and will get back to you within 24 hours. 
+            We're excited to learn more about your project and how we can help bring it to life.
           </SuccessMessage>
           <DismissHint>Click anywhere to continue</DismissHint>
         </SuccessModal>

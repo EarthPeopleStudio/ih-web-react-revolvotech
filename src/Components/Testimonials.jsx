@@ -71,7 +71,7 @@ const SectionTitle = styled.h1`
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 50%, #FFEB3B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
@@ -910,10 +910,11 @@ const Testimonials = () => {
     <TestimonialsContainer>
       <ContentWrapper>
         <HeroSection>
-          <SectionTitle>Client Success Stories</SectionTitle>
+          <SectionTitle>What Our People Say</SectionTitle>
           <SectionSubtitle>
-            Discover how we've transformed businesses and exceeded expectations through innovative 
-            digital solutions. Our clients' success is our greatest achievement.
+            From startup MVPs that secure funding to products that scale to millions of users—our clients 
+            don't just get websites, they get businesses. Here's what founders, CEOs, and product leaders 
+            say about working with us.
           </SectionSubtitle>
         </HeroSection>
 

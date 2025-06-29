@@ -13,7 +13,8 @@ import PrivacyPolicy from "./Components/PrivacyPolicy";
 import TermsOfService from "./Components/TermsOfService";
 import CookiePolicy from "./Components/CookiePolicy";
 import AboutUs from "./Components/AboutUs";
-import OurWork from "./Components/OurWork";
+import SocialMediaImages from "./Components/SocialMediaImages";
+
 import Projects from "./pages/Projects";
 import HivekeyProject from "./pages/HivekeyProject";
 import Careers from "./pages/Careers";
@@ -65,8 +66,8 @@ const AppContent = () => {
             return { message: "Loading Home", subtext: "Initializing 3D experience..." };
           case '/about-us':
             return { message: "Loading About Us", subtext: "Preparing team information..." };
-          case '/our-work':
-            return { message: "Loading Our Work", subtext: "Showcasing our projects..." };
+          case '/images':
+            return { message: "Loading Social Images", subtext: "Preparing brand assets..." };
           case '/tech-showcase':
             return { message: "Loading Tech Showcase", subtext: "Setting up interactive demos..." };
           case '/pricing':
@@ -110,7 +111,8 @@ const AppContent = () => {
       <AppWrapper>
         <SubtleBackground />
         <ContentWrapper>
-          <Navbar />
+          {/* Hide navbar for images page */}
+          {currentPath !== '/images' && <Navbar />}
           {isLoading && (
             <SkeletonLoader 
               key={loadingKey}
@@ -143,8 +145,11 @@ const AppContent = () => {
             {/* About Us Page */}
             <Route path="/about-us" element={<AboutUs />} />
             
+            {/* Social Media Images Page */}
+            <Route path="/images" element={<SocialMediaImages />} />
+            
             {/* Our Work Page */}
-            <Route path="/our-work" element={<OurWork />} />
+
             
             {/* Projects Page */}
             <Route path="/projects" element={<Projects />} />
@@ -174,7 +179,7 @@ const AppContent = () => {
             <Route path="/blog/:slug" element={<BlogPost />} />
             </Routes>
           )}
-          {!isLoading && <Footer />}
+          {!isLoading && currentPath !== '/images' && <Footer />}
         </ContentWrapper>
       </AppWrapper>
     </PathContext.Provider>

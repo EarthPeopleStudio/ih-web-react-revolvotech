@@ -33,7 +33,7 @@ const CodeShowcaseItem = styled.div`
   transition: all 0.4s ease;
   position: relative;
   backdrop-filter: blur(10px);
-  max-height: 600px;
+  max-height: 1200px;
   display: flex;
   flex-direction: column;
 
@@ -190,11 +190,32 @@ const DemoContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 200px;
-  border: 1px solid rgba(251, 182, 4, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   min-width: 0; /* Prevents flex item from overflowing */
-  overflow: hidden; /* Ensures content doesn't break out */
+  overflow-y: auto; /* Enable vertical scrolling when content overflows */
+  max-height: 700px; /* Set a reasonable max height before scrolling kicks in */
+  
+  /* Custom scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(25, 25, 30, 0.6);
+    border-radius: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(251, 182, 4, 0.4);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(251, 182, 4, 0.6);
+  }
 `;
 
 const PreBlock = styled.pre`
@@ -443,7 +464,7 @@ const SmartChatDemo = () => {
       </div>
       
       {/* Chat messages */}
-      <div style={{
+      <div className="ai-chat-container" style={{
           flex: 1,
           overflowY: 'auto',
         padding: '16px',
@@ -652,6 +673,8 @@ const SmartChatDemo = () => {
       }}>
         <input
           type="text"
+          id="chat-input"
+          name="chatMessage"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
@@ -736,22 +759,22 @@ const SmartChatDemo = () => {
             100% { background-position: -200% 0; }
           }
 
-          ::-webkit-scrollbar {
+          .ai-chat-container::-webkit-scrollbar {
             width: 8px;
             height: 8px;
           }
           
-          ::-webkit-scrollbar-track {
+          .ai-chat-container::-webkit-scrollbar-track {
             background: rgba(26, 26, 39, 0.6);
             border-radius: 4px;
           }
           
-          ::-webkit-scrollbar-thumb {
+          .ai-chat-container::-webkit-scrollbar-thumb {
             background: rgba(58, 58, 74, 0.8);
             border-radius: 4px;
           }
           
-          ::-webkit-scrollbar-thumb:hover {
+          .ai-chat-container::-webkit-scrollbar-thumb:hover {
             background: rgba(74, 74, 94, 0.9);
           }
           
@@ -1182,6 +1205,8 @@ const SentimentAnalysisDemo = () => {
         transition: 'none'
       }}>
         <textarea
+          id="sentiment-input"
+          name="sentimentText"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Enter text to analyze sentiment (e.g., 'I love this amazing product' or 'I'm disappointed with the service')"
@@ -1221,9 +1246,9 @@ const SentimentAnalysisDemo = () => {
             background: isAnalyzing 
               ? 'rgba(80, 80, 100, 0.6)' 
               : !inputText.trim() 
-                ? 'rgba(255, 235, 59, 0.3)' 
-                : 'linear-gradient(135deg, #FFEB3B, #fbb604)',
-            color: isAnalyzing ? 'white' : !inputText.trim() ? 'white' : '#000',
+                ? 'rgba(80, 80, 100, 0.3)' 
+                : 'rgba(45, 45, 60, 0.8)',
+            color: isAnalyzing ? 'white' : !inputText.trim() ? 'rgba(255, 255, 255, 0.5)' : 'white',
             border: 'none',
             borderRadius: '12px',
             fontSize: '0.95rem',
@@ -1232,7 +1257,7 @@ const SentimentAnalysisDemo = () => {
             transition: 'all 0.3s ease',
             boxShadow: isAnalyzing || !inputText.trim() 
               ? 'none' 
-              : '0 6px 18px rgba(255, 235, 59, 0.25)',
+              : '0 6px 18px rgba(45, 45, 60, 0.3)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1241,13 +1266,13 @@ const SentimentAnalysisDemo = () => {
           onMouseOver={(e) => {
             if (!isAnalyzing && inputText.trim()) {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 8px 22px rgba(255, 235, 59, 0.3)';
+              e.currentTarget.style.boxShadow = '0 8px 22px rgba(45, 45, 60, 0.4)';
             }
           }}
           onMouseOut={(e) => {
             if (!isAnalyzing && inputText.trim()) {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 6px 18px rgba(255, 235, 59, 0.25)';
+              e.currentTarget.style.boxShadow = '0 6px 18px rgba(45, 45, 60, 0.3)';
             }
           }}
         >
@@ -1503,7 +1528,8 @@ const SentimentAnalysisDemo = () => {
                 overflowY: 'auto',
                 scrollbarWidth: 'thin',
                 scrollbarColor: '#3a3a4a #1a1a27'
-              }}>
+              }}
+              className="ai-sentiment-container">
                 {highlightSentiment(inputText)}
               </div>
             )}
@@ -1585,22 +1611,22 @@ const SentimentAnalysisDemo = () => {
             100% { background-position: -200% 0; }
           }
 
-          ::-webkit-scrollbar {
+          .ai-sentiment-container::-webkit-scrollbar {
             width: 8px;
             height: 8px;
           }
           
-          ::-webkit-scrollbar-track {
+          .ai-sentiment-container::-webkit-scrollbar-track {
             background: rgba(26, 26, 39, 0.6);
             border-radius: 4px;
           }
           
-          ::-webkit-scrollbar-thumb {
+          .ai-sentiment-container::-webkit-scrollbar-thumb {
             background: rgba(58, 58, 74, 0.8);
             border-radius: 4px;
           }
           
-          ::-webkit-scrollbar-thumb:hover {
+          .ai-sentiment-container::-webkit-scrollbar-thumb:hover {
             background: rgba(74, 74, 94, 0.9);
           }
           

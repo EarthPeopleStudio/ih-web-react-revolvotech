@@ -755,6 +755,8 @@ const SEOAnalyzerDemo = () => {
       }}>
         <input
           type="text"
+          id="seo-title"
+          name="seoTitle"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Page Title"
@@ -770,6 +772,8 @@ const SEOAnalyzerDemo = () => {
         
         <input
           type="text"
+          id="seo-keywords"
+          name="seoKeywords"
           value={keywords}
           onChange={(e) => setKeywords(e.target.value)}
           placeholder="Target Keywords (comma separated)"
@@ -784,6 +788,8 @@ const SEOAnalyzerDemo = () => {
         />
         
         <textarea
+          id="seo-content"
+          name="seoContent"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Enter your content here..."
@@ -1511,6 +1517,8 @@ const HeadlineGeneratorDemo = () => {
         }}>
           <input
             type="text"
+            id="headline-topic"
+            name="headlineTopic"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             placeholder="Main Topic"
@@ -1527,6 +1535,8 @@ const HeadlineGeneratorDemo = () => {
           
           <input
             type="text"
+            id="headline-subject"
+            name="headlineSubject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             placeholder="Subject"
@@ -1543,6 +1553,8 @@ const HeadlineGeneratorDemo = () => {
           
           <input
             type="text"
+            id="headline-action"
+            name="headlineAction"
             value={action}
             onChange={(e) => setAction(e.target.value)}
             placeholder="Action Verb"

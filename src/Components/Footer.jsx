@@ -296,9 +296,9 @@ const Footer = () => {
         <CompanySection>
           <Logo src={logoImg} alt="Revolvo" />
           <CompanyDescription>
-            We are a digital agency specializing in web, mobile, and game
-            development. Our mission is to deliver innovative solutions that
-            drive business growth and user engagement.
+            We build apps that get funded. Specializing in startup MVPs, 
+            investor-ready products, and scalable development that grows with your business. 
+            Turning ideas into fundable companies since 2020.
           </CompanyDescription>
           <SocialLinks>
             <SocialIcon href="https://github.com/RevolvoTech" target="_blank" rel="noopener noreferrer">

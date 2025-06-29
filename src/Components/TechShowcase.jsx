@@ -100,7 +100,7 @@ const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 50%, #FFEB3B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
@@ -195,10 +195,10 @@ const TabsContainer = styled.div`
 const Tab = styled.button`
   padding: 14px 20px;
   border: none;
-  background: ${(props) => (props.active ? "rgba(251, 182, 4, 0.15)" : "transparent")};
-  color: ${(props) => (props.active ? "#fbb604" : "var(--text-secondary)")};
+  background: ${(props) => (props.$active ? "rgba(251, 182, 4, 0.15)" : "transparent")};
+  color: ${(props) => (props.$active ? "#fbb604" : "var(--text-secondary)")};
   font-size: 1rem;
-  font-weight: ${(props) => (props.active ? "600" : "400")};
+  font-weight: ${(props) => (props.$active ? "600" : "400")};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -207,11 +207,11 @@ const Tab = styled.button`
   pointer-events: auto;
   
   &:hover {
-    background: ${(props) => (props.active ? "rgba(251, 182, 4, 0.15)" : "rgba(251, 182, 4, 0.05)")};
-    color: ${(props) => (props.active ? "#fbb604" : "#f99b04")};
+    background: ${(props) => (props.$active ? "rgba(251, 182, 4, 0.15)" : "rgba(251, 182, 4, 0.05)")};
+    color: ${(props) => (props.$active ? "#fbb604" : "#f99b04")};
   }
 
-  ${(props) => props.active && `
+  ${(props) => props.$active && `
     &:after {
       content: "";
       position: absolute;
@@ -232,8 +232,8 @@ const Tab = styled.button`
 `;
 
 const ContentSection = styled.div`
-  display: ${props => props.active ? 'block' : 'none'};
-  animation: ${props => props.active ? 'fadeIn 0.8s ease' : 'none'};
+  display: ${props => props.$active ? 'block' : 'none'};
+  animation: ${props => props.$active ? 'fadeIn 0.8s ease' : 'none'};
   
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
@@ -752,55 +752,55 @@ export default function TechShowcase() {
   return (
     <GlobalStyle>
       <ShowcaseWrapper>
-        <Title>Tech Showcase</Title>
-        <Subtitle>Explore our technical capabilities through code snippets and interactive demos</Subtitle>
+        <Title>Learn How Stuff is Built</Title>
+        <Subtitle>Peek behind the curtain and see the magic (code) that powers modern digital experiences. Interactive demos and real code snippets reveal our technical craft.</Subtitle>
         
         <TabsContainer>
             <Tab 
-            active={activeCategory === 'Websites'} 
+            $active={activeCategory === 'Websites'} 
             onClick={() => handleTabClick('Websites')}
             >
             Websites
             </Tab>
           <Tab 
-            active={activeCategory === 'Mobile Apps'} 
+            $active={activeCategory === 'Mobile Apps'} 
             onClick={() => handleTabClick('Mobile Apps')}
           >
             Mobile Apps
           </Tab>
           <Tab 
-            active={activeCategory === 'UI/UX'} 
+            $active={activeCategory === 'UI/UX'} 
             onClick={() => handleTabClick('UI/UX')}
           >
             UI/UX
           </Tab>
           <Tab 
-            active={activeCategory === 'Games'} 
+            $active={activeCategory === 'Games'} 
             onClick={() => handleTabClick('Games')}
           >
             Games
           </Tab>
           <Tab 
-            active={activeCategory === 'Music'} 
+            $active={activeCategory === 'Music'} 
             onClick={() => handleTabClick('Music')}
           >
             Music
           </Tab>
           <Tab 
-            active={activeCategory === 'AI'} 
+            $active={activeCategory === 'AI'} 
             onClick={() => handleTabClick('AI')}
           >
             AI
           </Tab>
           <Tab 
-            active={activeCategory === 'Content'} 
+            $active={activeCategory === 'Content'} 
             onClick={() => handleTabClick('Content')}
           >
             Content
           </Tab>
         </TabsContainer>
         
-        <ContentSection active={true}>
+        <ContentSection $active={true}>
           {renderContent()}
         </ContentSection>
       </ShowcaseWrapper>

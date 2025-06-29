@@ -1,8 +1,6 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
 import hiveKeyMain from "../assets/hivekey.png";
-import hiveKeySettings from "../assets/hivekey-settings.png";
-import hiveKeyOptions from "../assets/hivekey-options.png";
 import windowsLogo from "../assets/windows-11-icon.png";
 import playstoreLogo from "../assets/google-play-store-logo.png";
 
@@ -66,7 +64,7 @@ const ProjectTitle = styled.h1`
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 50%, #FFEB3B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;

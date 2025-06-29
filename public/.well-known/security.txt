@@ -1,0 +1,21 @@
+Contact: mailto:security@revolvo.tech
+Contact: https://revolvo.tech/contact-us
+Expires: 2025-12-31T23:59:59.000Z
+Acknowledgments: https://revolvo.tech/security-acknowledgments
+Preferred-Languages: en, fi
+Canonical: https://revolvo.tech/.well-known/security.txt
+Policy: https://revolvo.tech/security-policy
+
+# Security Contact Information for Revolvo Tech
+# We take security seriously and appreciate responsible disclosure
+# 
+# Please include the following in your report:
+# - Detailed description of the vulnerability
+# - Steps to reproduce the issue  
+# - Potential impact assessment
+# - Any proof-of-concept code (if applicable)
+#
+# We commit to:
+# - Acknowledge receipt within 24 hours
+# - Provide regular updates on investigation progress
+# - Credit researchers (with permission) for valid findings 

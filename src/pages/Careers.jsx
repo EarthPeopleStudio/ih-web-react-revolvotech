@@ -73,7 +73,7 @@ const Title = styled.h1`
   font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 24px;
-  background: linear-gradient(135deg, #ffffff 0%, #FFEB3B 40%, #fbb604 100%);
+  background: linear-gradient(135deg, #FFEB3B 0%, #FFD700 50%, #FFEB3B 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-align: center;
@@ -405,24 +405,25 @@ const Careers = () => {
   return (
     <CareersWrapper>
       <HeroSection>
-        <Title>Join Our Team</Title>
-        <Subtitle>
-          Ready to join a team that doesn't just follow trends, but sets them? 
-          We're looking for game-changers who turn complex challenges into elegant solutions 
-          and help us craft digital experiences that matter.
-        </Subtitle>
+        <Title>We Want to Hear From You</Title>
+                  <Subtitle>
+            Looking to work with teams that build apps worth $100K+? We don't just code, we create 
+            businesses. Join a team where your skills directly impact startup funding, user growth, 
+            and the success stories that define the next generation of tech.
+          </Subtitle>
       </HeroSection>
 
       <div style={{ animation: 'fadeIn 0.8s ease' }}>
       <StatusCard>
         <StatusIcon>🚀</StatusIcon>
-        <StatusTitle>Building the Future</StatusTitle>
-        <StatusMessage>
-          We're not actively hiring right now, but exceptional talent doesn't wait for job postings.
-        </StatusMessage>
+        <StatusTitle>Elite Team, Selective Growth</StatusTitle>
+                  <StatusMessage>
+            We hire only 1 in 200 applicants. But if you're that 0.5%, we want to hear from you.
+          </StatusMessage>
         <StatusSubtext>
-          We're constantly evolving and expanding. If you're the kind of person who could help us 
-          reach new heights, we want to know about you before we even realize we need you.
+          Top talent doesn't wait for job postings. If you can build products that attract investors, 
+          scale to millions of users, or solve complex technical challenges with elegant code, 
+          we want to know about you before we need you.
         </StatusSubtext>
       </StatusCard>
 
@@ -440,14 +441,13 @@ const Careers = () => {
       </ValuesSection>
 
       <ContactSection>
-        <ContactTitle>Think We Could Use Your Talent?</ContactTitle>
-        <ContactText>
-          We're always on the lookout for exceptional individuals who can elevate our game. 
-          If you believe your skills could help us grow our company and push boundaries, 
-          we'd love to hear <strong style={{ color: '#fbb604' }}>why you think you're that person</strong>.
+        <ContactTitle>Ready to Build Six-Figure Apps?</ContactTitle>
+                  <ContactText>
+            If you're a <strong style={{ color: '#fbb604' }}>senior developer, designer, or technical leader</strong> {' '}
+            who's built products that scale, attracted investment, or solved complex problems, we want to meet you.
           <br /><br />
-          Don't just tell us what you can do — <strong style={{ color: '#FFEB3B' }}>show us what makes you extraordinary</strong>. 
-          Impress us with your passion, creativity, and vision for what we could build together.
+                      Don't send a resume, <strong style={{ color: '#FFEB3B' }}>send us something you've built</strong>. 
+          Show us code, design, or projects that prove you can create products that users love and businesses fund.
         </ContactText>
         <ContactEmail href="mailto:job@revolvo.tech">
           job@revolvo.tech
