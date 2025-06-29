@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled, { keyframes } from 'styled-components';
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaCalendar, FaUser, FaArrowRight, FaTags, FaClock, FaChevronRight, FaCode, FaBrain, FaMobile } from 'react-icons/fa';
+import SEOHead from './SEOHead';
 
 const circuitPulse = keyframes`
   0%, 100% { 
@@ -659,6 +660,12 @@ const BlogSection = () => {
 
   return (
     <BlogWrapper>
+      <SEOHead 
+        title="Tech Insights & Development Blog - Revolvo Tech"
+        description="Expert insights on offshore software development, mobile frameworks, AI, and technology solutions. Real-world knowledge from building 200+ successful applications."
+        pageType="blog"
+        canonical="https://revolvo.tech/blog"
+      />
       <CircuitGrid />
       
       <Title>What We've Learned Building Apps</Title>

@@ -174,13 +174,24 @@ const NavButton = styled(Link)`
   text-decoration: none;
   display: inline-block;
   text-align: center;
-  font-size: ${designSystem.typography.scale.button.fontSize};
+  font-size: 1rem;
   background: linear-gradient(135deg, #FFCA28, #fbb604, #f99b04);
   color: ${designSystem.colors.neutral.black};
   border-radius: 12px;
-  padding: ${designSystem.spacing.md} ${designSystem.spacing.lg};
+  padding: 12px 20px;
   font-weight: ${designSystem.typography.scale.button.fontWeight};
   letter-spacing: ${designSystem.typography.scale.button.letterSpacing};
+  
+  /* Responsive sizing */
+  @media (max-width: ${designSystem.breakpoints.desktop}) {
+    font-size: 0.95rem;
+    padding: 10px 18px;
+  }
+  
+  @media (max-width: ${designSystem.breakpoints.laptop}) {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
   box-shadow: 0 8px 25px rgba(255, 202, 40, 0.3), 0 4px 10px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;

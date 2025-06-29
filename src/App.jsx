@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
 import ContactBanner from "./Components/ContactBanner";
 import Footer from "./Components/Footer";
 import HeroImage from "./Components/HeroImage";
@@ -28,6 +29,8 @@ import SkeletonLoader from "./Components/SkeletonLoader";
 import { darkTheme, themeToVars } from "./themes";
 import { AnimationProvider } from './Components/AnimationContext';
 import ContactUs from './Components/ContactUs';
+import MobileApp from './Components/MobileApp';
+import { useMobile } from './hooks/useMobile';
 
 // Create a context for the current path
 export const PathContext = createContext('/');
@@ -52,6 +55,7 @@ const AppContent = () => {
   const [loadingMessage, setLoadingMessage] = useState("Loading Page");
   const [loadingSubtext, setLoadingSubtext] = useState("Initializing components...");
   const [loadingKey, setLoadingKey] = useState(0);
+  const { isMobile } = useMobile();
   
   useEffect(() => {
     // Show loading when route changes
@@ -105,6 +109,15 @@ const AppContent = () => {
       return () => clearTimeout(timer);
     }
   }, [location, currentPath]);
+
+  // If mobile, render the mobile app
+  if (isMobile) {
+    return (
+      <PathContext.Provider value={currentPath}>
+        <MobileApp />
+      </PathContext.Provider>
+    );
+  }
 
   return (
     <PathContext.Provider value={currentPath}>
@@ -188,11 +201,13 @@ const AppContent = () => {
 
 function App() {
   return (
-    <AnimationProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </AnimationProvider>
+    <HelmetProvider>
+      <AnimationProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </AnimationProvider>
+    </HelmetProvider>
   );
 }
 

@@ -196,33 +196,7 @@ const ModelSection = styled.div`
   }
 `;
 
-const SocialProofBanner = styled.div`
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(25, 25, 30, 0.9);
-  border: 1px solid rgba(251, 182, 4, 0.3);
-  border-radius: 50px;
-  padding: 12px 24px;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
-  font-weight: 500;
-  backdrop-filter: blur(10px);
-  text-align: center;
-  z-index: 10;
-  
-  @media (max-width: 768px) {
-    font-size: 0.8rem;
-    padding: 10px 20px;
-    bottom: 15px;
-  }
-  
-  @media (max-width: 480px) {
-    font-size: 0.7rem;
-    padding: 8px 16px;
-  }
-`;
+
 
 const HeroImage = () => {
   const { setCurrentAnimation } = useAnimation();
@@ -277,9 +251,6 @@ const HeroImage = () => {
       <ModelSection>
         <AnimatedHero />
       </ModelSection>
-      <SocialProofBanner>
-        Specialized in startup MVPs • Expert in React, Flutter & Game Development • 100% project completion rate
-      </SocialProofBanner>
     </HeroWrapper>
   );
 };
