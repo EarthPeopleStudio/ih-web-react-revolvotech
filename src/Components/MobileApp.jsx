@@ -50,6 +50,12 @@ const MobileHeader = styled.header`
 const Logo = styled.div`
   display: flex;
   align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
   
   img {
     width: 35px;
@@ -1559,6 +1565,11 @@ const MobileApp = () => {
     }
   };
 
+  const scrollToTop = () => {
+    setIsMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -1739,7 +1750,7 @@ const MobileApp = () => {
       <MobileBackground />
       
       <MobileHeader>
-        <Logo>
+        <Logo onClick={scrollToTop}>
           <img src={logoImg} alt="Revolvo" />
         </Logo>
         <MenuButton onClick={toggleMenu}>
@@ -1749,7 +1760,7 @@ const MobileApp = () => {
 
       <MobileMenu $isOpen={isMenuOpen}>
         <MenuHeader>
-          <Logo>
+          <Logo onClick={scrollToTop}>
             <img src={logoImg} alt="Revolvo" />
           </Logo>
           <CloseButton onClick={toggleMenu}>
@@ -2010,16 +2021,16 @@ const MobileApp = () => {
         <SocialSection>
           <SocialTitle>Follow us on Socials</SocialTitle>
           <SocialLinks>
-            <SocialLink href="#" aria-label="Instagram">
+            <SocialLink href="https://www.instagram.com/revolvotech/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
               <FaInstagram />
             </SocialLink>
-            <SocialLink href="#" aria-label="Facebook">
+            <SocialLink href="https://www.facebook.com/revolvotech" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
               <FaFacebook />
             </SocialLink>
-            <SocialLink href="#" aria-label="Twitter">
+            <SocialLink href="https://x.com/revolvotech" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
               <FaTwitter />
             </SocialLink>
-            <SocialLink href="#" aria-label="LinkedIn">
+            <SocialLink href="https://www.linkedin.com/company/revolvotech/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
               <FaLinkedin />
             </SocialLink>
           </SocialLinks>
