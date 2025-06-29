@@ -108,4 +108,5 @@
 # Enhanced gzip compression
 [build.environment]
   NODE_ENV = "production"
-  GENERATE_SOURCEMAP = "false" 
+  GENERATE_SOURCEMAP = "false"
+  NODE_VERSION = "20" 
