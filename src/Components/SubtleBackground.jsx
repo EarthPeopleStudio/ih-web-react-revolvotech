@@ -1,5 +1,5 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from "react";
+import styled, { keyframes } from "styled-components";
 
 const pulse = keyframes`
   0%, 100% {
@@ -38,16 +38,11 @@ const TechGrid = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: 
-    linear-gradient(rgba(251, 182, 4, 0.1) 1px, transparent 1px),
+  background-image: linear-gradient(rgba(251, 182, 4, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(251, 182, 4, 0.1) 1px, transparent 1px),
     linear-gradient(rgba(251, 182, 4, 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(251, 182, 4, 0.05) 1px, transparent 1px);
-  background-size: 
-    100px 100px,
-    100px 100px,
-    20px 20px,
-    20px 20px;
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
   opacity: 0.4;
 `;
 
@@ -59,9 +54,9 @@ const CircuitNode = styled.div`
   border-radius: 50%;
   animation: ${pulse} 3s ease-in-out infinite;
   box-shadow: 0 0 10px rgba(251, 182, 4, 0.5);
-  
+
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -78,17 +73,17 @@ const CornerAccent = styled.div`
   width: 120px;
   height: 120px;
   border: 2px solid rgba(251, 182, 4, 0.2);
-  
+
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     width: 20px;
     height: 20px;
     border: 2px solid rgba(251, 182, 4, 0.4);
   }
-  
+
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 40px;
     height: 40px;
@@ -101,14 +96,14 @@ const TopLeftCorner = styled(CornerAccent)`
   left: 40px;
   border-right: none;
   border-bottom: none;
-  
+
   &::before {
     top: -2px;
     left: -2px;
     border-right: none;
     border-bottom: none;
   }
-  
+
   &::after {
     top: -1px;
     left: -1px;
@@ -122,14 +117,14 @@ const BottomRightCorner = styled(CornerAccent)`
   right: 40px;
   border-left: none;
   border-top: none;
-  
+
   &::before {
     bottom: -2px;
     right: -2px;
     border-left: none;
     border-top: none;
   }
-  
+
   &::after {
     bottom: -1px;
     right: -1px;
@@ -154,15 +149,15 @@ const TechOverlay = styled.div`
   width: 100%;
   height: 100%;
   background: radial-gradient(
-    circle at 30% 70%,
-    rgba(251, 182, 4, 0.03) 0%,
-    transparent 50%
-  ),
-  radial-gradient(
-    circle at 80% 20%,
-    rgba(251, 182, 4, 0.02) 0%,
-    transparent 50%
-  );
+      circle at 30% 70%,
+      rgba(251, 182, 4, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(251, 182, 4, 0.02) 0%,
+      transparent 50%
+    );
 `;
 
 const SubtleBackground = () => {
@@ -171,38 +166,38 @@ const SubtleBackground = () => {
     id: i,
     left: 10 + (i % 4) * 25,
     top: 15 + Math.floor(i / 4) * 25,
-    delay: i * 0.4
+    delay: i * 0.4,
   }));
 
   // Geometric accents for visual interest
   const geometricAccents = [
-    { id: 1, top: '15%', right: '15%', delay: 0 },
-    { id: 2, bottom: '35%', left: '12%', delay: 4 },
-    { id: 3, top: '60%', right: '25%', delay: 8 }
+    { id: 1, top: "15%", right: "15%", delay: 0 },
+    { id: 2, bottom: "35%", left: "12%", delay: 4 },
+    { id: 3, top: "60%", right: "25%", delay: 8 },
   ];
 
   return (
     <BackgroundContainer>
       <TechGrid />
-      
+
       {/* Corner Accents */}
       <TopLeftCorner />
       <BottomRightCorner />
-      
+
       {/* Circuit Nodes */}
-      {nodes.map(node => (
+      {nodes.map((node) => (
         <CircuitNode
           key={node.id}
           style={{
             left: `${node.left}%`,
             top: `${node.top}%`,
-            animationDelay: `${node.delay}s`
+            animationDelay: `${node.delay}s`,
           }}
         />
       ))}
 
       {/* Geometric Accents */}
-      {geometricAccents.map(accent => (
+      {geometricAccents.map((accent) => (
         <GeometricAccent
           key={accent.id}
           style={{
@@ -210,14 +205,14 @@ const SubtleBackground = () => {
             bottom: accent.bottom,
             left: accent.left,
             right: accent.right,
-            animationDelay: `${accent.delay}s`
+            animationDelay: `${accent.delay}s`,
           }}
         />
       ))}
-      
+
       <TechOverlay />
     </BackgroundContainer>
   );
 };
 
-export default SubtleBackground; 
+export default SubtleBackground;

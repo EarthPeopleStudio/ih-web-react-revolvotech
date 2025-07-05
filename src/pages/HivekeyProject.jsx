@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
-import hiveKeyMain from "../assets/hivekey.png";
+import hiveKeyVideo from "../assets/projects/apps/hivekey.mp4";
 import windowsLogo from "../assets/windows-11-icon.png";
 import playstoreLogo from "../assets/google-play-store-logo.png";
 
@@ -133,7 +133,7 @@ const MainImage = styled.div`
     z-index: 2;
   }
 
-  img {
+  video {
     width: 100%;
     height: auto;
     display: block;
@@ -425,7 +425,7 @@ const HivekeyProject = () => {
         </ProjectSubtitle>
 
         <MainImage>
-          <img src={hiveKeyMain} alt="HiveKey Interface" />
+          <video src={hiveKeyVideo} autoPlay loop muted playsInline />
         </MainImage>
 
         <StepsSection>
@@ -503,11 +503,11 @@ const HivekeyProject = () => {
         <DownloadSection>
           <DownloadTitle>Get HiveKey Now</DownloadTitle>
           <DownloadButtons>
-            <DownloadButton href="#windows">
+            <DownloadButton href="https://revolvotech.s3.us-east-1.amazonaws.com/ih/app/flutter/hivekey/HiveKey.exe">
               <img src={windowsLogo} alt="Windows" />
               Download for Windows
             </DownloadButton>
-            <DownloadButton href="#android">
+            <DownloadButton href="https://play.google.com/store/apps/details?id=com.revolvotech.hivekey&hl=en_GB&pli=1">
               <img src={playstoreLogo} alt="Android" />
               Get it on Play Store
             </DownloadButton>
