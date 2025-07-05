@@ -1,1 +1,7 @@
+# Subdomain redirects - serve same app but with different host headers
+https://choreo.revolvo.tech/* https://revolvo.tech/:splat 200!
+https://admin.revolvo.tech/* https://revolvo.tech/:splat 200!
+https://*.revolvo.tech/* https://revolvo.tech/:splat 200!
+
+# Main domain SPA fallback
 /* /index.html 200 

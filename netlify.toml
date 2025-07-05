@@ -1,3 +1,26 @@
+# Subdomain-specific redirects - these must come FIRST
+[[redirects]]
+  from = "https://choreo.revolvo.tech/*"
+  to = "https://revolvo.tech/:splat"
+  status = 200
+  force = true
+  conditions = {Host = ["choreo.revolvo.tech"]}
+
+[[redirects]]
+  from = "https://admin.revolvo.tech/*"
+  to = "https://revolvo.tech/:splat"
+  status = 200
+  force = true
+  conditions = {Host = ["admin.revolvo.tech"]}
+
+# Handle subdomain routing for all subdomains
+[[redirects]]
+  from = "https://*.revolvo.tech/*"
+  to = "https://revolvo.tech/:splat"
+  status = 200
+  force = true
+
+# Main domain SPA fallback (must come after subdomain rules)
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -37,7 +60,7 @@
 [build.processing.images]
   compress = true
 
-# Performance and SEO Security Headers
+# Performance and SEO Security Headers for main domain
 [[headers]]
   for = "/*"
   [headers.values]
@@ -54,6 +77,16 @@
     
     # SEO Headers
     X-Robots-Tag = "index, follow"
+
+# Subdomain-specific headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Allow subdomain access
+    Access-Control-Allow-Origin = "https://choreo.revolvo.tech, https://admin.revolvo.tech, https://revolvo.tech"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+  condition = "Host"
 
 # Cache optimization for static assets
 [[headers]]

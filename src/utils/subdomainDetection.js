@@ -10,6 +10,7 @@ export const SubdomainDetection = {
    */
   getCurrentSubdomain: () => {
     const hostname = window.location.hostname;
+    const origin = window.location.origin;
 
     // Handle localhost development
     if (hostname === "localhost" || hostname === "127.0.0.1") {
@@ -18,7 +19,15 @@ export const SubdomainDetection = {
       const hashSubdomain = window.location.hash.includes("#choreo")
         ? "choreo"
         : null;
-      return searchParams.get("subdomain") || hashSubdomain;
+
+      // Also check for path-based routing in dev (e.g., localhost:3000/choreo)
+      const pathSubdomain = window.location.pathname.startsWith("/choreo")
+        ? "choreo"
+        : window.location.pathname.startsWith("/admin")
+        ? "admin"
+        : null;
+
+      return searchParams.get("subdomain") || hashSubdomain || pathSubdomain;
     }
 
     // Production domain handling
@@ -36,6 +45,15 @@ export const SubdomainDetection = {
       }
     }
 
+    // Check if this is a Netlify preview or branch deploy with subdomain in origin
+    if (origin.includes("choreo") || hostname.includes("choreo")) {
+      return "choreo";
+    }
+
+    if (origin.includes("admin") || hostname.includes("admin")) {
+      return "admin";
+    }
+
     return null;
   },
 
@@ -45,7 +63,14 @@ export const SubdomainDetection = {
    */
   isChoreoSubdomain: () => {
     const subdomain = SubdomainDetection.getCurrentSubdomain();
-    return subdomain === "choreo";
+    const isChoreoDomain = window.location.hostname === "choreo.revolvo.tech";
+    const isChoreoPath = window.location.pathname.startsWith("/choreo");
+    const hasChoreoParam =
+      new URLSearchParams(window.location.search).get("subdomain") === "choreo";
+
+    return (
+      subdomain === "choreo" || isChoreoDomain || isChoreoPath || hasChoreoParam
+    );
   },
 
   /**
@@ -54,7 +79,14 @@ export const SubdomainDetection = {
    */
   isAdminSubdomain: () => {
     const subdomain = SubdomainDetection.getCurrentSubdomain();
-    return subdomain === "admin";
+    const isAdminDomain = window.location.hostname === "admin.revolvo.tech";
+    const isAdminPath = window.location.pathname.startsWith("/admin");
+    const hasAdminParam =
+      new URLSearchParams(window.location.search).get("subdomain") === "admin";
+
+    return (
+      subdomain === "admin" || isAdminDomain || isAdminPath || hasAdminParam
+    );
   },
 
   /**
@@ -62,16 +94,15 @@ export const SubdomainDetection = {
    * @returns {string} - App type: 'main', 'choreo', 'admin'
    */
   getAppType: () => {
-    const subdomain = SubdomainDetection.getCurrentSubdomain();
-
-    switch (subdomain) {
-      case "choreo":
-        return "choreo";
-      case "admin":
-        return "admin";
-      default:
-        return "main";
+    if (SubdomainDetection.isChoreoSubdomain()) {
+      return "choreo";
     }
+
+    if (SubdomainDetection.isAdminSubdomain()) {
+      return "admin";
+    }
+
+    return "main";
   },
 
   /**
@@ -85,10 +116,11 @@ export const SubdomainDetection = {
     const protocol = window.location.protocol;
     const port = window.location.port;
 
-    // Development mode - use query params
+    // Development mode - use query params or path prefixes
     if (hostname === "localhost" || hostname === "127.0.0.1") {
       const baseUrl = `${protocol}//${hostname}${port ? `:${port}` : ""}`;
-      return `${baseUrl}${path}?subdomain=${subdomain}`;
+      // Try path-based routing first, fallback to query params
+      return `${baseUrl}/${subdomain}${path !== "/" ? path : ""}`;
     }
 
     // Production mode - use actual subdomains
@@ -115,7 +147,11 @@ export const SubdomainDetection = {
     return (
       hostname === "localhost" ||
       hostname === "127.0.0.1" ||
-      process.env.NODE_ENV === "development"
+      hostname.includes("gitpod.io") ||
+      hostname.includes("stackblitz.com") ||
+      hostname.includes("codesandbox.io") ||
+      process.env.NODE_ENV === "development" ||
+      import.meta.env.DEV
     );
   },
 
@@ -126,12 +162,19 @@ export const SubdomainDetection = {
   getEnvironmentConfig: () => {
     const isDev = SubdomainDetection.isDevelopment();
     const subdomain = SubdomainDetection.getCurrentSubdomain();
+    const appType = SubdomainDetection.getAppType();
 
     return {
       isDevelopment: isDev,
       subdomain,
-      appType: SubdomainDetection.getAppType(),
+      appType,
       hostname: window.location.hostname,
+      origin: window.location.origin,
+      pathname: window.location.pathname,
+      search: window.location.search,
+      hash: window.location.hash,
+      isChoreoSubdomain: SubdomainDetection.isChoreoSubdomain(),
+      isAdminSubdomain: SubdomainDetection.isAdminSubdomain(),
       baseUrl: isDev
         ? `${window.location.protocol}//${window.location.hostname}${
             window.location.port ? `:${window.location.port}` : ""
