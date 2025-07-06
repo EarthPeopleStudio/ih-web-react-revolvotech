@@ -89,7 +89,7 @@ const CodeShowcaseItem = styled.div`
     transform: translateY(-8px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(251, 182, 4, 0.3);
-
+    
     &::after {
       animation: ${circuitPulse} 2s ease-in-out infinite;
     }
@@ -121,7 +121,7 @@ const CodeShowcaseTitle = styled.h3`
   font-weight: 600;
   position: relative;
   z-index: 1;
-
+  
   svg {
     margin-right: 10px;
     color: #fbb604;
@@ -153,7 +153,7 @@ const CodeDemoContainer = styled.div`
   z-index: 1;
   flex: 1;
   overflow: hidden;
-
+  
   @media (max-width: 968px) {
     grid-template-columns: 1fr;
   }
@@ -169,7 +169,7 @@ const CodeSnippetContainer = styled.div`
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
-
+  
   @media (max-width: 968px) {
     border-right: none;
     border-bottom: 1px solid rgba(251, 182, 4, 0.2);
@@ -245,20 +245,20 @@ const PreBlock = styled.pre`
   word-wrap: break-word;
   flex: 1;
   max-height: 400px;
-
+  
   &::-webkit-scrollbar {
     width: 8px;
   }
-
+  
   &::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.1);
   }
-
+  
   &::-webkit-scrollbar-thumb {
     background: rgba(251, 182, 4, 0.3);
     border-radius: 4px;
   }
-
+  
   &::-webkit-scrollbar-thumb:hover {
     background: rgba(251, 182, 4, 0.5);
   }
@@ -268,7 +268,7 @@ const PreBlock = styled.pre`
 const CSSAnimationDemo = () => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [currentAnimation, setCurrentAnimation] = useState("pulse");
-
+  
   const animationOptions = [
     { id: "pulse", name: "Pulse" },
     { id: "shake", name: "Shake" },
@@ -278,7 +278,7 @@ const CSSAnimationDemo = () => {
     { id: "neon", name: "Neon" },
     { id: "morph", name: "Morph" },
   ];
-
+  
   const getAnimation = () => {
     if (!isAnimating) return "none";
     return `${currentAnimation} ${
@@ -289,7 +289,7 @@ const CSSAnimationDemo = () => {
         : "1.5s"
     } infinite`;
   };
-
+  
   const buttonStyle = {
     padding: "14px 28px",
     background: isAnimating
@@ -327,7 +327,7 @@ const CSSAnimationDemo = () => {
           : "none"
         : "none",
   };
-
+  
   const selectorStyle = {
     display: "flex",
     justifyContent: "center",
@@ -335,7 +335,7 @@ const CSSAnimationDemo = () => {
     gap: "10px",
     marginBottom: "25px",
   };
-
+  
   const animSelectBtnStyle = (active) => ({
     padding: "10px 14px",
     background: active ? "rgba(255, 235, 59, 0.2)" : "rgba(30, 30, 30, 0.5)",
@@ -346,7 +346,7 @@ const CSSAnimationDemo = () => {
     fontWeight: active ? "600" : "400",
     cursor: "pointer",
   });
-
+  
   return (
     <div style={{ textAlign: "center", width: "100%" }}>
       <style>
@@ -447,7 +447,7 @@ const CSSAnimationDemo = () => {
           }
         `}
       </style>
-
+      
       <div
         style={{
           display: "flex",
@@ -493,8 +493,8 @@ const CSSAnimationDemo = () => {
             }}
           >
             {animationOptions.map((option) => (
-              <button
-                key={option.id}
+            <button 
+              key={option.id}
                 style={{
                   padding: "10px 14px",
                   background:
@@ -517,8 +517,8 @@ const CSSAnimationDemo = () => {
                   transition: "all 0.3s ease",
                   contain: "layout style" /* Optimize button reflows */,
                 }}
-                onClick={() => {
-                  setCurrentAnimation(option.id);
+              onClick={() => {
+                setCurrentAnimation(option.id);
                   setCurrentIndex(
                     animationOptions.findIndex((anim) => anim.id === option.id)
                   );
@@ -535,11 +535,11 @@ const CSSAnimationDemo = () => {
                     e.target.style.background = "rgba(30, 30, 30, 0.5)";
                     e.target.style.borderColor = "rgba(255, 255, 255, 0.1)";
                   }
-                }}
-              >
-                {option.name}
-              </button>
-            ))}
+              }}
+            >
+              {option.name}
+            </button>
+          ))}
           </div>
 
           <div
@@ -559,8 +559,8 @@ const CSSAnimationDemo = () => {
             {getAnimationDescription()}
           </div>
         </div>
-
-        <button
+        
+        <button 
           style={{
             ...buttonStyle,
             position: "relative",
@@ -623,7 +623,7 @@ const LottieAnimationDemo = () => {
   const [isPaused2, setIsPaused2] = useState(false);
   const dogAnimationRef = useRef(null);
   const cupAnimationRef = useRef(null);
-
+  
   const buttonStyle = {
     padding: "10px 20px",
     background: "linear-gradient(135deg, #FFEB3B, #fbb604)",
@@ -635,7 +635,7 @@ const LottieAnimationDemo = () => {
     fontSize: "0.9rem",
     marginTop: "15px",
   };
-
+  
   const additionalStyles = `
     @keyframes pulse-glow {
       0% {
@@ -652,7 +652,7 @@ const LottieAnimationDemo = () => {
       }
     }
   `;
-
+  
   return (
     <div style={{ textAlign: "center", width: "100%" }}>
       <style>{additionalStyles}</style>
@@ -698,20 +698,20 @@ const LottieAnimationDemo = () => {
                   "radial-gradient(circle, rgba(0, 212, 255, 0.35) 0%, rgba(0, 212, 255, 0.15) 50%, rgba(0, 212, 255, 0) 65%)",
                 borderRadius: "50%",
                 filter: "blur(8px)",
-                zIndex: -1,
+              zIndex: -1,
                 animation: "pulse-glow 5s infinite alternate ease-in-out",
                 left: "-5%",
                 top: "-5%",
               }}
             ></div>
-            <Lottie
+            <Lottie 
               animationData={dogAnimation}
               loop={true}
               lottieRef={dogAnimationRef}
               speed={1}
             />
           </div>
-          <button
+          <button 
             style={buttonStyle}
             onClick={() => {
               if (isPaused1) {
@@ -725,7 +725,7 @@ const LottieAnimationDemo = () => {
             {isPaused1 ? "Play" : "Pause"}
           </button>
         </div>
-
+        
         {/* Cup Animation */}
         <div
           style={{
@@ -759,21 +759,21 @@ const LottieAnimationDemo = () => {
                   "radial-gradient(circle, rgba(255, 235, 59, 0.35) 0%, rgba(255, 235, 59, 0.15) 50%, rgba(255, 235, 59, 0) 65%)",
                 borderRadius: "50%",
                 filter: "blur(8px)",
-                zIndex: -1,
+              zIndex: -1,
                 animation: "pulse-glow 5s infinite alternate ease-in-out",
                 animationDelay: "2.5s",
                 left: "-5%",
                 top: "-5%",
               }}
             ></div>
-            <Lottie
+            <Lottie 
               animationData={cupAnimation}
               loop={true}
               lottieRef={cupAnimationRef}
               speed={1}
             />
           </div>
-          <button
+          <button 
             style={buttonStyle}
             onClick={() => {
               if (isPaused2) {
@@ -799,25 +799,25 @@ const ColorPaletteDemo = () => {
   const [colorSchemeType, setColorSchemeType] = useState("splitComplementary");
   const [copiedColor, setCopiedColor] = useState(null);
   const [showToast, setShowToast] = useState(false);
-
+  
   useEffect(() => {
     // Generate the color scheme when base color or scheme type changes
     setColorScheme(generateColorScheme(baseColor, colorSchemeType));
   }, [baseColor, colorSchemeType]);
-
+  
   // Handle color copying with visual feedback
   const handleCopyColor = (color) => {
     navigator.clipboard.writeText(color);
     setCopiedColor(color);
     setShowToast(true);
-
+    
     // Hide toast after 2 seconds
     setTimeout(() => {
       setShowToast(false);
       setTimeout(() => setCopiedColor(null), 300); // Clear copied color after fade out
     }, 2000);
   };
-
+  
   // Convert hex to RGB
   const hexToRgb = (hex) => {
     hex = hex.replace("#", "");
@@ -827,33 +827,33 @@ const ColorPaletteDemo = () => {
       b: parseInt(hex.slice(4, 6), 16),
     };
   };
-
+  
   // Convert RGB to hex
   const rgbToHex = (r, g, b) => {
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
   };
-
+  
   // Convert hex to HSL
   const hexToHsl = (hex) => {
     const { r, g, b } = hexToRgb(hex);
-
+    
     // Convert RGB to HSL
     const rNorm = r / 255;
     const gNorm = g / 255;
     const bNorm = b / 255;
-
+    
     const max = Math.max(rNorm, gNorm, bNorm);
     const min = Math.min(rNorm, gNorm, bNorm);
     let h,
       s,
       l = (max + min) / 2;
-
+    
     if (max === min) {
       h = s = 0; // achromatic
     } else {
       const d = max - min;
       s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
+      
       switch (max) {
         case rNorm:
           h = (gNorm - bNorm) / d + (gNorm < bNorm ? 6 : 0);
@@ -867,21 +867,21 @@ const ColorPaletteDemo = () => {
         default:
           h = 0;
       }
-
+      
       h /= 6;
     }
-
+    
     return { h: h * 360, s: s * 100, l: l * 100 };
   };
-
+  
   // Convert HSL to hex
   const hslToHex = (h, s, l) => {
     h /= 360;
     s /= 100;
     l /= 100;
-
+    
     let r, g, b;
-
+    
     if (s === 0) {
       r = g = b = l; // achromatic
     } else {
@@ -893,26 +893,26 @@ const ColorPaletteDemo = () => {
         if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
         return p;
       };
-
+      
       const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
       const p = 2 * l - q;
-
+      
       r = hue2rgb(p, q, h + 1 / 3);
       g = hue2rgb(p, q, h);
       b = hue2rgb(p, q, h - 1 / 3);
     }
-
+    
     return rgbToHex(
       Math.round(r * 255),
       Math.round(g * 255),
       Math.round(b * 255)
     );
   };
-
+  
   // Generate the color scheme
   const generateColorScheme = (hex, type) => {
     const { h, s, l } = hexToHsl(hex);
-
+    
     switch (type) {
       case "splitComplementary": {
         // Split complementary colors (base + 2 colors 150° apart from the base + a lighter shade)
@@ -955,17 +955,17 @@ const ColorPaletteDemo = () => {
         return [hex];
     }
   };
-
+  
   // Function to determine if text should be white or black based on background
   const getTextColor = (backgroundColor) => {
     const { r, g, b } = hexToRgb(backgroundColor);
-
+    
     // Calculate luminance
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
+    
     return luminance > 0.5 ? "#000000" : "#ffffff";
   };
-
+  
   const colorSchemeOptions = [
     { value: "splitComplementary", label: "Split Complementary" },
     { value: "tetradic", label: "Tetradic" },
@@ -974,7 +974,7 @@ const ColorPaletteDemo = () => {
   ];
 
   const roles = ["Primary", "Secondary", "Accent", "Background"];
-
+  
   // Reusable button style with hover effect
   const buttonStyle = {
     padding: "8px 12px",
@@ -988,7 +988,7 @@ const ColorPaletteDemo = () => {
     transition: "all 0.2s ease",
     marginTop: "10px",
   };
-
+  
   // Toast notification styles
   const toastStyle = {
     position: "absolute",
@@ -1006,7 +1006,7 @@ const ColorPaletteDemo = () => {
     pointerEvents: "none",
     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
   };
-
+  
   return (
     <div style={{ width: "100%", position: "relative" }}>
       <div
@@ -1046,14 +1046,14 @@ const ColorPaletteDemo = () => {
                 alignItems: "center",
               }}
             >
-              <input
-                type="color"
+              <input 
+                type="color" 
                 value={baseColor}
                 onChange={(e) => setBaseColor(e.target.value)}
                 style={{
                   width: "40px",
                   height: "40px",
-                  padding: 0,
+                  padding: 0, 
                   border: "none",
                   borderRadius: "4px",
                   cursor: "pointer",
@@ -1074,7 +1074,7 @@ const ColorPaletteDemo = () => {
                   borderRadius: "4px",
                   padding: "2px 4px",
                   fontSize: "0.6rem",
-                  opacity: 0,
+                opacity: 0,
                   transition: "opacity 0.2s ease",
                   pointerEvents: "none",
                   ".color-input:hover + &": {
@@ -1085,7 +1085,7 @@ const ColorPaletteDemo = () => {
                 Pick
               </div>
             </div>
-            <span
+            <span 
               style={{
                 color: "rgba(255, 255, 255, 0.6)",
                 fontSize: "0.85rem",
@@ -1100,7 +1100,7 @@ const ColorPaletteDemo = () => {
               {baseColor}
             </span>
           </div>
-
+          
           <div
             style={{
               display: "flex",
@@ -1113,7 +1113,7 @@ const ColorPaletteDemo = () => {
             >
               Scheme:
             </label>
-            <select
+            <select 
               value={colorSchemeType}
               onChange={(e) => setColorSchemeType(e.target.value)}
               style={{
@@ -1144,8 +1144,8 @@ const ColorPaletteDemo = () => {
               ))}
             </select>
           </div>
-
-          <button
+          
+          <button 
             style={{
               ...buttonStyle,
               marginTop: 0,
@@ -1175,7 +1175,7 @@ const ColorPaletteDemo = () => {
           </button>
         </div>
       </div>
-
+      
       <div
         style={{
           display: "flex",
@@ -1199,7 +1199,7 @@ const ColorPaletteDemo = () => {
           }}
         >
           {colorScheme.map((color, index) => (
-            <div
+            <div 
               key={index}
               style={{
                 width: "100px",
@@ -1230,9 +1230,9 @@ const ColorPaletteDemo = () => {
               <div
                 style={{
                   position: "absolute",
-                  top: 0,
-                  left: 0,
-                  right: 0,
+                top: 0,
+                left: 0,
+                right: 0,
                   padding: "4px",
                   background: "rgba(0, 0, 0, 0.3)",
                   fontSize: "0.7rem",
@@ -1250,7 +1250,7 @@ const ColorPaletteDemo = () => {
               >
                 {color}
               </div>
-              <div
+              <div 
                 style={{
                   fontSize: "0.6rem",
                   opacity: 0.8,
@@ -1266,7 +1266,7 @@ const ColorPaletteDemo = () => {
             </div>
           ))}
         </div>
-
+        
         <div
           style={{
             padding: "15px",
@@ -1311,11 +1311,11 @@ const ColorPaletteDemo = () => {
           </ul>
         </div>
       </div>
-
+      
       {/* Toast notification */}
       <div style={toastStyle}>
         {copiedColor && copiedColor.startsWith("#")
-          ? `Copied ${copiedColor} to clipboard!`
+          ? `Copied ${copiedColor} to clipboard!` 
           : copiedColor}
       </div>
     </div>
@@ -1342,7 +1342,7 @@ const UIUXShowcase = () => {
               <CodeLanguage>JavaScript</CodeLanguage>
             </CodeHeader>
             <PreBlock>
-              {`import React, { 
+{`import React, { 
   useState, 
   useRef 
 } from 'react';
@@ -1412,7 +1412,7 @@ export default
               <CodeLanguage>JavaScript</CodeLanguage>
             </CodeHeader>
             <PreBlock>
-              {`class ColorPalette {
+{`class ColorPalette {
   constructor(baseColor) {
     this.baseColor = baseColor;
     this.colorType = 
@@ -1661,7 +1661,7 @@ export default
               <CodeLanguage>CSS</CodeLanguage>
             </CodeHeader>
             <PreBlock>
-              {`/* Core button styles */
+{`/* Core button styles */
 .btn {
   padding: 14px 28px;
   border: none;
@@ -1972,7 +1972,7 @@ const ImprovedCSSAnimationDemo = () => {
   const [previewAnimation, setPreviewAnimation] = useState("");
   const [autoCycling, setAutoCycling] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  
   const animationOptions = [
     { id: "pulse", name: "Pulse" },
     { id: "shake", name: "Shake" },
@@ -1985,46 +1985,46 @@ const ImprovedCSSAnimationDemo = () => {
     { id: "gradient", name: "Gradient" },
     { id: "ripple", name: "Ripple" },
   ];
-
+  
   // Auto cycle through animations
   useEffect(() => {
     if (!autoCycling) return;
-
+    
     // Start animation automatically
     if (!isAnimating) {
       setIsAnimating(true);
     }
-
+    
     const cycleInterval = setInterval(() => {
       const nextIndex = (currentIndex + 1) % animationOptions.length;
       setCurrentIndex(nextIndex);
       setCurrentAnimation(animationOptions[nextIndex].id);
     }, 3000); // Show each animation for 3 seconds
-
+    
     return () => clearInterval(cycleInterval);
   }, [currentIndex, autoCycling, isAnimating]);
-
+  
   // Handle user interaction - pause auto cycling when user interacts
   const handleUserInteraction = () => {
     setAutoCycling(false);
   };
-
+  
   // Resume auto cycling after period of inactivity
   useEffect(() => {
     if (autoCycling) return;
-
+    
     const resumeTimeout = setTimeout(() => {
       setAutoCycling(true);
     }, 10000); // Resume auto cycling after 10 seconds of inactivity
-
+    
     return () => clearTimeout(resumeTimeout);
   }, [autoCycling]);
-
+  
   const getAnimation = () => {
     if (!isAnimating) return "none";
     return `${currentAnimation} ${getAnimationDuration()} infinite`;
   };
-
+  
   const getAnimationDuration = () => {
     switch (currentAnimation) {
       case "bounce":
@@ -2044,7 +2044,7 @@ const ImprovedCSSAnimationDemo = () => {
         return "1.5s";
     }
   };
-
+  
   const getButtonBackground = () => {
     if (!isAnimating) return "#FFEB3B";
 
@@ -2067,7 +2067,7 @@ const ImprovedCSSAnimationDemo = () => {
         return "#FFEB3B";
     }
   };
-
+  
   const buttonStyle = {
     padding: "14px 28px",
     background: getButtonBackground(),
@@ -2101,7 +2101,7 @@ const ImprovedCSSAnimationDemo = () => {
           : "none"
         : "none",
   };
-
+  
   const animationPreviewStyle = {
     width: "100%",
     height: "40px",
@@ -2113,7 +2113,7 @@ const ImprovedCSSAnimationDemo = () => {
     color: "#fff",
     opacity: 0.7,
   };
-
+  
   const selectorContainerStyle = {
     display: "flex",
     flexDirection: "column",
@@ -2121,15 +2121,15 @@ const ImprovedCSSAnimationDemo = () => {
     gap: "15px",
     marginBottom: "20px",
   };
-
+  
   const selectorStyle = {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))",
     gap: "10px",
     width: "100%",
   };
-
-  const animSelectBtnStyle = (active, hover) => ({
+  
+      const animSelectBtnStyle = (active, hover) => ({
     padding: "10px 8px",
     background: hover
       ? "rgba(255, 235, 59, 0.3)"
@@ -2150,7 +2150,7 @@ const ImprovedCSSAnimationDemo = () => {
     cursor: "pointer",
     transition: "all 0.2s ease",
   });
-
+  
   const getAnimationDescription = () => {
     switch (currentAnimation) {
       case "pulse":
@@ -2177,7 +2177,7 @@ const ImprovedCSSAnimationDemo = () => {
         return "Select an animation to see details";
     }
   };
-
+  
   return (
     <div style={{ textAlign: "center", width: "100%" }}>
       <style>
@@ -2244,18 +2244,18 @@ const ImprovedCSSAnimationDemo = () => {
             }
           }
           
-          @keyframes neon {
-            0%, 100% {
+                      @keyframes neon {
+              0%, 100% {
               box-shadow: 0 0 5px #FFEB3B, 0 0 10px #FFEB3B, 0 0 15px #FFEB3B, 0 0 20px #FFEB3B;
               border: 2px solid #FFEB3B;
               transform: scale(1);
-            }
-            50% {
+              }
+              50% {
               box-shadow: 0 0 10px #FFEB3B, 0 0 20px #FFEB3B, 0 0 30px #FFEB3B, 0 0 40px #FFEB3B;
               border: 2px solid #ffffff;
               transform: scale(1.02);
+              }
             }
-          }
           
           @keyframes morph {
             0% { border-radius: 8px; transform: rotate(0deg) scale(1); }
@@ -2278,7 +2278,7 @@ const ImprovedCSSAnimationDemo = () => {
           }
         `}
       </style>
-
+      
       <div
         style={{
           display: "flex",
@@ -2324,7 +2324,7 @@ const ImprovedCSSAnimationDemo = () => {
             }}
           >
             {animationOptions.map((option) => (
-              <button
+              <button 
                 key={option.id}
                 style={{
                   padding: "10px 14px",
@@ -2372,7 +2372,7 @@ const ImprovedCSSAnimationDemo = () => {
               </button>
             ))}
           </div>
-
+          
           <div
             style={{
               color: "rgba(255, 255, 255, 0.8)",
@@ -2390,8 +2390,8 @@ const ImprovedCSSAnimationDemo = () => {
             {getAnimationDescription()}
           </div>
         </div>
-
-        <button
+        
+        <button 
           style={{
             ...buttonStyle,
             position: "relative",
@@ -2436,7 +2436,7 @@ const ImprovedCSSAnimationDemo = () => {
                   background: "rgba(255, 255, 255, 0.15)",
                   transform: "translate(-50%, -50%) scale(0)",
                   zIndex: "-1",
-                  animation: `ripple 2.5s ${index * 0.8}s ease-out infinite`,
+                animation: `ripple 2.5s ${index * 0.8}s ease-out infinite`,
                   opacity: 0,
                   contain: "layout style" /* Optimize ripple animation */,
                 }}
@@ -2448,4 +2448,4 @@ const ImprovedCSSAnimationDemo = () => {
   );
 };
 
-export default UIUXShowcase;
+export default UIUXShowcase; 

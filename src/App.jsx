@@ -32,6 +32,7 @@ import { darkTheme, themeToVars } from "./themes";
 import { AnimationProvider } from "./Components/AnimationContext";
 import ContactUs from "./Components/ContactUs";
 import MobileApp from "./Components/MobileApp";
+import CaptchaPage from "./Components/CaptchaPage";
 import { useMobile } from "./hooks/useMobile";
 
 // Choreo App Import
@@ -398,6 +399,9 @@ const AppContent = () => {
 
               {/* Contact Us Page */}
               <Route path="/contact-us" element={<ContactUs />} />
+
+              {/* Captcha Verification Page */}
+              <Route path="/auth/captcha" element={<CaptchaPage />} />
 
               {/* Blog Page */}
               <Route path="/blog" element={<BlogSection />} />
