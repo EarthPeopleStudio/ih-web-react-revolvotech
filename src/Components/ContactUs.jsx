@@ -754,7 +754,7 @@ const ContactUs = () => {
           we'll show you exactly how to turn your idea into a profitable product that 
           your users will love (and investors will fund).
           <br/><br/>
-          <strong style={{color: '#fbb604'}}>📞 Get a free consultation below ↓</strong>
+          <strong style={{color: '#fbb604'}}>📞 Get a no-cost consultation below ↓</strong>
         </HeroSubtitle>
       </HeroSection>
 
@@ -910,13 +910,13 @@ const ContactUs = () => {
             </InputGroup>
 
             <SubmitButton type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Sending Message...' : 'Get Free Consultation →'}
+              {isSubmitting ? 'Sending Message...' : 'Get No-Cost Consultation →'}
             </SubmitButton>
           </Form>
         </ContactForm>
         
         <CalendlySection>
-          <CalendlyTitle>Schedule a Free Consultation</CalendlyTitle>
+          <CalendlyTitle>Schedule a No-Cost Consultation</CalendlyTitle>
           <CalendlyDescription>
             Prefer to talk directly? Book a 30-60 minute consultation call with our team. 
             We'll discuss your project, answer questions, and provide initial recommendations.
