@@ -653,15 +653,26 @@ const MicroNutriProject = () => {
     const initial = {};
     Object.keys(bacteriaDatabase).forEach(bacteria => {
       const info = bacteriaDatabase[bacteria];
-      // For protective bacteria, start below threshold to trigger "Eat more"
-      // For harmful bacteria, start above threshold to trigger "Focus/Avoid"
+      // Start with mix of good and concerning levels for demo
       let defaultValue;
-      if (info.role === "Protective") {
-        defaultValue = Math.max(0.001, info.threshold * 0.7); // 70% of threshold
-      } else if (info.role === "Harmful") {
-        defaultValue = Math.min(0.1, info.threshold * 1.5); // 150% of threshold
+      
+      // Make only some bacteria problematic, not all
+      const problemBacteria = ["Faecalibacterium", "Butyricicoccus"]; // Low protective
+      const highRiskBacteria = ["Prevotella_9", "Prevotella_7"]; // High harmful
+      
+      if (problemBacteria.includes(bacteria)) {
+        defaultValue = Math.max(0.001, info.threshold * 0.6); // Below threshold
+      } else if (highRiskBacteria.includes(bacteria)) {
+        defaultValue = Math.min(0.1, info.threshold * 1.8); // Above threshold  
       } else {
-        defaultValue = (info.controlMean + info.t2dMean) / 2; // Mixed bacteria use midpoint
+        // Other bacteria start in "good" range
+        if (info.role === "Protective") {
+          defaultValue = Math.max(info.threshold * 1.2, info.controlMean * 0.9); // Above threshold
+        } else if (info.role === "Harmful") {
+          defaultValue = Math.max(0.001, info.threshold * 0.5); // Below threshold
+        } else {
+          defaultValue = (info.controlMean + info.t2dMean) / 2; // Mixed bacteria use midpoint
+        }
       }
       initial[bacteria] = defaultValue;
     });
@@ -673,12 +684,22 @@ const MicroNutriProject = () => {
     Object.keys(bacteriaDatabase).forEach(bacteria => {
       const info = bacteriaDatabase[bacteria];
       let defaultValue;
-      if (info.role === "Protective") {
-        defaultValue = Math.max(0.001, info.threshold * 0.7);
-      } else if (info.role === "Harmful") {
-        defaultValue = Math.min(0.1, info.threshold * 1.5);
+      
+      const problemBacteria = ["Faecalibacterium", "Butyricicoccus"];
+      const highRiskBacteria = ["Prevotella_9", "Prevotella_7"];
+      
+      if (problemBacteria.includes(bacteria)) {
+        defaultValue = Math.max(0.001, info.threshold * 0.6);
+      } else if (highRiskBacteria.includes(bacteria)) {
+        defaultValue = Math.min(0.1, info.threshold * 1.8);
       } else {
-        defaultValue = (info.controlMean + info.t2dMean) / 2;
+        if (info.role === "Protective") {
+          defaultValue = Math.max(info.threshold * 1.2, info.controlMean * 0.9);
+        } else if (info.role === "Harmful") {
+          defaultValue = Math.max(0.001, info.threshold * 0.5);
+        } else {
+          defaultValue = (info.controlMean + info.t2dMean) / 2;
+        }
       }
       initial[bacteria] = defaultValue.toFixed(3);
     });
