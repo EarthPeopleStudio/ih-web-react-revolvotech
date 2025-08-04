@@ -943,30 +943,112 @@ const MicroNutriProject = () => {
                   textAlign: 'left',
                   boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
                 }}>
-                  {results.recommendations.map((rec, index) => (
-                    <div key={rec.bacteria} style={{ 
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      marginBottom: index < results.recommendations.length - 1 ? '1.5rem' : '0',
-                      fontSize: '1.2rem',
-                      color: 'var(--text-primary)',
-                      lineHeight: '1.7',
-                      fontWeight: '500'
-                    }}>
-                      <span style={{
-                        color: '#51cf66',
-                        fontSize: '1.5rem',
-                        marginRight: '1rem',
-                        flexShrink: 0,
-                        marginTop: '0.1rem'
+                  {results.recommendations.map((rec, index) => {
+                    const getActionColor = (recommendation) => {
+                      if (recommendation.startsWith('Eat more:')) return '#51cf66'; // Green
+                      if (recommendation.startsWith('Focus on:')) return '#ffd43b'; // Yellow
+                      if (recommendation.startsWith('Avoid:')) return '#ff6b6b'; // Red
+                      return '#51cf66'; // Default green
+                    };
+
+                    const formatContent = (text) => {
+                      // Replace + with ", "
+                      let formatted = text.replace(/\s*\+\s*/g, ', ');
+                      
+                      // Split by commas and clean up each item
+                      let items = formatted.split(',').map(item => item.trim());
+                      
+                      // Remove duplicates and empty items
+                      items = [...new Set(items)].filter(item => item.length > 0);
+                      
+                      // Join with commas, and only use "and" before the final item if there are multiple items
+                      if (items.length > 2) {
+                        const lastItem = items.pop();
+                        formatted = items.join(', ') + ' and ' + lastItem;
+                      } else if (items.length === 2) {
+                        formatted = items.join(' and ');
+                      } else {
+                        formatted = items[0] || text;
+                      }
+                      
+                      // Capitalize first letter
+                      formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+                      
+                      return formatted;
+                    };
+
+                    const getActionText = (recommendation) => {
+                      if (recommendation.startsWith('Eat more:')) {
+                        return {
+                          action: 'EAT MORE',
+                          content: formatContent(recommendation.replace('Eat more: ', ''))
+                        };
+                      }
+                      if (recommendation.startsWith('Focus on:')) {
+                        return {
+                          action: 'FOCUS ON',
+                          content: formatContent(recommendation.replace('Focus on: ', ''))
+                        };
+                      }
+                      if (recommendation.startsWith('Avoid:')) {
+                        return {
+                          action: 'AVOID',
+                          content: formatContent(recommendation.replace('Avoid: ', ''))
+                        };
+                      }
+                      return {
+                        action: 'RECOMMENDED',
+                        content: formatContent(recommendation)
+                      };
+                    };
+
+                    const actionColor = getActionColor(rec.recommendation);
+                    const { action, content } = getActionText(rec.recommendation);
+
+                    return (
+                      <div key={index} style={{ 
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        marginBottom: index < results.recommendations.length - 1 ? '2rem' : '0',
+                        padding: '1.5rem',
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        borderRadius: '15px',
+                        border: `1px solid ${actionColor}20`,
+                        transition: 'all 0.3s ease'
                       }}>
-                        •
-                      </span>
-                      <span style={{ flex: 1 }}>
-                        {rec.recommendation}
-                      </span>
-                    </div>
-                  ))}
+                        <div style={{
+                          width: '16px',
+                          height: '16px',
+                          backgroundColor: actionColor,
+                          borderRadius: '50%',
+                          marginRight: '1.2rem',
+                          flexShrink: 0,
+                          marginTop: '0.3rem',
+                          boxShadow: `0 0 10px ${actionColor}40`
+                        }} />
+                        <div style={{ flex: 1 }}>
+                          <div style={{
+                            color: actionColor,
+                            fontSize: '0.85rem',
+                            fontWeight: '700',
+                            letterSpacing: '1px',
+                            marginBottom: '0.5rem',
+                            textTransform: 'uppercase'
+                          }}>
+                            {action}
+                          </div>
+                          <div style={{
+                            fontSize: '1.1rem',
+                            color: 'var(--text-primary)',
+                            lineHeight: '1.6',
+                            fontWeight: '500'
+                          }}>
+                            {content}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               ) : (
                 <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
