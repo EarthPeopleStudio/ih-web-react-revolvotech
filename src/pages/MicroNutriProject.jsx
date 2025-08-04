@@ -980,24 +980,24 @@ const MicroNutriProject = () => {
                     const getActionText = (recommendation) => {
                       if (recommendation.startsWith('Eat more:')) {
                         return {
-                          action: 'EAT MORE',
+                          action: '😊 EAT MORE',
                           content: formatContent(recommendation.replace('Eat more: ', ''))
                         };
                       }
                       if (recommendation.startsWith('Focus on:')) {
                         return {
-                          action: 'FOCUS ON',
+                          action: '😐 FOCUS ON',
                           content: formatContent(recommendation.replace('Focus on: ', ''))
                         };
                       }
                       if (recommendation.startsWith('Avoid:')) {
                         return {
-                          action: 'AVOID',
+                          action: '😠 AVOID',
                           content: formatContent(recommendation.replace('Avoid: ', ''))
                         };
                       }
                       return {
-                        action: 'RECOMMENDED',
+                        action: '😊 RECOMMENDED',
                         content: formatContent(recommendation)
                       };
                     };
@@ -1014,7 +1014,8 @@ const MicroNutriProject = () => {
                         background: 'rgba(255, 255, 255, 0.03)',
                         borderRadius: '15px',
                         border: `1px solid ${actionColor}20`,
-                        transition: 'all 0.3s ease'
+                        transition: 'all 0.3s ease',
+                        position: 'relative'
                       }}>
                         <div style={{
                           width: '16px',
@@ -1026,7 +1027,7 @@ const MicroNutriProject = () => {
                           marginTop: '0.3rem',
                           boxShadow: `0 0 10px ${actionColor}40`
                         }} />
-                        <div style={{ flex: 1 }}>
+                        <div style={{ flex: 1, marginRight: '4rem' }}>
                           <div style={{
                             color: actionColor,
                             fontSize: '0.85rem',
@@ -1035,7 +1036,7 @@ const MicroNutriProject = () => {
                             marginBottom: '0.5rem',
                             textTransform: 'uppercase'
                           }}>
-                            {action}
+                            {action.split(' ').slice(1).join(' ')}
                           </div>
                           <div style={{
                             fontSize: '1.1rem',
@@ -1045,6 +1046,21 @@ const MicroNutriProject = () => {
                           }}>
                             {content}
                           </div>
+                        </div>
+                        <div style={{
+                          position: 'absolute',
+                          top: '50%',
+                          right: '1.5rem',
+                          transform: 'translateY(-50%)',
+                          fontSize: '2rem',
+                          opacity: '0.8',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '3rem',
+                          height: '3rem'
+                        }}>
+                          {action.split(' ')[0]}
                         </div>
                       </div>
                     );
