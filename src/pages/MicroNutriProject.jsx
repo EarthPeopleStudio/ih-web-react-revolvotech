@@ -744,10 +744,40 @@ const MicroNutriProject = () => {
         });
       });
 
+      // Group and combine recommendations by action type
+      const concernedRecommendations = recommendations.filter(r => r.concern);
+      const groupedAdvice = {
+        "Eat more": [],
+        "Focus on": [],
+        "Avoid": []
+      };
+
+      concernedRecommendations.forEach(rec => {
+        const advice = rec.recommendation;
+        if (advice.startsWith("Eat more:")) {
+          groupedAdvice["Eat more"].push(advice.replace("Eat more: ", ""));
+        } else if (advice.startsWith("Focus on:")) {
+          groupedAdvice["Focus on"].push(advice.replace("Focus on: ", ""));
+        } else if (advice.startsWith("Avoid:")) {
+          groupedAdvice["Avoid"].push(advice.replace("Avoid: ", ""));
+        }
+      });
+
+      // Create combined recommendations
+      const combinedRecommendations = [];
+      Object.entries(groupedAdvice).forEach(([action, items]) => {
+        if (items.length > 0) {
+          const uniqueItems = [...new Set(items)]; // Remove duplicates
+          combinedRecommendations.push({
+            recommendation: `${action}: ${uniqueItems.join(", ")}`
+          });
+        }
+      });
+
       setResults({
         bmi: parseFloat(bmi),
         bmiCategory: getBMICategory(bmi),
-        recommendations: recommendations.filter(r => r.concern),
+        recommendations: combinedRecommendations,
         allBacteria: recommendations
       });
 
