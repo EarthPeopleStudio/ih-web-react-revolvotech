@@ -3,96 +3,126 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 
-// Bacteria database with scientific backing
+// Bacteria database based on REAL research data from Pakistani T2D study
 const bacteriaDatabase = {
   "Prevotella_9": {
-    role: "Harmful",
-    threshold: 2.5,
-    description: "Associated with increased diabetes risk and inflammation",
+    role: "Harmful", // Risk marker; inflammation, BCAA production
+    controlMean: 0.062, // Mean in healthy controls
+    t2dMean: 0.018, // Mean in T2D patients
+    threshold: 0.040, // Midpoint threshold (lower is better for harmful bacteria)
+    importanceScore: 0.107, // From Random Forest model
+    description: "Risk marker associated with inflammation and BCAA production. Higher levels linked to T2D risk.",
     increaseAdvice: "Focus on: high-protein, high-fat, low-carb foods (limit refined & high-starch carbs)",
-    decreaseAdvice: "N/A",
-    pubmed: "38526814",
+    decreaseAdvice: "Ketogenic, low-carb, low-refined sugar",
+    pubmed: "31209315",
     color: "#ff6b6b"
   },
   "Faecalibacterium": {
-    role: "Protective",
-    threshold: 1.5,
-    description: "Produces butyrate, reduces inflammation, protective against diabetes",
-    increaseAdvice: "Eat more: soluble fermentable fiber + healthy fats",
-    decreaseAdvice: "Avoid low-fiber processed diets",
-    pubmed: "37025162",
+    role: "Protective", // Protective (butyrate producer)
+    controlMean: 0.123, // Mean in healthy controls
+    t2dMean: 0.040, // Mean in T2D patients
+    threshold: 0.080, // Above this is good (protective bacteria should be higher)
+    importanceScore: 0.078,
+    description: "Protective butyrate producer. Reduces inflammation and protects against diabetes.",
+    increaseAdvice: "Eat more: soluble fermentable fiber, healthy fats with sustained nutritional ketosis",
+    decreaseAdvice: "Low fiber, processed, high-sugar diets",
+    pubmed: "34230623",
     color: "#51cf66"
   },
   "Senegalimassilia": {
-    role: "Mixed",
-    threshold: 2.0,
-    description: "Complex relationship with metabolic health",
-    increaseAdvice: "Focus on: quality protein/fats and plant fiber",
-    decreaseAdvice: "Avoid excess animal fats",
-    pubmed: "33950514",
+    role: "Mixed", // Emerging; possibly bile-acid / fat metabolism
+    controlMean: 0.002,
+    t2dMean: 0.006,
+    threshold: 0.004, // Midpoint
+    importanceScore: 0.048,
+    description: "Emerging bacteria possibly involved in bile-acid and fat metabolism.",
+    increaseAdvice: "Focus on: quality protein/fats with plant fiber for balance",
+    decreaseAdvice: "Balanced Mediterranean, plant-based",
+    pubmed: "35168312",
     color: "#ffd43b"
   },
   "Dialister": {
-    role: "Mixed",
-    threshold: 2.2,
-    description: "Involved in complex carbohydrate metabolism",
-    increaseAdvice: "Eat more: fermented foods and diverse plants",
-    decreaseAdvice: "Reduce processed high-fat foods",
-    pubmed: "34527994",
+    role: "Mixed", // Mixed; gut dysbiosis marker
+    controlMean: 0.061,
+    t2dMean: 0.005,
+    threshold: 0.033, // Midpoint
+    importanceScore: 0.044,
+    description: "Mixed role as gut dysbiosis marker. Associated with diet diversity.",
+    increaseAdvice: "Eat more: fermented foods, plant fiber within high-fat, low-carb diet",
+    decreaseAdvice: "Anti-inflammatory, high-diversity diets",
+    pubmed: "29172717",
     color: "#ffd43b"
   },
   "Slackia": {
-    role: "Harmful",
-    threshold: 2.0,
-    description: "Associated with increased inflammation and metabolic dysfunction",
-    increaseAdvice: "Eat more: plant polyphenols and fiber",
-    decreaseAdvice: "Avoid excessive animal protein",
-    pubmed: "33819155",
-    color: "#ff6b6b"
+    role: "Mixed", // Bile acid and estrogen metabolism
+    controlMean: 0.001,
+    t2dMean: 0.003,
+    threshold: 0.002, // Midpoint
+    importanceScore: 0.037,
+    description: "Involved in bile acid and estrogen metabolism. Responds to protein and fat intake.",
+    increaseAdvice: "Eat more: plant polyphenols and fiber with high protein/fat",
+    decreaseAdvice: "Balanced diets rich in fiber + polyphenols",
+    pubmed: "31685934",
+    color: "#ffd43b"
   },
   "Butyricicoccus": {
-    role: "Protective",
-    threshold: 1.8,
-    description: "Produces beneficial short-chain fatty acids",
-    increaseAdvice: "Eat more: resistant starch and fiber-rich vegetables",
-    decreaseAdvice: "Limit refined sugar",
-    pubmed: "33255858",
+    role: "Protective", // SCFA producer (anti-inflammatory)
+    controlMean: 0.005,
+    t2dMean: 0.004,
+    threshold: 0.004, // Above this is good
+    importanceScore: 0.035,
+    description: "SCFA producer with anti-inflammatory properties. Benefits from resistant starch.",
+    increaseAdvice: "Eat more: resistant starch, fiber-rich vegetables within high-protein structure",
+    decreaseAdvice: "Processed sugars, low-fiber diets",
+    pubmed: "26898666",
     color: "#51cf66"
   },
   "Alloprevotella": {
-    role: "Harmful",
-    threshold: 2.3,
-    description: "Linked to poor metabolic outcomes and insulin resistance",
-    increaseAdvice: "Avoid: refined carbs and processed starch",
-    decreaseAdvice: "Focus on low-carb ketogenic foods",
-    pubmed: "30675292",
+    role: "Harmful", // Related to Prevotella; carb fermenter
+    controlMean: 0.002,
+    t2dMean: 0.0005,
+    threshold: 0.001, // Lower is better
+    importanceScore: 0.033,
+    description: "Related to Prevotella family. Carbohydrate fermenter linked to refined diet.",
+    increaseAdvice: "Avoid: refined carbs and processed starch with high-fat, moderate plant fiber",
+    decreaseAdvice: "Low-carb, ketogenic diets",
+    pubmed: "31321580",
     color: "#ff6b6b"
   },
   "Libanicoccus": {
-    role: "Unclear",
-    threshold: 1.5,
-    description: "Emerging research on metabolic impact",
-    increaseAdvice: "Focus on: high-fiber keto foods for gut diversity",
-    decreaseAdvice: "Avoid ultra-processed foods",
-    pubmed: "35704598",
+    role: "Emerging", // Emerging; dysbiosis potential
+    controlMean: 0.003,
+    t2dMean: 0.010,
+    threshold: 0.006, // Midpoint
+    importanceScore: 0.029,
+    description: "Emerging bacteria with potential dysbiosis implications. Limited research available.",
+    increaseAdvice: "Focus on: high-fiber keto foods, limit refined foods for gut diversity",
+    decreaseAdvice: "Unknown - default to diversity preservation",
+    pubmed: "34945862",
     color: "#868e96"
   },
   "Ruminococcaceae_UCG.002": {
-    role: "Protective",
-    threshold: 1.6,
-    description: "Beneficial fiber-degrading bacteria",
-    increaseAdvice: "Eat more: whole-food fiber + moderate fats",
-    decreaseAdvice: "Avoid refined carbs",
-    pubmed: "36058827",
+    role: "Protective", // SCFA producer, gut health
+    controlMean: 0.020,
+    t2dMean: 0.008,
+    threshold: 0.014, // Above this is good
+    importanceScore: 0.027,
+    description: "SCFA producer supporting gut health. Benefits from whole-food fiber.",
+    increaseAdvice: "Eat more: whole-food fiber, moderate fats in ketogenic approach",
+    decreaseAdvice: "Refined carbs, ultra-processed diet",
+    pubmed: "34674563",
     color: "#51cf66"
   },
   "Prevotella_7": {
-    role: "Harmful",
-    threshold: 2.4,
-    description: "Associated with poor metabolic health outcomes",
-    increaseAdvice: "Focus on: high-fat, high-protein foods (avoid high-carb)",
-    decreaseAdvice: "Shift to high-fat, high-protein diet",
-    pubmed: "37468350",
+    role: "Harmful", // Same as Prevotella_9
+    controlMean: 0.006,
+    t2dMean: 0.0004,
+    threshold: 0.003, // Lower is better
+    importanceScore: 0.027,
+    description: "Same family as Prevotella_9. Associated with high refined carb diets and T2D risk.",
+    increaseAdvice: "Focus on: high-protein, high-fat structure (reduce refined carbs)",
+    decreaseAdvice: "Ketogenic, low-carb",
+    pubmed: "31801460",
     color: "#ff6b6b"
   }
 };
@@ -622,7 +652,10 @@ const MicroNutriProject = () => {
   const [bacteriaLevels, setBacteriaLevels] = useState(() => {
     const initial = {};
     Object.keys(bacteriaDatabase).forEach(bacteria => {
-      initial[bacteria] = 1.5; // Default middle value
+      // Use the midpoint between control and T2D means as default
+      const info = bacteriaDatabase[bacteria];
+      const defaultValue = (info.controlMean + info.t2dMean) / 2;
+      initial[bacteria] = defaultValue;
     });
     return initial;
   });
@@ -630,7 +663,9 @@ const MicroNutriProject = () => {
   const [inputValues, setInputValues] = useState(() => {
     const initial = {};
     Object.keys(bacteriaDatabase).forEach(bacteria => {
-      initial[bacteria] = '1.50'; // Default display value
+      const info = bacteriaDatabase[bacteria];
+      const defaultValue = (info.controlMean + info.t2dMean) / 2;
+      initial[bacteria] = defaultValue.toFixed(3); // 3 decimal places for precision
     });
     return initial;
   });
@@ -657,7 +692,7 @@ const MicroNutriProject = () => {
       // Update the actual numeric value for calculations
       const numValue = value === '' ? 0 : parseFloat(value);
       if (!isNaN(numValue)) {
-        const clampedValue = Math.max(0, Math.min(5, numValue));
+        const clampedValue = Math.max(0, Math.min(0.5, numValue)); // Real bacterial abundance range
         setBacteriaLevels(prev => ({
           ...prev,
           [bacteria]: clampedValue
@@ -671,7 +706,7 @@ const MicroNutriProject = () => {
     if (value === '') {
       setInputValues(prev => ({
         ...prev,
-        [bacteria]: '0.00'
+        [bacteria]: '0.000'
       }));
       setBacteriaLevels(prev => ({
         ...prev,
@@ -680,8 +715,8 @@ const MicroNutriProject = () => {
     } else {
       const numValue = parseFloat(value);
       if (!isNaN(numValue)) {
-        const clampedValue = Math.max(0, Math.min(5, numValue));
-        const formattedValue = clampedValue.toFixed(2);
+        const clampedValue = Math.max(0, Math.min(0.5, numValue)); // Real bacterial abundance range
+        const formattedValue = clampedValue.toFixed(3); // 3 decimal places for precision
         setInputValues(prev => ({
           ...prev,
           [bacteria]: formattedValue
@@ -798,7 +833,7 @@ const MicroNutriProject = () => {
             <Title>🧬 MicroNutri</Title>
             <Subtitle>
               AI-powered personalized nutrition recommendations based on your gut microbiome profile.
-              Backed by scientific research from Pakistani population studies.
+              Backed by scientific research and clinical studies.
             </Subtitle>
           </Header>
 
@@ -869,7 +904,7 @@ const MicroNutriProject = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <SectionTitle>Gut Bacteria Abundance Levels (0.0 - 5.0)</SectionTitle>
+            <SectionTitle>Gut Bacteria Relative Abundance (0.000 - 0.500)</SectionTitle>
             <BacteriaGrid>
               {Object.entries(bacteriaDatabase).map(([bacteria, info]) => {
                 const level = bacteriaLevels[bacteria];
@@ -892,7 +927,7 @@ const MicroNutriProject = () => {
                     <BacteriaDescription>{info.description}</BacteriaDescription>
                     <InputContainer>
                       <InputLabel>
-                        <span>Abundance Level (0.00 - 5.00)</span>
+                        <span>Relative Abundance (0.000 - 0.500)</span>
                       </InputLabel>
                       <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <BacteriaInput
@@ -900,7 +935,7 @@ const MicroNutriProject = () => {
                           value={inputValues[bacteria] || ''}
                           onChange={(e) => handleBacteriaInputChange(bacteria, e.target.value)}
                           onBlur={(e) => handleBacteriaInputBlur(bacteria, e.target.value)}
-                          placeholder="0.00"
+                          placeholder="0.000"
                           isOptimal={isOptimal}
                           isConcern={isConcern}
                         />

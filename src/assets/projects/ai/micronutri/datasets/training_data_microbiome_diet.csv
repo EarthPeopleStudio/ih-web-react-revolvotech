@@ -1,0 +1,11 @@
+Bacteria,Mean in Controls,Mean in T2D,Importance Score,Role in T2DM,Increased by Diet,Decreased by Diet,Diet Recommendations
+Prevotella_9,0.062,0.018,0.107,"Risk marker; inflammation, BCAA production","High refined carb, high-starch, high-fiber vegetarian","Ketogenic, low-carb, low-refined sugar","Limit refined & high-starch carbs; focus on high-protein, high-fat, low-carb diet"
+Faecalibacterium,0.123,0.04,0.078,Protective (butyrate producer),"High-fiber, Mediterranean diets","Low fiber, processed, high-sugar diets",Increase soluble fermentable fiber + healthy fats; sustained nutritional ketosis with low refined carbs
+Senegalimassilia,0.002,0.006,0.048,Emerging; possibly bile-acid / fat metabolism,"High-fat, high-animal protein diets","Balanced Mediterranean, plant-based",Treat as fat-responsive – ensure protein/fat quality and include plant fiber for balance
+Dialister,0.061,0.005,0.044,Mixed; gut dysbiosis marker,"High-fat processed, low-diversity diets","Anti-inflammatory, high-diversity diets","Emphasize microbial diversity through fermented foods + plant fiber within your high-fat, low-carb diet"
+Slackia,0.001,0.003,0.037,Bile acid and estrogen metabolism,"High-animal protein, high-fat diets",Balanced diets rich in fiber + polyphenols,Keep protein/fat high but include plant polyphenols and fiber to modulate Slackia levels
+Butyricicoccus,0.005,0.004,0.035,SCFA producer (anti-inflammatory),"Resistant starch, legumes, plant fiber","Processed sugars, low-fiber diets","Promote fiber-rich vegetables within your high-protein, high-fat structure"
+Alloprevotella,0.002,0.0005,0.033,Related to Prevotella; carb fermenter,High-carb/refined diets,"Low-carb, ketogenic diets","Reduce starch and sugar sharply; maintain high-fat, moderate plant fiber model"
+Libanicoccus,0.003,0.01,0.029,Emerging; dysbiosis potential,Unknown,Unknown,"For now, default to preserve diversity via high-fiber keto and limit refined foods"
+Ruminococcaceae_UCG.002,0.02,0.008,0.027,"SCFA producer, gut health","Whole-food fiber, moderate fat","Refined carbs, ultra-processed diet","Continue whole-food ketogenic approach, include allowed fibrous vegetables"
+Prevotella_7,0.006,0.0004,0.027,Same as Prevotella_9,"High refined carbs, fiber-heavy vegetarian","Ketogenic, low-carb","Same as Prevotella_9: Reduce refined carbs; maintain high-protein, high-fat structure"
