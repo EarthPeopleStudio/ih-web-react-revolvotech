@@ -46,6 +46,16 @@ const fadeIn = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
+const loadingSpinner = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+const loadingPulse = keyframes`
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+`;
+
 const ProjectsWrapper = styled.div`
   padding: 120px 8% 80px;
   color: var(--text-primary);
@@ -341,6 +351,50 @@ const ProjectVideo = styled.video`
   height: 100%;
   object-fit: cover;
   transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  opacity: ${props => props.isLoaded ? 1 : 0};
+`;
+
+const VideoLoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, rgba(25, 25, 30, 0.95), rgba(35, 35, 40, 0.95));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: ${props => props.show ? 1 : 0};
+  visibility: ${props => props.show ? 'visible' : 'hidden'};
+  transition: all 0.5s ease;
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+`;
+
+const LoadingSpinner = styled.div`
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(251, 182, 4, 0.3);
+  border-top: 3px solid #fbb604;
+  border-radius: 50%;
+  animation: ${loadingSpinner} 1s linear infinite;
+  margin-bottom: 1rem;
+`;
+
+const LoadingText = styled.div`
+  color: #fbb604;
+  font-size: 0.9rem;
+  font-weight: 500;
+  animation: ${loadingPulse} 2s ease-in-out infinite;
+  text-align: center;
+`;
+
+const LoadingDots = styled.div`
+  color: rgba(251, 182, 4, 0.7);
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  animation: ${loadingPulse} 1.5s ease-in-out infinite;
 `;
 
 const ProjectEmoji = styled.div`
@@ -630,6 +684,7 @@ const projectsData = [
 const Projects = () => {
   const [activeTab, setActiveTab] = useState("All");
   const [filteredProjects, setFilteredProjects] = useState([]);
+  const [videoLoadingStates, setVideoLoadingStates] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -649,6 +704,20 @@ const Projects = () => {
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+  };
+
+  const handleVideoLoadStart = (projectId) => {
+    setVideoLoadingStates(prev => ({
+      ...prev,
+      [projectId]: true
+    }));
+  };
+
+  const handleVideoLoaded = (projectId) => {
+    setVideoLoadingStates(prev => ({
+      ...prev,
+      [projectId]: false
+    }));
   };
 
   const handleProjectClick = (project) => {
@@ -732,13 +801,24 @@ const Projects = () => {
               >
                 <ProjectImageContainer>
                   {project.imageUrl.endsWith('.mp4') ? (
-                    <ProjectVideo
-                      src={project.imageUrl}
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                    />
+                    <>
+                      <ProjectVideo
+                        src={project.imageUrl}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        isLoaded={!videoLoadingStates[project.id]}
+                        onLoadStart={() => handleVideoLoadStart(project.id)}
+                        onCanPlay={() => handleVideoLoaded(project.id)}
+                        onError={() => handleVideoLoaded(project.id)}
+                      />
+                      <VideoLoadingOverlay show={videoLoadingStates[project.id]}>
+                        <LoadingSpinner />
+                        <LoadingText>Loading Project Preview</LoadingText>
+                        <LoadingDots>●●●</LoadingDots>
+                      </VideoLoadingOverlay>
+                    </>
                   ) : (
                     <ProjectEmoji>{project.imageUrl}</ProjectEmoji>
                   )}
