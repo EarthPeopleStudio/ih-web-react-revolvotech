@@ -652,9 +652,17 @@ const MicroNutriProject = () => {
   const [bacteriaLevels, setBacteriaLevels] = useState(() => {
     const initial = {};
     Object.keys(bacteriaDatabase).forEach(bacteria => {
-      // Use the midpoint between control and T2D means as default
       const info = bacteriaDatabase[bacteria];
-      const defaultValue = (info.controlMean + info.t2dMean) / 2;
+      // For protective bacteria, start below threshold to trigger "Eat more"
+      // For harmful bacteria, start above threshold to trigger "Focus/Avoid"
+      let defaultValue;
+      if (info.role === "Protective") {
+        defaultValue = Math.max(0.001, info.threshold * 0.7); // 70% of threshold
+      } else if (info.role === "Harmful") {
+        defaultValue = Math.min(0.1, info.threshold * 1.5); // 150% of threshold
+      } else {
+        defaultValue = (info.controlMean + info.t2dMean) / 2; // Mixed bacteria use midpoint
+      }
       initial[bacteria] = defaultValue;
     });
     return initial;
@@ -664,8 +672,15 @@ const MicroNutriProject = () => {
     const initial = {};
     Object.keys(bacteriaDatabase).forEach(bacteria => {
       const info = bacteriaDatabase[bacteria];
-      const defaultValue = (info.controlMean + info.t2dMean) / 2;
-      initial[bacteria] = defaultValue.toFixed(3); // 3 decimal places for precision
+      let defaultValue;
+      if (info.role === "Protective") {
+        defaultValue = Math.max(0.001, info.threshold * 0.7);
+      } else if (info.role === "Harmful") {
+        defaultValue = Math.min(0.1, info.threshold * 1.5);
+      } else {
+        defaultValue = (info.controlMean + info.t2dMean) / 2;
+      }
+      initial[bacteria] = defaultValue.toFixed(3);
     });
     return initial;
   });
