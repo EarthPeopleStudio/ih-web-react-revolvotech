@@ -9,7 +9,9 @@ import {
   FaStar,
 } from "react-icons/fa";
 import HiveKeyVideo from "../assets/projects/apps/hivekey.mp4";
+import MicroNutriVideo from "../assets/projects/apps/micronutri.mp4";
 import FreshCleaningLuxeVideo from "../assets/projects/websites/freshcleaningluxe.mp4";
+import StallionContractingVideo from "../assets/projects/websites/stallioncontracting.mp4";
 
 const circuitPulse = keyframes`
   0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
@@ -326,6 +328,9 @@ const ProjectImageContainer = styled.div`
   overflow: hidden;
   background: #1a1a1a;
   border-bottom: 1px solid rgba(255, 235, 59, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ProjectVideo = styled.video`
@@ -336,6 +341,21 @@ const ProjectVideo = styled.video`
   height: 100%;
   object-fit: cover;
   transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+`;
+
+const ProjectEmoji = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  opacity: 0.8;
+  transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  
+  ${ProjectCard}:hover & {
+    font-size: 4.5rem;
+    opacity: 1;
+  }
 `;
 
 const ProjectInfo = styled.div`
@@ -574,6 +594,17 @@ const projectsData = [
   },
   {
     id: 2,
+    title: "MicroNutri",
+    description:
+      "AI-powered personalized nutrition recommendations based on gut microbiome analysis. Uses Random Forest ML model trained on Pakistani population data for evidence-based dietary advice.",
+    imageUrl: MicroNutriVideo,
+    tags: ["AI", "Machine Learning", "Healthcare", "Nutrition", "React"],
+    category: "AI",
+    path: "/projects/micronutri",
+    live: "/projects/micronutri",
+  },
+  {
+    id: 3,
     title: "Fresh Cleaning Luxe",
     description:
       "A sleek, modern, and user-friendly website for a luxury cleaning service, designed to attract and convert high-end clientele.",
@@ -582,6 +613,17 @@ const projectsData = [
     category: "Websites",
     path: "https://freshcleaningluxe.com",
     live: "https://freshcleaningluxe.com",
+  },
+  {
+    id: 4,
+    title: "Stallion Contracting",
+    description:
+      "Professional contracting services website showcasing construction expertise, project portfolio, and client testimonials with a modern, trust-building design.",
+    imageUrl: StallionContractingVideo,
+    tags: ["Web Development", "Construction", "Business", "Portfolio"],
+    category: "Websites",
+    path: "https://stallioncontractingut.com",
+    live: "https://stallioncontractingut.com",
   },
 ];
 
@@ -689,13 +731,17 @@ const Projects = () => {
                 onClick={() => handleProjectClick(project)}
               >
                 <ProjectImageContainer>
-                  <ProjectVideo
-                    src={project.imageUrl}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                  />
+                  {project.imageUrl.endsWith('.mp4') ? (
+                    <ProjectVideo
+                      src={project.imageUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                    />
+                  ) : (
+                    <ProjectEmoji>{project.imageUrl}</ProjectEmoji>
+                  )}
                 </ProjectImageContainer>
                 <ProjectInfo>
                   <ProjectTitle className="project-title">

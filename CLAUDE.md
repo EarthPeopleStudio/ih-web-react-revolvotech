@@ -80,3 +80,21 @@ The application automatically detects mobile devices and renders a dedicated mob
 - Chunked JavaScript and CSS files
 - Image optimization and proper caching headers
 - Source maps disabled for production
+
+## Important Development Notes
+
+### Font Loading Strategy
+The application uses dynamic font loading based on subdomain:
+- **Main site**: Montserrat font family loaded via Google Fonts
+- **Choreo app**: Figtree and Poppins fonts loaded with preload optimization
+- Font loading includes performance optimizations with preload links and Font Loading API
+
+### Additional Documentation Files
+- `SUBDOMAIN_ARCHITECTURE.md` - Detailed subdomain routing documentation
+- `CHOREO_DEVELOPMENT_GUIDE.md` - Specific Choreo app development guidelines
+- `SEO_DEPLOYMENT_GUIDE.md` - SEO and deployment configuration
+
+### Security Configuration
+- Custom CSP (Content Security Policy) headers configured in Vite
+- CORS support for subdomain development
+- Stripe integration security considerations

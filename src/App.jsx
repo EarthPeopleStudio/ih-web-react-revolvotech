@@ -20,6 +20,7 @@ import SocialMediaImages from "./Components/SocialMediaImages";
 
 import Projects from "./pages/Projects";
 import HivekeyProject from "./pages/HivekeyProject";
+import MicroNutriProject from "./pages/MicroNutriProject";
 import Careers from "./pages/Careers";
 import TechShowcase from "./Components/TechShowcase";
 import Pricing from "./Components/Pricing";
@@ -384,6 +385,7 @@ const AppContent = () => {
 
               {/* Individual Project Pages */}
               <Route path="/projects/hivekey" element={<HivekeyProject />} />
+              <Route path="/projects/micronutri" element={<MicroNutriProject />} />
 
               {/* Tech Showcase Page */}
               <Route path="/tech-showcase" element={<TechShowcase />} />
