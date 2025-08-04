@@ -9,7 +9,7 @@ const bacteriaDatabase = {
     role: "Harmful",
     threshold: 2.5,
     description: "Associated with increased diabetes risk and inflammation",
-    increaseAdvice: "Limit refined & high-starch carbs; focus on high-protein, high-fat, low-carb diet",
+    increaseAdvice: "Focus on: high-protein, high-fat, low-carb foods (limit refined & high-starch carbs)",
     decreaseAdvice: "N/A",
     pubmed: "38526814",
     color: "#ff6b6b"
@@ -18,7 +18,7 @@ const bacteriaDatabase = {
     role: "Protective",
     threshold: 1.5,
     description: "Produces butyrate, reduces inflammation, protective against diabetes",
-    increaseAdvice: "Increase soluble fermentable fiber + healthy fats",
+    increaseAdvice: "Eat more: soluble fermentable fiber + healthy fats",
     decreaseAdvice: "Avoid low-fiber processed diets",
     pubmed: "37025162",
     color: "#51cf66"
@@ -27,7 +27,7 @@ const bacteriaDatabase = {
     role: "Mixed",
     threshold: 2.0,
     description: "Complex relationship with metabolic health",
-    increaseAdvice: "Ensure protein/fat quality and plant fiber",
+    increaseAdvice: "Focus on: quality protein/fats and plant fiber",
     decreaseAdvice: "Avoid excess animal fats",
     pubmed: "33950514",
     color: "#ffd43b"
@@ -36,7 +36,7 @@ const bacteriaDatabase = {
     role: "Mixed",
     threshold: 2.2,
     description: "Involved in complex carbohydrate metabolism",
-    increaseAdvice: "Add fermented foods and plant diversity",
+    increaseAdvice: "Eat more: fermented foods and diverse plants",
     decreaseAdvice: "Reduce processed high-fat foods",
     pubmed: "34527994",
     color: "#ffd43b"
@@ -45,7 +45,7 @@ const bacteriaDatabase = {
     role: "Harmful",
     threshold: 2.0,
     description: "Associated with increased inflammation and metabolic dysfunction",
-    increaseAdvice: "Include plant polyphenols and fiber",
+    increaseAdvice: "Eat more: plant polyphenols and fiber",
     decreaseAdvice: "Avoid excessive animal protein",
     pubmed: "33819155",
     color: "#ff6b6b"
@@ -54,7 +54,7 @@ const bacteriaDatabase = {
     role: "Protective",
     threshold: 1.8,
     description: "Produces beneficial short-chain fatty acids",
-    increaseAdvice: "Increase resistant starch and fiber-rich vegetables",
+    increaseAdvice: "Eat more: resistant starch and fiber-rich vegetables",
     decreaseAdvice: "Limit refined sugar",
     pubmed: "33255858",
     color: "#51cf66"
@@ -63,7 +63,7 @@ const bacteriaDatabase = {
     role: "Harmful",
     threshold: 2.3,
     description: "Linked to poor metabolic outcomes and insulin resistance",
-    increaseAdvice: "Cut down refined carbs and processed starch",
+    increaseAdvice: "Avoid: refined carbs and processed starch",
     decreaseAdvice: "Focus on low-carb ketogenic foods",
     pubmed: "30675292",
     color: "#ff6b6b"
@@ -72,7 +72,7 @@ const bacteriaDatabase = {
     role: "Unclear",
     threshold: 1.5,
     description: "Emerging research on metabolic impact",
-    increaseAdvice: "Preserve diversity with high-fiber keto",
+    increaseAdvice: "Focus on: high-fiber keto foods for gut diversity",
     decreaseAdvice: "Avoid ultra-processed foods",
     pubmed: "35704598",
     color: "#868e96"
@@ -81,7 +81,7 @@ const bacteriaDatabase = {
     role: "Protective",
     threshold: 1.6,
     description: "Beneficial fiber-degrading bacteria",
-    increaseAdvice: "Add whole-food fiber + moderate fats",
+    increaseAdvice: "Eat more: whole-food fiber + moderate fats",
     decreaseAdvice: "Avoid refined carbs",
     pubmed: "36058827",
     color: "#51cf66"
@@ -90,7 +90,7 @@ const bacteriaDatabase = {
     role: "Harmful",
     threshold: 2.4,
     description: "Associated with poor metabolic health outcomes",
-    increaseAdvice: "Avoid high-carb and low-protein diets",
+    increaseAdvice: "Focus on: high-fat, high-protein foods (avoid high-carb)",
     decreaseAdvice: "Shift to high-fat, high-protein diet",
     pubmed: "37468350",
     color: "#ff6b6b"
@@ -256,6 +256,18 @@ const Input = styled.input`
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
+
+  /* Hide number input spinner buttons for cleaner look */
+  &[type="number"]::-webkit-outer-spin-button,
+  &[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* For Firefox */
+  &[type="number"] {
+    -moz-appearance: textfield;
+  }
 `;
 
 const Select = styled.select`
@@ -266,11 +278,25 @@ const Select = styled.select`
   color: var(--text-primary);
   font-size: 1rem;
   transition: all 0.3s ease;
+  cursor: pointer;
+  
+  /* Custom dropdown arrow */
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23667eea' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
 
   &:focus {
     outline: none;
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23764ba2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
   }
 
   option {
@@ -302,19 +328,19 @@ const Select = styled.select`
 
 const BacteriaGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
   margin-bottom: 2rem;
   
   @media (max-width: 768px) {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
     margin-bottom: 1.5rem;
   }
   
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 1.5rem;
     margin-bottom: 1.2rem;
   }
 `;
@@ -322,9 +348,13 @@ const BacteriaGrid = styled.div`
 const BacteriaCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.05);
   border-radius: 15px;
-  padding: 1.5rem;
+  padding: 0.8rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 
   &:hover {
     transform: translateY(-2px);
@@ -332,12 +362,12 @@ const BacteriaCard = styled(motion.div)`
   }
   
   @media (max-width: 768px) {
-    padding: 1.2rem;
+    padding: 0.7rem;
     border-radius: 12px;
   }
   
   @media (max-width: 480px) {
-    padding: 1rem;
+    padding: 0.6rem;
     border-radius: 10px;
     
     &:hover {
@@ -349,69 +379,122 @@ const BacteriaCard = styled(motion.div)`
 
 const BacteriaName = styled.h3`
   color: var(--text-primary);
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
+  margin-bottom: 0.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  margin-right: 5rem;
+  
+  @media (max-width: 480px) {
+    margin-right: 4rem;
+  }
 `;
 
 const RoleBadge = styled.span`
   background: ${props => props.color || '#667eea'};
   color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
   font-weight: 500;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  
+  @media (max-width: 768px) {
+    top: 0.4rem;
+    right: 0.4rem;
+    padding: 0.15rem 0.35rem;
+    font-size: 0.65rem;
+  }
+  
+  @media (max-width: 480px) {
+    top: 0.3rem;
+    right: 0.3rem;
+    padding: 0.12rem 0.3rem;
+    font-size: 0.6rem;
+  }
 `;
 
 const BacteriaDescription = styled.p`
   color: var(--text-secondary);
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  line-height: 1.4;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+  line-height: 1.3;
+  flex-grow: 1;
+  min-height: 0.8rem;
 `;
 
-const SliderContainer = styled.div`
-  margin: 1rem 0;
+const InputContainer = styled.div`
+  margin-top: auto;
+  padding-top: 0.3rem;
 `;
 
-const SliderLabel = styled.div`
+const InputLabel = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
 `;
 
-const SliderValue = styled.span`
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.25rem 0.5rem;
-  border-radius: 8px;
-  font-weight: 600;
+const BacteriaInput = styled.input`
+  background: ${props => props.isOptimal ? 'rgba(81, 207, 102, 0.15)' : props.isConcern ? 'rgba(255, 107, 107, 0.15)' : 'rgba(255, 212, 59, 0.15)'};
+  border: 1px solid ${props => props.isOptimal ? 'rgba(81, 207, 102, 0.3)' : props.isConcern ? 'rgba(255, 107, 107, 0.3)' : 'rgba(255, 212, 59, 0.3)'};
   color: ${props => props.isOptimal ? '#51cf66' : props.isConcern ? '#ff6b6b' : '#ffd43b'};
-`;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-align: center;
+  width: 120px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
-const Slider = styled.input`
-  width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.2);
-  outline: none;
-  appearance: none;
-
-  &::-webkit-slider-thumb {
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #667eea;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+    transform: scale(1.05);
   }
 
-  &::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
+  &:hover:not(:focus) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Remove spinner arrows */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  /* Placeholder styling */
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    width: 100px;
+    padding: 0.7rem 0.8rem;
+    font-size: 1rem;
+  }
+  
+  @media (max-width: 480px) {
+    width: 90px;
+    padding: 0.6rem 0.7rem;
+    font-size: 0.95rem;
   }
 `;
 
@@ -544,6 +627,14 @@ const MicroNutriProject = () => {
     return initial;
   });
 
+  const [inputValues, setInputValues] = useState(() => {
+    const initial = {};
+    Object.keys(bacteriaDatabase).forEach(bacteria => {
+      initial[bacteria] = '1.50'; // Default display value
+    });
+    return initial;
+  });
+
   const [results, setResults] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -554,11 +645,53 @@ const MicroNutriProject = () => {
     }));
   };
 
-  const handleBacteriaChange = (bacteria, value) => {
-    setBacteriaLevels(prev => ({
-      ...prev,
-      [bacteria]: parseFloat(value)
-    }));
+  const handleBacteriaInputChange = (bacteria, value) => {
+    // Allow empty string or just numbers/decimal point for typing
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      // Store the raw input value for display
+      setInputValues(prev => ({
+        ...prev,
+        [bacteria]: value
+      }));
+      
+      // Update the actual numeric value for calculations
+      const numValue = value === '' ? 0 : parseFloat(value);
+      if (!isNaN(numValue)) {
+        const clampedValue = Math.max(0, Math.min(5, numValue));
+        setBacteriaLevels(prev => ({
+          ...prev,
+          [bacteria]: clampedValue
+        }));
+      }
+    }
+  };
+
+  const handleBacteriaInputBlur = (bacteria, value) => {
+    // Format the value when user finishes typing
+    if (value === '') {
+      setInputValues(prev => ({
+        ...prev,
+        [bacteria]: '0.00'
+      }));
+      setBacteriaLevels(prev => ({
+        ...prev,
+        [bacteria]: 0
+      }));
+    } else {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        const clampedValue = Math.max(0, Math.min(5, numValue));
+        const formattedValue = clampedValue.toFixed(2);
+        setInputValues(prev => ({
+          ...prev,
+          [bacteria]: formattedValue
+        }));
+        setBacteriaLevels(prev => ({
+          ...prev,
+          [bacteria]: clampedValue
+        }));
+      }
+    }
   };
 
   const calculateBMI = () => {
@@ -724,28 +857,25 @@ const MicroNutriProject = () => {
                   >
                     <BacteriaName>
                       {bacteria.replace(/_/g, ' ')}
-                      <RoleBadge color={info.color}>{info.role}</RoleBadge>
                     </BacteriaName>
+                    <RoleBadge color={info.color}>{info.role}</RoleBadge>
                     <BacteriaDescription>{info.description}</BacteriaDescription>
-                    <SliderContainer>
-                      <SliderLabel>
-                        <span>Abundance Level</span>
-                        <SliderValue 
-                          isOptimal={isOptimal} 
+                    <InputContainer>
+                      <InputLabel>
+                        <span>Abundance Level (0.00 - 5.00)</span>
+                      </InputLabel>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <BacteriaInput
+                          type="text"
+                          value={inputValues[bacteria] || ''}
+                          onChange={(e) => handleBacteriaInputChange(bacteria, e.target.value)}
+                          onBlur={(e) => handleBacteriaInputBlur(bacteria, e.target.value)}
+                          placeholder="0.00"
+                          isOptimal={isOptimal}
                           isConcern={isConcern}
-                        >
-                          {level.toFixed(2)}
-                        </SliderValue>
-                      </SliderLabel>
-                      <Slider
-                        type="range"
-                        min="0"
-                        max="5"
-                        step="0.01"
-                        value={level}
-                        onChange={(e) => handleBacteriaChange(bacteria, e.target.value)}
-                      />
-                    </SliderContainer>
+                        />
+                      </div>
+                    </InputContainer>
                   </BacteriaCard>
                 );
               })}
@@ -773,29 +903,41 @@ const MicroNutriProject = () => {
                 <BMICategory>BMI - {results.bmiCategory}</BMICategory>
               </BMICard>
 
-              <SectionTitle>🎯 Priority Recommendations</SectionTitle>
+              <SectionTitle>🎯 Your Personalized Diet Plan</SectionTitle>
               {results.recommendations.length > 0 ? (
-                results.recommendations.map((rec, index) => (
-                  <RecommendationCard
-                    key={rec.bacteria}
-                    color={rec.info.color}
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                  >
-                    <RecommendationTitle>
-                      {rec.bacteria.replace(/_/g, ' ')} {rec.status}
-                    </RecommendationTitle>
-                    <RecommendationText>{rec.recommendation}</RecommendationText>
-                    <PubMedLink 
-                      href={`https://pubmed.ncbi.nlm.nih.gov/${rec.info.pubmed}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      📚 View Research (PubMed: {rec.info.pubmed})
-                    </PubMedLink>
-                  </RecommendationCard>
-                ))
+                <div style={{ 
+                  background: 'linear-gradient(145deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1))', 
+                  borderRadius: '20px', 
+                  padding: '2.5rem', 
+                  border: '1px solid rgba(102, 126, 234, 0.2)',
+                  textAlign: 'left',
+                  boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)'
+                }}>
+                  {results.recommendations.map((rec, index) => (
+                    <div key={rec.bacteria} style={{ 
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      marginBottom: index < results.recommendations.length - 1 ? '1.5rem' : '0',
+                      fontSize: '1.2rem',
+                      color: 'var(--text-primary)',
+                      lineHeight: '1.7',
+                      fontWeight: '500'
+                    }}>
+                      <span style={{
+                        color: '#51cf66',
+                        fontSize: '1.5rem',
+                        marginRight: '1rem',
+                        flexShrink: 0,
+                        marginTop: '0.1rem'
+                      }}>
+                        •
+                      </span>
+                      <span style={{ flex: 1 }}>
+                        {rec.recommendation}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>
                   🎉 Excellent! Your gut bacteria profile looks well-balanced. 
