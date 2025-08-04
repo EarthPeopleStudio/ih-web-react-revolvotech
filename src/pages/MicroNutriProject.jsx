@@ -102,17 +102,41 @@ const Container = styled.div`
   background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
   color: var(--text-primary);
   padding: 120px 0 80px;
+  
+  @media (max-width: 768px) {
+    padding: 100px 0 60px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 80px 0 40px;
+  }
 `;
 
 const ContentWrapper = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+  
+  @media (max-width: 768px) {
+    padding: 0 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0 1rem;
+  }
 `;
 
 const Header = styled.div`
   text-align: center;
   margin-bottom: 3rem;
+  
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
+  
+  @media (max-width: 480px) {
+    margin-bottom: 1.5rem;
+  }
 `;
 
 const Title = styled.h1`
@@ -122,6 +146,15 @@ const Title = styled.h1`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
+  
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+  }
 `;
 
 const Subtitle = styled.p`
@@ -130,6 +163,17 @@ const Subtitle = styled.p`
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.6;
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    max-width: 500px;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    max-width: 100%;
+    line-height: 1.5;
+  }
 `;
 
 const FormContainer = styled(motion.div)`
@@ -139,6 +183,16 @@ const FormContainer = styled(motion.div)`
   padding: 2rem;
   margin-bottom: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
 `;
 
 const SectionTitle = styled.h2`
@@ -146,6 +200,16 @@ const SectionTitle = styled.h2`
   margin-bottom: 1.5rem;
   font-size: 1.5rem;
   font-weight: 600;
+  
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+    margin-bottom: 1.2rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 const InputGrid = styled.div`
@@ -153,6 +217,18 @@ const InputGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
 `;
 
 const InputGroup = styled.div`
@@ -229,6 +305,18 @@ const BacteriaGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+  }
 `;
 
 const BacteriaCard = styled(motion.div)`
@@ -241,6 +329,21 @@ const BacteriaCard = styled(motion.div)`
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+  
+  @media (max-width: 768px) {
+    padding: 1.2rem;
+    border-radius: 12px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 1rem;
+    border-radius: 10px;
+    
+    &:hover {
+      transform: none;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
   }
 `;
 
@@ -333,6 +436,23 @@ const AnalyzeButton = styled(motion.button)`
     opacity: 0.6;
     cursor: not-allowed;
   }
+  
+  @media (max-width: 768px) {
+    padding: 0.9rem 1.8rem;
+    font-size: 1rem;
+    border-radius: 12px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+    border-radius: 10px;
+    
+    &:hover {
+      transform: none;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+    }
+  }
 `;
 
 const ResultsContainer = styled(motion.div)`
@@ -341,6 +461,16 @@ const ResultsContainer = styled(motion.div)`
   border-radius: 20px;
   padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 1rem;
+    border-radius: 10px;
+  }
 `;
 
 const BMICard = styled.div`

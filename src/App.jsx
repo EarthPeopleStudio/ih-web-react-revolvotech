@@ -327,8 +327,8 @@ const AppContent = () => {
   // Combine isPending with isLoading for better UX
   const showLoading = isLoading || isPending;
 
-  // If mobile, render the mobile app
-  if (isMobile) {
+  // If mobile, render the mobile app (except for MicroNutri project)
+  if (isMobile && currentPath !== "/projects/micronutri") {
     return (
       <PathContext.Provider value={currentPath}>
         <MobileApp />
