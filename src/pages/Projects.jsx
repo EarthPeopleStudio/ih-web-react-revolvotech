@@ -650,7 +650,7 @@ const projectsData = [
     id: 2,
     title: "MicroNutri",
     description:
-      "AI-powered personalized nutrition recommendations based on gut microbiome analysis. Uses Random Forest ML model trained on Pakistani population data for evidence-based dietary advice.",
+      "AI-powered personalized nutrition recommendations based on gut microbiome analysis. Uses Random Forest ML model trained on clinical population data for evidence-based dietary advice.",
     imageUrl: MicroNutriVideo,
     tags: ["AI", "Machine Learning", "Healthcare", "Nutrition", "React"],
     category: "AI",
