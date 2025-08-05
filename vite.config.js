@@ -13,7 +13,7 @@ export default defineConfig({
           // Add CSP headers
           res.setHeader(
             "Content-Security-Policy",
-            "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.googletagmanager.com https://js.stripe.com https://m.stripe.com; connect-src 'self' https://api.web3forms.com https://*.web3forms.com https://www.google-analytics.com https://api.stripe.com https://m.stripe.com https://*.stripe.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: https://*.stripe.com; frame-src 'self' https://calendly.com https://js.stripe.com https://hooks.stripe.com;"
+            "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.googletagmanager.com https://js.stripe.com https://m.stripe.com; connect-src 'self' blob: data: https://images.unsplash.com https://api.web3forms.com https://*.web3forms.com https://www.google-analytics.com https://api.stripe.com https://m.stripe.com https://*.stripe.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: https://*.stripe.com https://images.unsplash.com; frame-src 'self' https://calendly.com https://js.stripe.com https://hooks.stripe.com;"
           );
 
           // Add CORS headers for subdomain support
@@ -36,7 +36,7 @@ export default defineConfig({
   server: {
     headers: {
       "Content-Security-Policy":
-        "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.googletagmanager.com https://js.stripe.com https://m.stripe.com; connect-src 'self' https://api.web3forms.com https://*.web3forms.com https://www.google-analytics.com https://api.stripe.com https://m.stripe.com https://*.stripe.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: https://*.stripe.com; frame-src 'self' https://calendly.com https://js.stripe.com https://hooks.stripe.com;",
+        "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://www.googletagmanager.com https://js.stripe.com https://m.stripe.com; connect-src 'self' blob: data: https://images.unsplash.com https://api.web3forms.com https://*.web3forms.com https://www.google-analytics.com https://api.stripe.com https://m.stripe.com https://*.stripe.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: https://*.stripe.com https://images.unsplash.com; frame-src 'self' https://calendly.com https://js.stripe.com https://hooks.stripe.com;",
       // Add CORS headers for subdomain support in dev
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",

@@ -21,6 +21,8 @@ import AIShowcase from "./TechShowcase/AIShowcase";
 import MusicShowcase from "./TechShowcase/MusicShowcase";
 // Import ContentShowcase component
 import ContentShowcase from "./TechShowcase/ContentShowcase";
+// Import XRShowcase component
+import XRShowcase from "./TechShowcase/XRShowcase";
 
 const circuitPulse = keyframes`
   0%, 100% { box-shadow: 0 0 0 0 rgba(251, 182, 4, 0); }
@@ -699,6 +701,9 @@ export default function TechShowcase() {
         case 'content':
           setActiveCategory('Content');
           break;
+        case 'xr':
+          setActiveCategory('XR');
+          break;
         default:
           setActiveCategory('Websites');
       }
@@ -744,6 +749,8 @@ export default function TechShowcase() {
         return <AIShowcase key="ai" />;
       case 'Content':
         return <ContentShowcase key="content" />;
+      case 'XR':
+        return <XRShowcase key="xr" />;
       default:
         return <WebsitesShowcase key="websites-default" />;
     }
@@ -791,6 +798,12 @@ export default function TechShowcase() {
             onClick={() => handleTabClick('AI')}
           >
             AI
+          </Tab>
+          <Tab 
+            $active={activeCategory === 'XR'} 
+            onClick={() => handleTabClick('XR')}
+          >
+            XR
           </Tab>
           <Tab 
             $active={activeCategory === 'Content'} 
