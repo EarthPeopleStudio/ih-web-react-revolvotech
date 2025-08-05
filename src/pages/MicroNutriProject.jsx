@@ -130,7 +130,7 @@ const bacteriaDatabase = {
 
 const Container = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a2e 100%);
+  background: linear-gradient(180deg, var(--dark-bg) 0%, #0a0f1c 25%, #1a2332 50%, #0a0f1c 75%, var(--dark-bg) 100%);
   color: var(--text-primary);
   padding: 120px 0 80px;
   
@@ -173,7 +173,7 @@ const Header = styled.div`
 const Title = styled.h1`
   font-size: 3rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 1rem;
@@ -361,18 +361,18 @@ const BacteriaGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   
   @media (max-width: 768px) {
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 2rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
   }
   
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.5rem;
   }
 `;
 
@@ -530,7 +530,7 @@ const BacteriaInput = styled.input`
 `;
 
 const AnalyzeButton = styled(motion.button)`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -543,7 +543,7 @@ const AnalyzeButton = styled(motion.button)`
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
   }
 
   &:disabled {
