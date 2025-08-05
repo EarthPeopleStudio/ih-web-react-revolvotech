@@ -12,8 +12,8 @@ const bacteriaDatabase = {
     threshold: 0.040, // Midpoint threshold (lower is better for harmful bacteria)
     importanceScore: 0.107, // From Random Forest model
     description: "Risk marker associated with inflammation and BCAA production. Higher levels linked to T2D risk.",
-    increaseAdvice: "Focus on: high-protein, high-fat, low-carb foods (limit refined & high-starch carbs)",
-    decreaseAdvice: "Ketogenic, low-carb, low-refined sugar",
+    increaseAdvice: "Should not increase harmful bacteria", // Not used for harmful bacteria
+    decreaseAdvice: "Eat more: ketogenic foods, low-carb foods, high-protein, high-fat foods, Avoid: refined carbs, high-starch carbs, refined sugar",
     pubmed: "31209315",
     color: "#ff6b6b"
   },
@@ -24,8 +24,8 @@ const bacteriaDatabase = {
     threshold: 0.080, // Above this is good (protective bacteria should be higher)
     importanceScore: 0.078,
     description: "Protective butyrate producer. Reduces inflammation and protects against diabetes.",
-    increaseAdvice: "Eat more: soluble fermentable fiber, healthy fats with sustained nutritional ketosis",
-    decreaseAdvice: "Low fiber, processed, high-sugar diets",
+    increaseAdvice: "Eat more: high-fiber foods, Mediterranean diet foods, soluble fermentable fiber, healthy fats, Avoid: low fiber foods, processed foods, high-sugar diets",
+    decreaseAdvice: "Should not decrease protective bacteria", // Not used for protective bacteria
     pubmed: "34230623",
     color: "#51cf66"
   },
@@ -36,8 +36,8 @@ const bacteriaDatabase = {
     threshold: 0.004, // Midpoint
     importanceScore: 0.048,
     description: "Emerging bacteria possibly involved in bile-acid and fat metabolism.",
-    increaseAdvice: "Focus on: quality protein/fats with plant fiber for balance",
-    decreaseAdvice: "Balanced Mediterranean, plant-based",
+    increaseAdvice: "Eat more: high-fat foods, high-animal protein",
+    decreaseAdvice: "Eat more: balanced Mediterranean diet, plant-based foods",
     pubmed: "35168312",
     color: "#ffd43b"
   },
@@ -48,8 +48,8 @@ const bacteriaDatabase = {
     threshold: 0.033, // Midpoint
     importanceScore: 0.044,
     description: "Mixed role as gut dysbiosis marker. Associated with diet diversity.",
-    increaseAdvice: "Eat more: fermented foods, plant fiber within high-fat, low-carb diet",
-    decreaseAdvice: "Anti-inflammatory, high-diversity diets",
+    increaseAdvice: "Eat more: high-fat processed foods, low-diversity diets", // What increases it (not recommended)
+    decreaseAdvice: "Eat more: anti-inflammatory foods, high-diversity diets, fermented foods, plant fiber",
     pubmed: "29172717",
     color: "#ffd43b"
   },
@@ -60,8 +60,8 @@ const bacteriaDatabase = {
     threshold: 0.002, // Midpoint
     importanceScore: 0.037,
     description: "Involved in bile acid and estrogen metabolism. Responds to protein and fat intake.",
-    increaseAdvice: "Eat more: plant polyphenols and fiber with high protein/fat",
-    decreaseAdvice: "Balanced diets rich in fiber + polyphenols",
+    increaseAdvice: "Eat more: high-animal protein, high-fat foods",
+    decreaseAdvice: "Eat more: balanced diets rich in fiber, polyphenols",
     pubmed: "31685934",
     color: "#ffd43b"
   },
@@ -72,8 +72,8 @@ const bacteriaDatabase = {
     threshold: 0.004, // Above this is good
     importanceScore: 0.035,
     description: "SCFA producer with anti-inflammatory properties. Benefits from resistant starch.",
-    increaseAdvice: "Eat more: resistant starch, fiber-rich vegetables within high-protein structure",
-    decreaseAdvice: "Processed sugars, low-fiber diets",
+    increaseAdvice: "Eat more: resistant starch, legumes, plant fiber, fiber-rich vegetables, Avoid: processed sugars, low-fiber diets",
+    decreaseAdvice: "Should not decrease protective bacteria", // Not used for protective bacteria
     pubmed: "26898666",
     color: "#51cf66"
   },
@@ -84,8 +84,8 @@ const bacteriaDatabase = {
     threshold: 0.001, // Lower is better
     importanceScore: 0.033,
     description: "Related to Prevotella family. Carbohydrate fermenter linked to refined diet.",
-    increaseAdvice: "Avoid: refined carbs and processed starch with high-fat, moderate plant fiber",
-    decreaseAdvice: "Low-carb, ketogenic diets",
+    increaseAdvice: "Should not increase harmful bacteria", // Not used for harmful bacteria  
+    decreaseAdvice: "Eat more: low-carb foods, ketogenic foods, high-fat foods, moderate plant fiber, Avoid: starch, sugar, refined carbs",
     pubmed: "31321580",
     color: "#ff6b6b"
   },
@@ -96,8 +96,9 @@ const bacteriaDatabase = {
     threshold: 0.006, // Midpoint
     importanceScore: 0.029,
     description: "Emerging bacteria with potential dysbiosis implications. Limited research available.",
-    increaseAdvice: "Focus on: high-fiber keto foods, limit refined foods for gut diversity",
-    decreaseAdvice: "Unknown - default to diversity preservation",
+    increaseAdvice: "Unknown",
+    decreaseAdvice: "Unknown",
+    defaultAdvice: "Eat more: high-fiber keto foods, Avoid: refined foods",
     pubmed: "34945862",
     color: "#868e96"
   },
@@ -108,8 +109,8 @@ const bacteriaDatabase = {
     threshold: 0.014, // Above this is good
     importanceScore: 0.027,
     description: "SCFA producer supporting gut health. Benefits from whole-food fiber.",
-    increaseAdvice: "Eat more: whole-food fiber, moderate fats in ketogenic approach",
-    decreaseAdvice: "Refined carbs, ultra-processed diet",
+    increaseAdvice: "Eat more: whole-food fiber, moderate fats, ketogenic foods, Avoid: refined carbs, ultra-processed diet",
+    decreaseAdvice: "Should not decrease protective bacteria", // Not used for protective bacteria
     pubmed: "34674563",
     color: "#51cf66"
   },
@@ -120,8 +121,8 @@ const bacteriaDatabase = {
     threshold: 0.003, // Lower is better
     importanceScore: 0.027,
     description: "Same family as Prevotella_9. Associated with high refined carb diets and T2D risk.",
-    increaseAdvice: "Focus on: high-protein, high-fat structure (reduce refined carbs)",
-    decreaseAdvice: "Ketogenic, low-carb",
+    increaseAdvice: "Should not increase harmful bacteria", // Not used for harmful bacteria
+    decreaseAdvice: "Eat more: ketogenic foods, low-carb foods, high-protein, high-fat foods, Avoid: refined carbs",
     pubmed: "31801460",
     color: "#ff6b6b"
   }
@@ -586,25 +587,6 @@ const ResultsContainer = styled(motion.div)`
   }
 `;
 
-const BMICard = styled.div`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 15px;
-  padding: 1.5rem;
-  text-align: center;
-  margin-bottom: 2rem;
-`;
-
-const BMIValue = styled.div`
-  font-size: 2rem;
-  font-weight: 800;
-  color: white;
-  margin-bottom: 0.5rem;
-`;
-
-const BMICategory = styled.div`
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1rem;
-`;
 
 const RecommendationCard = styled(motion.div)`
   background: rgba(255, 255, 255, 0.05);
@@ -642,38 +624,24 @@ const PubMedLink = styled.a`
 
 const MicroNutriProject = () => {
   const [formData, setFormData] = useState({
-    age: 28,
-    gender: "Female",
-    weight: 65,
-    height: 160,
     diabetesStatus: "Healthy"
   });
+
+  // Function to get appropriate default based on health status
+  const getBacteriaDefault = (bacteria, healthStatus) => {
+    const info = bacteriaDatabase[bacteria];
+    if (healthStatus === "Healthy") {
+      return info.controlMean;
+    } else { // T2D
+      return info.t2dMean;
+    }
+  };
 
   const [bacteriaLevels, setBacteriaLevels] = useState(() => {
     const initial = {};
     Object.keys(bacteriaDatabase).forEach(bacteria => {
-      const info = bacteriaDatabase[bacteria];
-      // Start with mix of good and concerning levels for demo
-      let defaultValue;
-      
-      // Make only some bacteria problematic, not all
-      const problemBacteria = ["Faecalibacterium", "Butyricicoccus"]; // Low protective
-      const highRiskBacteria = ["Prevotella_9", "Prevotella_7"]; // High harmful
-      
-      if (problemBacteria.includes(bacteria)) {
-        defaultValue = Math.max(0.001, info.threshold * 0.6); // Below threshold
-      } else if (highRiskBacteria.includes(bacteria)) {
-        defaultValue = Math.min(0.1, info.threshold * 1.8); // Above threshold  
-      } else {
-        // Other bacteria start in "good" range
-        if (info.role === "Protective") {
-          defaultValue = Math.max(info.threshold * 1.2, info.controlMean * 0.9); // Above threshold
-        } else if (info.role === "Harmful") {
-          defaultValue = Math.max(0.001, info.threshold * 0.5); // Below threshold
-        } else {
-          defaultValue = (info.controlMean + info.t2dMean) / 2; // Mixed bacteria use midpoint
-        }
-      }
+      // Use health status appropriate defaults (start with Healthy)
+      const defaultValue = getBacteriaDefault(bacteria, "Healthy");
       initial[bacteria] = defaultValue;
     });
     return initial;
@@ -682,26 +650,9 @@ const MicroNutriProject = () => {
   const [inputValues, setInputValues] = useState(() => {
     const initial = {};
     Object.keys(bacteriaDatabase).forEach(bacteria => {
-      const info = bacteriaDatabase[bacteria];
-      let defaultValue;
-      
-      const problemBacteria = ["Faecalibacterium", "Butyricicoccus"];
-      const highRiskBacteria = ["Prevotella_9", "Prevotella_7"];
-      
-      if (problemBacteria.includes(bacteria)) {
-        defaultValue = Math.max(0.001, info.threshold * 0.6);
-      } else if (highRiskBacteria.includes(bacteria)) {
-        defaultValue = Math.min(0.1, info.threshold * 1.8);
-      } else {
-        if (info.role === "Protective") {
-          defaultValue = Math.max(info.threshold * 1.2, info.controlMean * 0.9);
-        } else if (info.role === "Harmful") {
-          defaultValue = Math.max(0.001, info.threshold * 0.5);
-        } else {
-          defaultValue = (info.controlMean + info.t2dMean) / 2;
-        }
-      }
-      initial[bacteria] = defaultValue.toFixed(3);
+      // Use health status appropriate defaults (start with Healthy)
+      const defaultValue = getBacteriaDefault(bacteria, "Healthy");
+      initial[bacteria] = defaultValue.toFixed(4);
     });
     return initial;
   });
@@ -714,6 +665,21 @@ const MicroNutriProject = () => {
       ...prev,
       [field]: value
     }));
+    
+    // When health status changes, update bacterial values to appropriate ranges
+    if (field === 'diabetesStatus') {
+      const newBacteriaLevels = {};
+      const newInputValues = {};
+      
+      Object.keys(bacteriaDatabase).forEach(bacteria => {
+        const defaultValue = getBacteriaDefault(bacteria, value);
+        newBacteriaLevels[bacteria] = defaultValue;
+        newInputValues[bacteria] = defaultValue.toFixed(4);
+      });
+      
+      setBacteriaLevels(newBacteriaLevels);
+      setInputValues(newInputValues);
+    }
   };
 
   const handleBacteriaInputChange = (bacteria, value) => {
@@ -728,7 +694,7 @@ const MicroNutriProject = () => {
       // Update the actual numeric value for calculations
       const numValue = value === '' ? 0 : parseFloat(value);
       if (!isNaN(numValue)) {
-        const clampedValue = Math.max(0, Math.min(0.5, numValue)); // Real bacterial abundance range
+        const clampedValue = Math.max(0, Math.min(5, numValue)); // Allow values from 0 to 5
         setBacteriaLevels(prev => ({
           ...prev,
           [bacteria]: clampedValue
@@ -742,7 +708,7 @@ const MicroNutriProject = () => {
     if (value === '') {
       setInputValues(prev => ({
         ...prev,
-        [bacteria]: '0.000'
+        [bacteria]: '0.0000'
       }));
       setBacteriaLevels(prev => ({
         ...prev,
@@ -751,8 +717,8 @@ const MicroNutriProject = () => {
     } else {
       const numValue = parseFloat(value);
       if (!isNaN(numValue)) {
-        const clampedValue = Math.max(0, Math.min(0.5, numValue)); // Real bacterial abundance range
-        const formattedValue = clampedValue.toFixed(3); // 3 decimal places for precision
+        const clampedValue = Math.max(0, Math.min(5, numValue)); // Allow values from 0 to 5
+        const formattedValue = clampedValue.toFixed(4); // 4 decimal places for precision
         setInputValues(prev => ({
           ...prev,
           [bacteria]: formattedValue
@@ -765,24 +731,12 @@ const MicroNutriProject = () => {
     }
   };
 
-  const calculateBMI = () => {
-    const heightM = formData.height / 100;
-    return (formData.weight / (heightM * heightM)).toFixed(1);
-  };
-
-  const getBMICategory = (bmi) => {
-    if (bmi < 18.5) return "Underweight";
-    if (bmi < 25) return "Normal";
-    if (bmi < 30) return "Overweight";
-    return "Obese";
-  };
 
   const analyzeProfile = () => {
     setIsAnalyzing(true);
     
     // Simulate analysis delay
     setTimeout(() => {
-      const bmi = calculateBMI();
       const recommendations = [];
 
       Object.entries(bacteriaLevels).forEach(([bacteria, level]) => {
@@ -790,14 +744,29 @@ const MicroNutriProject = () => {
         let concern = false;
         let recommendation = "";
 
-        if (info.role === "Harmful" && level > info.threshold) {
+        // Use health status-specific thresholds from CSV data
+        const healthStatusThreshold = formData.diabetesStatus === "Healthy" ? info.controlMean : info.t2dMean;
+
+        // Special case for bacteria with Unknown advice (like Libanicoccus)
+        if (info.increaseAdvice === "Unknown" && info.decreaseAdvice === "Unknown") {
+          if (info.defaultAdvice) {
+            // Only show advice if the bacteria level indicates concern
+            if ((info.role === "Harmful" && level > healthStatusThreshold) ||
+                (info.role === "Protective" && level < healthStatusThreshold) ||
+                (info.role === "Mixed" && level > healthStatusThreshold) ||
+                (info.role === "Emerging" && level > healthStatusThreshold)) {
+              concern = true;
+              recommendation = info.defaultAdvice;
+            }
+          }
+        } else if (info.role === "Harmful" && level > healthStatusThreshold) {
           concern = true;
-          recommendation = info.increaseAdvice;
-        } else if (info.role === "Protective" && level < info.threshold) {
+          recommendation = info.decreaseAdvice;
+        } else if (info.role === "Protective" && level < healthStatusThreshold) {
           concern = true;
           recommendation = info.increaseAdvice;
         } else if (info.role === "Mixed") {
-          if (level > info.threshold) {
+          if (level > healthStatusThreshold) {
             recommendation = info.decreaseAdvice;
             concern = true;
           } else {
@@ -819,35 +788,122 @@ const MicroNutriProject = () => {
       const concernedRecommendations = recommendations.filter(r => r.concern);
       const groupedAdvice = {
         "Eat more": [],
-        "Focus on": [],
         "Avoid": []
       };
 
       concernedRecommendations.forEach(rec => {
         const advice = rec.recommendation;
-        if (advice.startsWith("Eat more:")) {
+        
+        // Handle combined advice (like Libanicoccus defaultAdvice)
+        if (advice.includes("Eat more:") && advice.includes("Avoid:")) {
+          const parts = advice.split(", Avoid:");
+          if (parts.length === 2) {
+            groupedAdvice["Eat more"].push(parts[0].replace("Eat more: ", ""));
+            groupedAdvice["Avoid"].push(parts[1].trim());
+          }
+        } else if (advice.startsWith("Eat more:")) {
           groupedAdvice["Eat more"].push(advice.replace("Eat more: ", ""));
         } else if (advice.startsWith("Focus on:")) {
-          groupedAdvice["Focus on"].push(advice.replace("Focus on: ", ""));
+          // Convert "Focus on" to "Eat more"
+          groupedAdvice["Eat more"].push(advice.replace("Focus on: ", ""));
         } else if (advice.startsWith("Avoid:")) {
           groupedAdvice["Avoid"].push(advice.replace("Avoid: ", ""));
         }
       });
 
-      // Create combined recommendations
+      // Create combined recommendations with smart deduplication
       const combinedRecommendations = [];
       Object.entries(groupedAdvice).forEach(([action, items]) => {
         if (items.length > 0) {
-          const uniqueItems = [...new Set(items)]; // Remove duplicates
-          combinedRecommendations.push({
-            recommendation: `${action}: ${uniqueItems.join(", ")}`
+          // Split each recommendation into individual components
+          const allComponents = [];
+          items.forEach(item => {
+            // Split by common separators and clean up
+            const components = item.split(/[,;+]/)
+              .map(comp => comp.trim())
+              .filter(comp => comp.length > 0);
+            allComponents.push(...components);
           });
+          
+          // Remove exact duplicates first
+          const uniqueComponents = [...new Set(allComponents)];
+          
+          // Smart deduplication - remove redundant/overlapping concepts
+          const finalComponents = [];
+          const addedConcepts = new Set();
+          
+          // Priority order - more specific terms first
+          const priorityTerms = [
+            'high-protein, high-fat, low-carb foods',
+            'soluble fermentable fiber',
+            'resistant starch',
+            'fiber-rich vegetables',
+            'healthy fats with sustained nutritional ketosis'
+          ];
+          
+          // Add priority terms if they exist
+          priorityTerms.forEach(term => {
+            const match = uniqueComponents.find(comp => 
+              comp.toLowerCase().includes(term.toLowerCase())
+            );
+            if (match && !addedConcepts.has(term)) {
+              if (term === 'high-protein, high-fat, low-carb foods') {
+                finalComponents.push('high-protein, high-fat, low-carb foods');
+                addedConcepts.add('high-protein-diet');
+                addedConcepts.add('low-carb');
+                addedConcepts.add('high-fat');
+                addedConcepts.add('limit refined');
+                addedConcepts.add(term);
+              } else {
+                finalComponents.push(match);
+                addedConcepts.add(term);
+              }
+            }
+          });
+          
+          // Add remaining unique components that don't overlap
+          uniqueComponents.forEach(comp => {
+            const lowerComp = comp.toLowerCase();
+            let shouldAdd = true;
+            
+            // Skip if already covered by added concepts
+            addedConcepts.forEach(concept => {
+              if (lowerComp.includes(concept.toLowerCase()) || 
+                  concept.toLowerCase().includes(lowerComp)) {
+                shouldAdd = false;
+              }
+            });
+            
+            // Skip redundant phrases that are covered by broader concepts
+            if (lowerComp.includes('high-protein structure') || 
+                lowerComp.includes('high-fat structure') ||
+                lowerComp.includes('within high-protein') ||
+                lowerComp.includes('within high-fat') ||
+                lowerComp.includes('reduce refined carbs') ||
+                lowerComp.includes('limit refined') ||
+                lowerComp.includes('and high-fat') ||
+                lowerComp.includes('and high-protein') ||
+                (lowerComp.includes('high-protein') && addedConcepts.has('high-protein-diet')) ||
+                (lowerComp.includes('high-fat') && addedConcepts.has('high-fat'))) {
+              shouldAdd = false;
+            }
+            
+            if (shouldAdd && !finalComponents.some(existing => 
+                existing.toLowerCase() === lowerComp)) {
+              finalComponents.push(comp);
+            }
+          });
+          
+          if (finalComponents.length > 0) {
+            combinedRecommendations.push({
+              recommendation: `${action}: ${finalComponents.join(", ")}`
+            });
+          }
         }
       });
 
+
       setResults({
-        bmi: parseFloat(bmi),
-        bmiCategory: getBMICategory(bmi),
         recommendations: combinedRecommendations,
         allBacteria: recommendations
       });
@@ -881,55 +937,13 @@ const MicroNutriProject = () => {
             <SectionTitle>Personal Information</SectionTitle>
             <InputGrid>
               <InputGroup>
-                <Label>Age</Label>
-                <Input
-                  type="number"
-                  min="10"
-                  max="100"
-                  value={formData.age}
-                  onChange={(e) => handleInputChange('age', parseInt(e.target.value))}
-                />
-              </InputGroup>
-              <InputGroup>
-                <Label>Gender</Label>
-                <Select
-                  value={formData.gender}
-                  onChange={(e) => handleInputChange('gender', e.target.value)}
-                >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </Select>
-              </InputGroup>
-              <InputGroup>
-                <Label>Weight (kg)</Label>
-                <Input
-                  type="number"
-                  min="30"
-                  max="200"
-                  value={formData.weight}
-                  onChange={(e) => handleInputChange('weight', parseFloat(e.target.value))}
-                />
-              </InputGroup>
-              <InputGroup>
-                <Label>Height (cm)</Label>
-                <Input
-                  type="number"
-                  min="120"
-                  max="230"
-                  value={formData.height}
-                  onChange={(e) => handleInputChange('height', parseFloat(e.target.value))}
-                />
-              </InputGroup>
-              <InputGroup>
                 <Label>Health Status</Label>
                 <Select
                   value={formData.diabetesStatus}
                   onChange={(e) => handleInputChange('diabetesStatus', e.target.value)}
                 >
                   <option value="Healthy">Healthy</option>
-                  <option value="Prediabetic">Prediabetic</option>
-                  <option value="T2DM">Type 2 Diabetes</option>
+                  <option value="T2D">Type 2 Diabetes</option>
                 </Select>
               </InputGroup>
             </InputGrid>
@@ -940,14 +954,18 @@ const MicroNutriProject = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <SectionTitle>Gut Bacteria Relative Abundance (0.000 - 0.500)</SectionTitle>
+            <SectionTitle>Gut Bacteria Relative Abundance</SectionTitle>
             <BacteriaGrid>
               {Object.entries(bacteriaDatabase).map(([bacteria, info]) => {
                 const level = bacteriaLevels[bacteria];
-                const isOptimal = (info.role === "Protective" && level >= info.threshold) ||
-                                (info.role === "Harmful" && level <= info.threshold);
-                const isConcern = (info.role === "Protective" && level < info.threshold) ||
-                                (info.role === "Harmful" && level > info.threshold);
+                
+                // Use health status-specific thresholds from CSV data
+                const healthStatusThreshold = formData.diabetesStatus === "Healthy" ? info.controlMean : info.t2dMean;
+                
+                const isOptimal = (info.role === "Protective" && level >= healthStatusThreshold) ||
+                                (info.role === "Harmful" && level <= healthStatusThreshold);
+                const isConcern = (info.role === "Protective" && level < healthStatusThreshold) ||
+                                (info.role === "Harmful" && level > healthStatusThreshold);
 
                 return (
                   <BacteriaCard
@@ -963,7 +981,7 @@ const MicroNutriProject = () => {
                     <BacteriaDescription>{info.description}</BacteriaDescription>
                     <InputContainer>
                       <InputLabel>
-                        <span>Relative Abundance (0.000 - 0.500)</span>
+                        <span>Relative Abundance</span>
                       </InputLabel>
                       <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <BacteriaInput
@@ -971,7 +989,7 @@ const MicroNutriProject = () => {
                           value={inputValues[bacteria] || ''}
                           onChange={(e) => handleBacteriaInputChange(bacteria, e.target.value)}
                           onBlur={(e) => handleBacteriaInputBlur(bacteria, e.target.value)}
-                          placeholder="0.000"
+                          placeholder="0.0000"
                           isOptimal={isOptimal}
                           isConcern={isConcern}
                         />
@@ -997,13 +1015,6 @@ const MicroNutriProject = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <SectionTitle>📊 Your Personalized Analysis</SectionTitle>
-              
-              <BMICard>
-                <BMIValue>{results.bmi}</BMIValue>
-                <BMICategory>BMI - {results.bmiCategory}</BMICategory>
-              </BMICard>
-
               <SectionTitle>🎯 Your Personalized Diet Plan</SectionTitle>
               {results.recommendations.length > 0 ? (
                 <div style={{ 
@@ -1016,8 +1027,8 @@ const MicroNutriProject = () => {
                 }}>
                   {results.recommendations.map((rec, index) => {
                     const getActionColor = (recommendation) => {
-                      if (recommendation.startsWith('Eat more:')) return '#51cf66'; // Green
-                      if (recommendation.startsWith('Focus on:')) return '#ffd43b'; // Yellow
+                      if (recommendation.startsWith('Eat more:')) return '#51cf66'; // Green  
+                      if (recommendation.startsWith('Focus on:')) return '#51cf66'; // Green (converted to Eat more)
                       if (recommendation.startsWith('Avoid:')) return '#ff6b6b'; // Red
                       return '#51cf66'; // Default green
                     };
@@ -1057,7 +1068,7 @@ const MicroNutriProject = () => {
                       }
                       if (recommendation.startsWith('Focus on:')) {
                         return {
-                          action: '😐 FOCUS ON',
+                          action: '😊 EAT MORE',
                           content: formatContent(recommendation.replace('Focus on: ', ''))
                         };
                       }
