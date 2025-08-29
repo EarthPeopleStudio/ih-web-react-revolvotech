@@ -633,10 +633,12 @@ const InvoicePreview = styled.div`
       
       .invoice-meta {
         .invoice-number {
-          font-size: 1.1rem;
-          color: ${props => props.$isDarkTheme ? '#fff' : '#333'};
+          font-size: 1.3rem;
+          color: #fbb604;
           margin-bottom: 0.5rem;
-          font-weight: 600;
+          font-weight: 700;
+          text-shadow: 0 0 10px rgba(251, 182, 4, 0.3);
+          letter-spacing: 0.5px;
         }
         .invoice-dates {
           font-size: 0.95rem;
@@ -766,10 +768,16 @@ const InvoicePreview = styled.div`
       tbody {
         tr {
           border-bottom: 1px solid ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'};
-          transition: background-color 0.2s ease;
+          transition: all 0.2s ease;
+          
+          &:nth-child(even) {
+            background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.04)'};
+          }
           
           &:hover {
-            background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
+            background: ${props => props.$isDarkTheme ? 'rgba(251, 182, 4, 0.05)' : 'rgba(251, 182, 4, 0.08)'} !important;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px ${props => props.$isDarkTheme ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'};
           }
           
           &:last-child {
@@ -1207,6 +1215,16 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
       ...prev,
       items: prev.items.filter(item => item.id !== id)
     }));
+  };
+
+  // Format currency with thousand separators
+  const formatCurrency = (amount, currency = 'USD') => {
+    const symbol = getCurrencySymbol(currency);
+    const formattedAmount = parseFloat(amount || 0).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    return `${symbol}${formattedAmount}`;
   };
 
   // Helper function to calculate completion date based on working hours
@@ -2089,7 +2107,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                     {invoiceData.contractReference && (
                       <>Contract: {invoiceData.contractReference}<br /></>
                     )}
-                    Total: {getCurrencySymbol(invoiceData.currency)}{calculateTotal().toFixed(2)}
+                    Total: {formatCurrency(calculateTotal(), invoiceData.currency)}
                   </div>
                 </div>
               </div>
@@ -2122,11 +2140,11 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                         <td>
                           {item.deliveryDate ? new Date(item.deliveryDate).toLocaleDateString('en-US', {
                             year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit'
+                            month: 'long',
+                            day: 'numeric'
                           }) : 'TBD'}
                         </td>
-                        <td>{getCurrencySymbol(invoiceData.currency)}{item.amount.toFixed(2)}</td>
+                        <td>{formatCurrency(item.amount, invoiceData.currency)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2144,7 +2162,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                   {invoiceData.items.map((item, index) => (
                     <div key={item.id} className="summary-row">
                       <span className="label">{item.title || `${index + 1}. Milestone ${index + 1}`}</span>
-                      <span className="value">{getCurrencySymbol(invoiceData.currency)}{item.amount.toFixed(2)}</span>
+                      <span className="value">{formatCurrency(item.amount, invoiceData.currency)}</span>
                     </div>
                   ))}
                 
@@ -2152,13 +2170,13 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                 {(invoiceData.additionalItems || []).map((item) => (
                   <div key={item.id} className="summary-row">
                     <span className="label">{item.title || 'Additional Item'}</span>
-                    <span className="value">{getCurrencySymbol(invoiceData.currency)}{(item.amount || 0).toFixed(2)}</span>
+                    <span className="value">{formatCurrency(item.amount || 0, invoiceData.currency)}</span>
                   </div>
                 ))}
                 
                 <div className="summary-row total">
                   <span className="label">Total Amount</span>
-                  <span className="value">{getCurrencySymbol(invoiceData.currency)}{calculateTotal().toFixed(2)}</span>
+                  <span className="value">{formatCurrency(calculateTotal(), invoiceData.currency)}</span>
                 </div>
               </div>
             </div>
