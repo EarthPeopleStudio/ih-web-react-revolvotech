@@ -1,0 +1,81 @@
+/* Dark Mode Override - Matte Black Theme */
+
+.darkbg {
+  background-color: #1a1a1a !important;
+}
+
+.darkbg .mainwrapper {
+  background-color: #1a1a1a !important;
+}
+
+/* Override any sidebar backgrounds */
+.darkbg .sidebar,
+.darkbg .sidebar-wrapper,
+.darkbg .left-sidebar {
+  background-color: #222222 !important;
+}
+
+/* Override header backgrounds */
+.darkbg .topbar,
+.darkbg .navbar,
+.darkbg .header {
+  background-color: #222222 !important;
+}
+
+/* Override card backgrounds */
+.darkbg .card,
+.darkbg .MuiPaper-root {
+  background-color: #222222 !important;
+}
+
+/* Override modal backgrounds */
+.darkbg .MuiDialog-paper {
+  background-color: #222222 !important;
+}
+
+/* Override menu backgrounds */
+.darkbg .MuiMenu-paper,
+.darkbg .MuiPopover-paper {
+  background-color: #222222 !important;
+}
+
+/* Ensure text contrast */
+.darkbg,
+.darkbg * {
+  color: #ffffff !important;
+}
+
+.darkbg .MuiTypography-colorTextSecondary {
+  color: #cccccc !important;
+}
+
+/* Yellow Gold Primary Button Styling */
+.darkbg .MuiButton-containedPrimary {
+  background-color: #FFB800 !important;
+  color: #000000 !important;
+}
+
+.darkbg .MuiButton-containedPrimary:hover {
+  background-color: #E6A500 !important;
+}
+
+/* Yellow Gold Chip Styling */
+.darkbg .MuiChip-colorPrimary {
+  background-color: #FFB800 !important;
+  color: #000000 !important;
+}
+
+/* Yellow Gold Icon Button Styling */
+.darkbg .MuiIconButton-colorPrimary {
+  color: #FFB800 !important;
+}
+
+/* Yellow Gold Link Styling */
+.darkbg .MuiLink-colorPrimary {
+  color: #FFB800 !important;
+}
+
+/* Yellow Gold Tab Indicator */
+.darkbg .MuiTabs-indicator {
+  background-color: #FFB800 !important;
+}

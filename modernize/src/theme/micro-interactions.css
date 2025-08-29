@@ -1,0 +1,253 @@
+/* Micro-interactions and Special Effects */
+
+/* Button Press Animation */
+.MuiButton-root:active {
+  transform: scale(0.98) !important;
+}
+
+/* Ripple Effect Enhancement */
+.MuiTouchRipple-child {
+  background-color: rgba(255, 184, 0, 0.3) !important;
+}
+
+/* Loading Skeleton with Golden Shimmer */
+.MuiSkeleton-root {
+  background: linear-gradient(90deg, transparent, rgba(255, 184, 0, 0.2), transparent) !important;
+  background-size: 200px 100% !important;
+  animation: shimmer 1.5s infinite !important;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+/* Text Selection with Gold */
+::selection {
+  background: rgba(255, 184, 0, 0.3) !important;
+  color: #000000 !important;
+}
+
+::-moz-selection {
+  background: rgba(255, 184, 0, 0.3) !important;
+  color: #000000 !important;
+}
+
+/* Focus Ring Enhancement */
+.MuiButton-root:focus-visible,
+.MuiIconButton-root:focus-visible,
+.MuiTextField-root:focus-within {
+  outline: 2px solid #FFB800 !important;
+  outline-offset: 2px !important;
+}
+
+/* Enhanced Loading Button */
+.MuiButton-root.MuiLoadingButton-loading {
+  background: linear-gradient(90deg, #FFB800, #FFA726, #FFB800) !important;
+  background-size: 200% 100% !important;
+  animation: loading-gradient 2s ease-in-out infinite !important;
+}
+
+@keyframes loading-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Notification/Snackbar Enhancement */
+.MuiSnackbar-root .MuiAlert-root {
+  border-radius: 16px !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 184, 0, 0.2) !important;
+}
+
+.MuiAlert-standardSuccess {
+  background: rgba(19, 222, 185, 0.1) !important;
+  color: #13DEB9 !important;
+  border-color: rgba(19, 222, 185, 0.3) !important;
+}
+
+.MuiAlert-standardError {
+  background: rgba(250, 137, 107, 0.1) !important;
+  color: #FA896B !important;
+  border-color: rgba(250, 137, 107, 0.3) !important;
+}
+
+.MuiAlert-standardWarning {
+  background: rgba(255, 184, 0, 0.1) !important;
+  color: #FFB800 !important;
+  border-color: rgba(255, 184, 0, 0.3) !important;
+}
+
+.MuiAlert-standardInfo {
+  background: rgba(83, 155, 255, 0.1) !important;
+  color: #539BFF !important;
+  border-color: rgba(83, 155, 255, 0.3) !important;
+}
+
+/* Enhanced Tooltip */
+.MuiTooltip-tooltip {
+  background: rgba(34, 34, 34, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 184, 0, 0.3) !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  font-size: 0.75rem !important;
+  font-weight: 500 !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Floating Elements Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.floating-element {
+  animation: float 6s ease-in-out infinite !important;
+}
+
+/* Dashboard Widget Enhancements */
+.dashboard-widget {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.dashboard-widget::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255, 184, 0, 0.1), transparent) !important;
+  transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.dashboard-widget:hover::before {
+  left: 100% !important;
+}
+
+/* Enhanced Data Grid/Table */
+.MuiDataGrid-root {
+  border: none !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+}
+
+.MuiDataGrid-columnHeader {
+  background: rgba(255, 184, 0, 0.1) !important;
+  border-bottom: 1px solid rgba(255, 184, 0, 0.2) !important;
+}
+
+.MuiDataGrid-row:hover {
+  background: rgba(255, 184, 0, 0.05) !important;
+}
+
+.MuiDataGrid-cell:focus {
+  outline: 1px solid #FFB800 !important;
+  outline-offset: -1px !important;
+}
+
+/* Enhanced Drawer/Modal */
+.MuiDrawer-paper {
+  backdrop-filter: blur(20px) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: none !important;
+  box-shadow: -10px 0 50px rgba(0, 0, 0, 0.1) !important;
+}
+
+.darkbg .MuiDrawer-paper {
+  background: rgba(34, 34, 34, 0.95) !important;
+  box-shadow: -10px 0 50px rgba(0, 0, 0, 0.5) !important;
+}
+
+.MuiModal-backdrop {
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Enhanced Accordion */
+.MuiAccordion-root {
+  border-radius: 12px !important;
+  margin: 8px 0 !important;
+  border: 1px solid rgba(255, 184, 0, 0.2) !important;
+  box-shadow: 0 2px 8px rgba(255, 184, 0, 0.1) !important;
+}
+
+.MuiAccordion-root:before {
+  display: none !important;
+}
+
+.MuiAccordionSummary-root {
+  background: rgba(255, 184, 0, 0.05) !important;
+}
+
+.MuiAccordionSummary-root:hover {
+  background: rgba(255, 184, 0, 0.1) !important;
+}
+
+/* Enhanced Badge */
+.MuiBadge-badge {
+  background: linear-gradient(135deg, #FFB800, #FFA726) !important;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  min-width: 20px !important;
+  height: 20px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(255, 184, 0, 0.3) !important;
+}
+
+/* Enhanced Stepper */
+.MuiStepIcon-root.Mui-active {
+  color: #FFB800 !important;
+}
+
+.MuiStepIcon-root.Mui-completed {
+  color: #13DEB9 !important;
+}
+
+.MuiStepConnector-line {
+  border-color: rgba(255, 184, 0, 0.3) !important;
+}
+
+/* Enhanced Breadcrumbs */
+.MuiBreadcrumbs-separator {
+  color: rgba(255, 184, 0, 0.6) !important;
+}
+
+.MuiBreadcrumbs-root a {
+  color: #FFB800 !important;
+  text-decoration: none !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.MuiBreadcrumbs-root a:hover {
+  color: #E6A500 !important;
+  text-decoration: underline !important;
+}
+
+/* Page Transition Animation */
+@keyframes pageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.page-content {
+  animation: pageSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Success State Animation */
+@keyframes success-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.success-animation {
+  animation: success-pulse 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}

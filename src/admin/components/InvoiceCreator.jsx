@@ -4,11 +4,14 @@ import { motion } from "framer-motion";
 import {
   FaTimes, FaPlus, FaTrash, FaDownload, FaPrint, FaEye,
   FaUser, FaBuilding, FaEnvelope, FaPhone, FaCalendarAlt,
-  FaClock, FaDollarSign, FaGlobe, FaPaperPlane, FaEraser
+  FaClock, FaDollarSign, FaGlobe, FaPaperPlane, FaEraser,
+  FaSun, FaMoon, FaLinkedin, FaQrcode
 } from "react-icons/fa";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import QRCode from "qrcode";
 import RevolvoLogo from "../../assets/revolvo-logo.png";
+import RevolvoLogoDark from "../../assets/revolvo-logo-dark.png";
 
 // Print-only styles to isolate and format the invoice
 const PrintStyles = styled.div`
@@ -192,6 +195,19 @@ const TopButton = styled.button`
       border-color: rgba(255, 165, 0, 0.5);
       transform: scale(1.05);
       box-shadow: 0 6px 20px rgba(255, 165, 0, 0.2);
+    }
+  }
+
+  &.theme {
+    background: rgba(251, 182, 4, 0.1);
+    border-color: rgba(251, 182, 4, 0.3);
+    color: #fbb604;
+    
+    &:hover {
+      background: rgba(251, 182, 4, 0.2);
+      border-color: rgba(251, 182, 4, 0.5);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(251, 182, 4, 0.2);
     }
   }
 
@@ -513,11 +529,11 @@ const ActionButtons = styled.div`
 
 // Invoice Preview Styles - matching the existing invoice viewer design
 const InvoicePreview = styled.div`
-  background: #0a0a0a;
-  color: white;
+  background: ${props => props.$isDarkTheme ? '#0a0a0a' : '#ffffff'};
+  color: ${props => props.$isDarkTheme ? 'white' : '#333333'};
   line-height: 1.6;
   font-size: 14px;
-  width: 800px;
+  width: 900px;
   max-width: 100%;
   padding: 2rem;
   border-radius: 16px;
@@ -547,12 +563,14 @@ const InvoicePreview = styled.div`
 
     .company-section {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 1.5rem;
 
       .logo {
         width: 70px;
         height: 70px;
+        margin-top: 0.5rem;
+        flex-shrink: 0;
         
         img {
           width: 100%;
@@ -565,8 +583,8 @@ const InvoicePreview = styled.div`
       .company-details {
         .company-name {
           font-size: 1.6rem;
-          font-weight: 600;
-          color: white;
+          font-weight: 900;
+          color: ${props => props.$isDarkTheme ? 'white' : '#333333'};
           margin-bottom: 0.5rem;
           letter-spacing: 0.5px;
           text-transform: uppercase;
@@ -583,34 +601,48 @@ const InvoicePreview = styled.div`
           }
         }
         .tagline {
-          color: #aaa;
+          color: ${props => props.$isDarkTheme ? '#aaa' : '#444'};
           font-size: 0.95rem;
           font-weight: 500;
           letter-spacing: 0.5px;
+          margin-bottom: 0.75rem;
+        }
+        
+        .company-address {
+          color: ${props => props.$isDarkTheme ? '#bbb' : '#444'};
+          font-size: 0.85rem;
+          line-height: 1.4;
+          font-weight: 400;
         }
       }
     }
 
     .invoice-details {
       text-align: right;
+      margin-top: 0.5rem;
+      
       .invoice-title {
         font-size: 3rem;
         font-weight: 900;
         color: #fbb604;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
         letter-spacing: 3px;
         text-shadow: 0 0 20px rgba(251, 182, 4, 0.3);
+        line-height: 1;
       }
-      .invoice-number {
-        font-size: 1.1rem;
-        color: #fff;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-      }
-      .invoice-dates {
-        font-size: 0.95rem;
-        color: #bbb;
-        line-height: 1.6;
+      
+      .invoice-meta {
+        .invoice-number {
+          font-size: 1.1rem;
+          color: ${props => props.$isDarkTheme ? '#fff' : '#333'};
+          margin-bottom: 0.5rem;
+          font-weight: 600;
+        }
+        .invoice-dates {
+          font-size: 0.95rem;
+          color: ${props => props.$isDarkTheme ? '#bbb' : '#444'};
+          line-height: 1.6;
+        }
       }
     }
   }
@@ -621,7 +653,9 @@ const InvoicePreview = styled.div`
     gap: 2.5rem;
     margin-bottom: 3rem;
     padding: 2rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    background: ${props => props.$isDarkTheme 
+      ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)' 
+      : 'linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%)'};
     border-radius: 12px;
     border: 1px solid rgba(251, 182, 4, 0.1);
     position: relative;
@@ -661,17 +695,19 @@ const InvoicePreview = styled.div`
       }
       
       .content {
-        color: #fff;
+        color: ${props => props.$isDarkTheme ? '#fff' : '#333'};
         .primary {
-          font-weight: 700;
+          font-weight: 800;
           margin-bottom: 0.5rem;
           font-size: 1.05rem;
-          color: white;
+          color: ${props => props.$isDarkTheme ? 'white' : '#333'};
         }
         .secondary {
-          color: #ccc;
+          color: ${props => props.$isDarkTheme ? '#ccc' : '#444'};
           font-size: 0.9rem;
           line-height: 1.6;
+          word-wrap: break-word;
+          overflow-wrap: break-word;
         }
       }
     }
@@ -682,12 +718,13 @@ const InvoicePreview = styled.div`
 
     table {
       width: 100%;
+      table-layout: fixed;
       border-collapse: collapse;
-      background: rgba(255, 255, 255, 0.02);
+      background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
       border-radius: 12px;
       overflow: hidden;
       border: 1px solid rgba(251, 182, 4, 0.1);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 20px ${props => props.$isDarkTheme ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.1)'};
 
       thead {
         background: linear-gradient(135deg, rgba(251, 182, 4, 0.25) 0%, rgba(249, 155, 4, 0.15) 100%);
@@ -702,15 +739,25 @@ const InvoicePreview = styled.div`
           border-bottom: 2px solid rgba(251, 182, 4, 0.3);
           position: relative;
           
-          &:last-child {
-            text-align: right;
-          }
-          
           &:first-child {
+            width: 50.5%; /* Title/Description */
             border-radius: 12px 0 0 0;
           }
           
+          &:nth-child(2), &:nth-child(3) {
+            width: 10%; /* Hours, Rate stay the same */
+          }
+          
+          &:nth-child(4) {
+            width: 14.5%; /* Delivery gets a bit more space */
+          }
+          
+          &:nth-child(5) {
+            width: 15%; /* Amount stays the same */
+          }
+          
           &:last-child {
+            text-align: right;
             border-radius: 0 12px 0 0;
           }
         }
@@ -718,11 +765,11 @@ const InvoicePreview = styled.div`
 
       tbody {
         tr {
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          border-bottom: 1px solid ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'};
           transition: background-color 0.2s ease;
           
           &:hover {
-            background: rgba(255, 255, 255, 0.02);
+            background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
           }
           
           &:last-child {
@@ -739,28 +786,52 @@ const InvoicePreview = styled.div`
 
           td {
             padding: 1.2rem 1rem;
-            color: #fff;
+            color: ${props => props.$isDarkTheme ? '#fff' : '#333'};
             font-size: 0.95rem;
             vertical-align: top;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 0; /* Force table to respect container width */
+            
+            &:first-child {
+              width: 50.5%; /* Title/Description */
+            }
+            
+            &:nth-child(2), &:nth-child(3) {
+              width: 10%; /* Hours, Rate stay the same */
+            }
+            
+            &:nth-child(4) {
+              width: 14.5%; /* Delivery gets a bit more space */
+            }
+            
+            &:nth-child(5) {
+              width: 15%; /* Amount stays the same */
+            }
             
             &:last-child {
               text-align: right;
               font-weight: 700;
               color: #fbb604;
               font-size: 1rem;
+              white-space: nowrap; /* Keep amounts on one line */
             }
             
             .description {
-              font-weight: 600;
+              font-weight: 700;
               margin-bottom: 0.25rem;
-              color: white;
+              color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+              word-wrap: break-word;
+              overflow-wrap: break-word;
             }
             
             .details {
               font-size: 0.85rem;
-              color: #bbb;
+              color: ${props => props.$isDarkTheme ? '#bbb' : '#444'};
               line-height: 1.4;
               white-space: pre-wrap; /* Preserve line breaks in invoice preview */
+              word-wrap: break-word;
+              overflow-wrap: break-word;
             }
           }
         }
@@ -783,10 +854,10 @@ const InvoicePreview = styled.div`
         font-size: 0.9rem;
       }
       .notes-content {
-        color: #ccc;
+        color: ${props => props.$isDarkTheme ? '#ccc' : '#333'};
         font-size: 0.85rem;
         line-height: 1.5;
-        background: rgba(255, 255, 255, 0.03);
+        background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)'};
         padding: 1rem;
         border-radius: 6px;
         border-left: 3px solid #fbb604;
@@ -813,10 +884,10 @@ const InvoicePreview = styled.div`
         }
         
         .label {
-          color: #aaa;
+          color: ${props => props.$isDarkTheme ? '#aaa' : '#444'};
         }
         .value {
-          color: #fff;
+          color: ${props => props.$isDarkTheme ? '#fff' : '#333'};
           font-weight: 600;
         }
       }
@@ -826,7 +897,7 @@ const InvoicePreview = styled.div`
   .notes-section, .terms-section {
     margin-top: 2rem;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.02);
+    background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
     border-radius: 12px;
     border-left: 4px solid #fbb604;
     
@@ -851,7 +922,7 @@ const InvoicePreview = styled.div`
     }
     
     .content {
-      color: #ccc;
+      color: ${props => props.$isDarkTheme ? '#ccc' : '#444'};
       line-height: 1.6;
       font-size: 0.9rem;
     }
@@ -859,30 +930,76 @@ const InvoicePreview = styled.div`
 
   .footer {
     padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.85rem;
-    color: #888;
+    border-top: 1px solid ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'};
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    font-size: 0.8rem;
+    color: ${props => props.$isDarkTheme ? '#888' : '#444'};
+    align-items: flex-start;
 
-    .contact {
-      display: flex;
-      gap: 2rem;
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem 2rem;
       
       .contact-item {
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        font-weight: 500;
         
         svg {
           color: #fbb604;
+          font-size: 0.9rem;
+          flex-shrink: 0;
+        }
+        
+        .contact-text {
+          color: ${props => props.$isDarkTheme ? '#ccc' : '#333'};
+          font-weight: 400;
         }
       }
     }
 
     .company-info {
       text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+      
+      .qr-placeholder {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+        
+        /* Fallback for loading state */
+        &:not(:has(img)) {
+          border: 2px dashed ${props => props.$isDarkTheme ? 'rgba(251, 182, 4, 0.4)' : 'rgba(251, 182, 4, 0.6)'};
+          background: ${props => props.$isDarkTheme ? 'rgba(251, 182, 4, 0.05)' : 'rgba(251, 182, 4, 0.1)'};
+          color: ${props => props.$isDarkTheme ? 'rgba(251, 182, 4, 0.6)' : 'rgba(251, 182, 4, 0.8)'};
+          font-size: 1.2rem;
+        }
+      }
+      
+      .qr-label {
+        font-size: 0.7rem;
+        color: ${props => props.$isDarkTheme ? 'rgba(251, 182, 4, 0.6)' : 'rgba(251, 182, 4, 0.8)'};
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
     }
   }
 `;
@@ -971,7 +1088,51 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
     return getDefaultData();
   });
 
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [qrCodeUrl, setQrCodeUrl] = useState('');
   const previewRef = useRef();
+
+  // Toggle theme function
+  const toggleTheme = () => {
+    setIsDarkTheme(prev => !prev);
+  };
+
+  // Currency symbol mapping
+  const getCurrencySymbol = (currency) => {
+    const symbols = {
+      'USD': '$',
+      'EUR': '€',
+      'GBP': '£',
+      'PKR': '₨',
+      'CAD': 'C$',
+      'AUD': 'A$',
+      'JPY': '¥',
+      'INR': '₹',
+      'CNY': '¥'
+    };
+    return symbols[currency] || currency + ' ';
+  };
+
+  // Generate QR code for revolvo.tech
+  useEffect(() => {
+    const generateQRCode = async () => {
+      try {
+        const url = await QRCode.toDataURL('https://revolvo.tech', {
+          width: 120,
+          margin: 1,
+          color: {
+            dark: isDarkTheme ? '#fbb604' : '#333333',
+            light: isDarkTheme ? '#0a0a0a' : '#ffffff'
+          }
+        });
+        setQrCodeUrl(url);
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+      }
+    };
+
+    generateQRCode();
+  }, [isDarkTheme]);
 
   // Save form data to sessionStorage whenever it changes
   useEffect(() => {
@@ -1179,25 +1340,8 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
     return calculateSubtotal() + calculateTax();
   };
 
-  const downloadPNG = async () => {
-    const element = previewRef.current;
-    
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      backgroundColor: '#0a0a0a',
-      useCORS: true,
-      height: element.scrollHeight,
-      width: element.scrollWidth
-    });
-    
-    // Create download link
-    const link = document.createElement('a');
-    link.download = `Invoice-${invoiceData.invoiceNumber}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  };
 
-  const downloadPDF = async () => {
+  const downloadPrintPDF = async () => {
     const element = previewRef.current;
     
     const canvas = await html2canvas(element, {
@@ -1231,6 +1375,40 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
       const xOffset = (imgWidth - scaledWidth) / 2; // Center horizontally
       pdf.addImage(imgData, 'JPEG', xOffset, 0, scaledWidth, scaledHeight);
     }
+    
+    pdf.save(`Invoice-${invoiceData.invoiceNumber}.pdf`);
+  };
+
+  const downloadViewingPDF = async () => {
+    const element = previewRef.current;
+    
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      backgroundColor: '#0a0a0a',
+      useCORS: true,
+      height: element.scrollHeight,
+      width: element.scrollWidth
+    });
+    
+    const imgData = canvas.toDataURL('image/jpeg', 0.9);
+    
+    // Create a long vertical PDF that preserves the original aspect ratio
+    const canvasRatio = canvas.height / canvas.width;
+    const pdfWidth = 210; // A4 width in mm
+    const pdfHeight = pdfWidth * canvasRatio; // Maintain aspect ratio
+    
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: [pdfWidth, pdfHeight]
+    });
+    
+    // Fill with black background
+    pdf.setFillColor(10, 10, 10);
+    pdf.rect(0, 0, pdfWidth, pdfHeight, 'F');
+    
+    // Add the image at full size
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
     
     pdf.save(`Invoice-${invoiceData.invoiceNumber}.pdf`);
   };
@@ -1375,12 +1553,15 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
               value={invoiceData.currency}
               onChange={(e) => updateInvoiceField('currency', e.target.value)}
             >
-              <option value="USD">USD - US Dollar</option>
-              <option value="EUR">EUR - Euro</option>
-              <option value="GBP">GBP - British Pound</option>
-              <option value="PKR">PKR - Pakistani Rupee</option>
-              <option value="CAD">CAD - Canadian Dollar</option>
-              <option value="AUD">AUD - Australian Dollar</option>
+              <option value="USD">$ - US Dollar</option>
+              <option value="EUR">€ - Euro</option>
+              <option value="GBP">£ - British Pound</option>
+              <option value="PKR">₨ - Pakistani Rupee</option>
+              <option value="CAD">C$ - Canadian Dollar</option>
+              <option value="AUD">A$ - Australian Dollar</option>
+              <option value="JPY">¥ - Japanese Yen</option>
+              <option value="INR">₹ - Indian Rupee</option>
+              <option value="CNY">¥ - Chinese Yuan</option>
             </select>
           </FormGroup>
 
@@ -1791,13 +1972,13 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
               <FaPaperPlane />
               {invoiceData.documentType === 'proposal' ? 'Send Proposal' : 'Send Invoice'}
             </button>
-            <button className="primary" onClick={downloadPDF}>
+            <button className="primary" onClick={downloadPrintPDF}>
+              <FaPrint />
+              Download for Printing
+            </button>
+            <button className="primary" onClick={downloadViewingPDF}>
               <FaDownload />
               Download PDF
-            </button>
-            <button className="primary" onClick={downloadPNG}>
-              <FaDownload />
-              Download PNG
             </button>
           </ActionButtons>
         </FormSection>
@@ -1808,45 +1989,55 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
             <TopButton className="clear" onClick={clearForm} title="Clear all fields">
               <FaEraser />
             </TopButton>
+            <TopButton className="theme" onClick={toggleTheme} title="Toggle theme">
+              {isDarkTheme ? <FaSun /> : <FaMoon />}
+            </TopButton>
             <TopButton className="close" onClick={onClose} title="Close">
               <FaTimes />
             </TopButton>
           </TopButtons>
-          <InvoicePreview ref={previewRef} className="printable-invoice">
+          <InvoicePreview ref={previewRef} className="printable-invoice" $isDarkTheme={isDarkTheme}>
             <div className="invoice-header">
               <div className="company-section">
                 <div className="logo">
-                  <img src={RevolvoLogo} alt="Revolvo Logo" />
+                  <img src={isDarkTheme ? RevolvoLogo : RevolvoLogoDark} alt="Revolvo Logo" />
                 </div>
                 <div className="company-details">
                   <div className="company-name">REVOLVO TECH</div>
                   <div className="tagline">Innovation in Motion</div>
+                  <div className="company-address">
+                    Väinämöisenkatu 11<br />
+                    33540 Tampere<br />
+                    Finland
+                  </div>
                 </div>
               </div>
               <div className="invoice-details">
                 <div className="invoice-title">
                   {invoiceData.documentType === 'proposal' ? 'PROPOSAL' : 'INVOICE'}
                 </div>
-                <div className="invoice-number">#{invoiceData.invoiceNumber}</div>
-                <div className="invoice-dates">
-                  <div>Date: {new Date(invoiceData.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                  })}</div>
-                  {invoiceData.documentType === 'proposal' ? (
-                    <div>Valid Until: {new Date(invoiceData.dueDate).toLocaleDateString('en-US', {
+                <div className="invoice-meta">
+                  <div className="invoice-number">#{invoiceData.invoiceNumber}</div>
+                  <div className="invoice-dates">
+                    <div>Date: {new Date(invoiceData.date).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: '2-digit',
                       day: '2-digit'
                     })}</div>
-                  ) : (
-                    <div>Due: {new Date(invoiceData.dueDate).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit'
-                    })}</div>
-                  )}
+                    {invoiceData.documentType === 'proposal' ? (
+                      <div>Valid Until: {new Date(invoiceData.dueDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                      })}</div>
+                    ) : (
+                      <div>Due: {new Date(invoiceData.dueDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                      })}</div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1881,12 +2072,12 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                 <div className="label">Payment Info</div>
                 <div className="content">
                   <div className="secondary">
-                    Currency: {invoiceData.currency}<br />
+                    Currency: {getCurrencySymbol(invoiceData.currency)} {invoiceData.currency}<br />
                     Terms: Net 30 days<br />
                     {invoiceData.contractReference && (
                       <>Contract: {invoiceData.contractReference}<br /></>
                     )}
-                    Total: {invoiceData.currency === 'USD' ? '$' : invoiceData.currency + ' '}{calculateTotal().toFixed(2)}
+                    Total: {getCurrencySymbol(invoiceData.currency)}{calculateTotal().toFixed(2)}
                   </div>
                 </div>
               </div>
@@ -1896,10 +2087,10 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                 <table>
                   <thead>
                     <tr>
-                      <th>Description</th>
+                      <th>Title / Description</th>
                       <th>Hours</th>
                       <th>Rate</th>
-                      <th>{invoiceData.documentType === 'proposal' ? 'Delivery' : 'Completed'}</th>
+                      <th>Delivery</th>
                       <th>Amount</th>
                     </tr>
                   </thead>
@@ -1915,7 +2106,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                           </div>
                         </td>
                         <td>{item.hours || 0}</td>
-                        <td>{invoiceData.currency === 'USD' ? '$' : invoiceData.currency + ' '}{item.rate || 0}/hr</td>
+                        <td>{getCurrencySymbol(invoiceData.currency)}{item.rate || 0}/hr</td>
                         <td>
                           {item.deliveryDate ? new Date(item.deliveryDate).toLocaleDateString('en-US', {
                             year: 'numeric',
@@ -1923,7 +2114,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                             day: '2-digit'
                           }) : 'TBD'}
                         </td>
-                        <td>{invoiceData.currency === 'USD' ? '$' : invoiceData.currency + ' '}{item.amount.toFixed(2)}</td>
+                        <td>{getCurrencySymbol(invoiceData.currency)}{item.amount.toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1941,7 +2132,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                   {invoiceData.items.map((item, index) => (
                     <div key={item.id} className="summary-row">
                       <span className="label">{item.title || `${index + 1}. Milestone ${index + 1}`}</span>
-                      <span className="value">{invoiceData.currency === 'USD' ? '$' : invoiceData.currency + ' '}{item.amount.toFixed(2)}</span>
+                      <span className="value">{getCurrencySymbol(invoiceData.currency)}{item.amount.toFixed(2)}</span>
                     </div>
                   ))}
                 
@@ -1949,25 +2140,25 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                 {(invoiceData.additionalItems || []).map((item) => (
                   <div key={item.id} className="summary-row">
                     <span className="label">{item.title || 'Additional Item'}</span>
-                    <span className="value">{invoiceData.currency === 'USD' ? '$' : invoiceData.currency + ' '}{(item.amount || 0).toFixed(2)}</span>
+                    <span className="value">{getCurrencySymbol(invoiceData.currency)}{(item.amount || 0).toFixed(2)}</span>
                   </div>
                 ))}
                 
                 <div className="summary-row total">
                   <span className="label">Total Amount</span>
-                  <span className="value">{invoiceData.currency === 'USD' ? '$' : invoiceData.currency + ' '}{calculateTotal().toFixed(2)}</span>
+                  <span className="value">{getCurrencySymbol(invoiceData.currency)}{calculateTotal().toFixed(2)}</span>
                 </div>
               </div>
             </div>
 
             {/* Payment Instructions Section */}
             {(invoiceData.paymentInstructions.bankName || invoiceData.paymentInstructions.paypalEmail || invoiceData.paymentInstructions.payoneerEmail || invoiceData.paymentInstructions.wiseEmail) && (
-              <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', borderLeft: '4px solid #fbb604' }}>
+              <div style={{ marginTop: '2rem', padding: '1.5rem', background: isDarkTheme ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)', borderRadius: '12px', borderLeft: '4px solid #fbb604' }}>
                 <div style={{ color: '#fbb604', fontWeight: '700', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Payment Instructions</div>
-                <div style={{ color: '#ccc', lineHeight: '1.6', fontSize: '0.9rem' }}>
+                <div style={{ color: isDarkTheme ? '#ccc' : '#333', lineHeight: '1.6', fontSize: '0.9rem' }}>
                   {invoiceData.paymentInstructions.bankName && (
                     <div style={{ marginBottom: '1rem' }}>
-                      <strong style={{ color: 'white' }}>Bank Transfer:</strong><br />
+                      <strong style={{ color: isDarkTheme ? 'white' : '#333' }}>Bank Transfer:</strong><br />
                       Bank: {invoiceData.paymentInstructions.bankName}<br />
                       {invoiceData.paymentInstructions.bankAddress && <div style={{ whiteSpace: 'pre-wrap' }}>Address: {invoiceData.paymentInstructions.bankAddress}</div>}
                       {invoiceData.paymentInstructions.accountTitle && <>Account Title: {invoiceData.paymentInstructions.accountTitle}<br /></>}
@@ -1978,7 +2169,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                   )}
                   {(invoiceData.paymentInstructions.paypalEmail || invoiceData.paymentInstructions.payoneerEmail || invoiceData.paymentInstructions.wiseEmail) && (
                     <div>
-                      <strong style={{ color: 'white' }}>Alternative Payment Methods:</strong><br />
+                      <strong style={{ color: isDarkTheme ? 'white' : '#333' }}>Alternative Payment Methods:</strong><br />
                       {invoiceData.paymentInstructions.paypalEmail && <>PayPal: {invoiceData.paymentInstructions.paypalEmail}<br /></>}
                       {invoiceData.paymentInstructions.payoneerEmail && <>Payoneer: {invoiceData.paymentInstructions.payoneerEmail}<br /></>}
                       {invoiceData.paymentInstructions.wiseEmail && <>Wise: {invoiceData.paymentInstructions.wiseEmail}<br /></>}
@@ -1989,9 +2180,9 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
             )}
 
             {invoiceData.notes && (
-              <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', borderLeft: '4px solid #fbb604' }}>
+              <div style={{ marginTop: '2rem', padding: '1.5rem', background: isDarkTheme ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)', borderRadius: '12px', borderLeft: '4px solid #fbb604' }}>
                 <div style={{ color: '#fbb604', fontWeight: '700', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '1rem' }}>Project Notes</div>
-                <div style={{ color: '#ccc', lineHeight: '1.6', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>{invoiceData.notes}</div>
+                <div style={{ color: isDarkTheme ? '#ccc' : '#333', lineHeight: '1.6', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>{invoiceData.notes}</div>
               </div>
             )}
 
@@ -2003,21 +2194,32 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
             )}
 
             <div className="footer">
-              <div className="contact">
+              <div className="contact-grid">
                 <div className="contact-item">
                   <FaEnvelope />
-                  billing@revolvo.tech
+                  <span className="contact-text">billing@revolvo.tech</span>
                 </div>
                 <div className="contact-item">
                   <FaPhone />
-                  +358 41 7408087
+                  <span className="contact-text">+358 41 7408087</span>
                 </div>
                 <div className="contact-item">
                   <FaGlobe />
-                  revolvo.tech
+                  <span className="contact-text">revolvo.tech</span>
+                </div>
+                <div className="contact-item">
+                  <FaLinkedin />
+                  <span className="contact-text">/company/revolvotech</span>
                 </div>
               </div>
               <div className="company-info">
+                <div className="qr-placeholder">
+                  {qrCodeUrl ? (
+                    <img src={qrCodeUrl} alt="QR Code to revolvo.tech" />
+                  ) : (
+                    <FaQrcode />
+                  )}
+                </div>
               </div>
             </div>
           </InvoicePreview>

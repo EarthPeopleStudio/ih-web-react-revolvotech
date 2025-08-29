@@ -11,7 +11,8 @@ import {
   FaArrowUp, FaArrowDown, FaDollarSign, FaShoppingCart,
   FaUserPlus, FaEye, FaCode, FaRocket, FaGlobe, FaServer,
   FaCheckCircle, FaExclamationTriangle, FaTimesCircle,
-  FaCalendarAlt, FaDownload, FaFilter, FaSearch, FaFileInvoiceDollar
+  FaCalendarAlt, FaDownload, FaFilter, FaSearch, FaFileInvoiceDollar,
+  FaFileAlt, FaComments, FaColumns
 } from "react-icons/fa";
 import { HiTrendingUp, HiTrendingDown, HiOutlineDotsVertical } from "react-icons/hi";
 import { BiDollar } from "react-icons/bi";
@@ -24,6 +25,15 @@ import { getAppData } from "../data/appData";
 import AdminAnalytics from "./AdminAnalytics";
 import AdminSettings from "./AdminSettings";
 import AdminInvoicing from "./AdminInvoicing";
+import AdminDocuments from "./AdminDocuments";
+import AdminContacts from "./AdminContacts";
+import AdminCalendar from "./AdminCalendar";
+import AdminMessages from "./AdminMessages";
+import AdminKanban from "./AdminKanban";
+import { 
+  EnhancedAreaChart, 
+  EnhancedDonutChart
+} from "../components/EnhancedCharts";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -704,6 +714,16 @@ const AdminDashboard = () => {
         return <AdminSettings />;
       case 'invoicing':
         return <AdminInvoicing />;
+      case 'documents':
+        return <AdminDocuments />;
+      case 'clients':
+        return <AdminContacts />;
+      case 'calendar':
+        return <AdminCalendar />;
+      case 'messages':
+        return <AdminMessages />;
+      case 'projects':
+        return <AdminKanban />;
       default:
         return (
           <>
@@ -782,29 +802,11 @@ const AdminDashboard = () => {
                     <button className={timeRange === 'year' ? 'active' : ''} onClick={() => setTimeRange('year')}>Year</button>
                   </div>
                 </div>
-                <ResponsiveContainer width="100%" height={300}>
-                  <AreaChart data={appData.revenue}>
-                    <defs>
-                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#fbb604" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#fbb604" stopOpacity={0}/>
-                      </linearGradient>
-                      <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                    <XAxis dataKey="month" stroke="#666666" />
-                    <YAxis stroke="#666666" />
-                    <Tooltip 
-                      contentStyle={{ background: '#1a1a1a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}
-                      labelStyle={{ color: '#ffffff' }}
-                    />
-                    <Area type="monotone" dataKey="revenue" stroke="#fbb604" fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
-                    <Area type="monotone" dataKey="profit" stroke="#10b981" fillOpacity={1} fill="url(#colorProfit)" strokeWidth={2} />
-                  </AreaChart>
-                </ResponsiveContainer>
+                <EnhancedAreaChart 
+                  data={appData.revenue}
+                  height={300}
+                  colors={['#fbb604', '#10b981']}
+                />
               </ChartCard>
 
               <ChartCard>
@@ -814,64 +816,11 @@ const AdminDashboard = () => {
                     <button><FaDownload /></button>
                   </div>
                 </div>
-                <ResponsiveContainer width="100%" height={350}>
-                  <PieChart>
-                    <defs>
-                      {(appData.expenses?.categories || []).map((entry, index) => (
-                        <React.Fragment key={index}>
-                          <linearGradient id={`expenseGradient-${index}`} x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stopColor={entry.color} stopOpacity={1}/>
-                            <stop offset="50%" stopColor={entry.color} stopOpacity={0.8}/>
-                            <stop offset="100%" stopColor={entry.color} stopOpacity={0.6}/>
-                          </linearGradient>
-                          <filter id={`expenseShadow-${index}`}>
-                            <feDropShadow dx="0" dy="3" stdDeviation="6" floodColor={entry.color} floodOpacity="0.3"/>
-                          </filter>
-                        </React.Fragment>
-                      ))}
-                    </defs>
-                    <Pie
-                      data={appData.expenses?.categories || []}
-                      cx="50%"
-                      cy="45%"
-                      innerRadius={70}
-                      outerRadius={120}
-                      paddingAngle={4}
-                      dataKey="value"
-                      startAngle={90}
-                      endAngle={450}
-                    >
-                      {(appData.expenses?.categories || []).map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={`url(#expenseGradient-${index})`}
-                          stroke="rgba(255,255,255,0.1)"
-                          strokeWidth={1}
-                          filter={`url(#expenseShadow-${index})`}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      contentStyle={{ 
-                        background: 'rgba(8, 8, 8, 0.98)', 
-                        border: '1px solid rgba(255,255,255,0.15)', 
-                        borderRadius: '16px',
-                        backdropFilter: 'blur(40px)',
-                        boxShadow: '0 25px 50px rgba(0,0,0,0.6)',
-                        padding: '16px 20px',
-                        color: '#ffffff'
-                      }}
-                      labelStyle={{ 
-                        color: '#ffffff', 
-                        fontWeight: '700', 
-                        fontSize: '14px'
-                      }}
-                      formatter={(value) => [`$${value.toLocaleString()}`, 'Amount']}
-                      labelFormatter={(label) => `${label} Expenses`}
-                      itemStyle={{ color: '#ffffff' }}
-                    />
-                  </PieChart>
-                </ResponsiveContainer>
+                <EnhancedDonutChart 
+                  data={appData.expenses?.categories || []}
+                  height={350}
+                  colors={appData.expenses?.categories?.map(cat => cat.color) || ['#fbb604', '#10b981', '#8b5cf6', '#ef4444']}
+                />
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
                   {(appData.expenses?.categories || []).map((item, index) => (
                     <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -971,6 +920,34 @@ const AdminDashboard = () => {
             >
               <FaChartLine className="icon" />
               <span className="label">Analytics</span>
+            </NavItem>
+            <NavItem 
+              active={activeNav === 'calendar'} 
+              onClick={() => setActiveNav('calendar')}
+            >
+              <FaCalendarAlt className="icon" />
+              <span className="label">Calendar</span>
+            </NavItem>
+            <NavItem 
+              active={activeNav === 'projects'} 
+              onClick={() => setActiveNav('projects')}
+            >
+              <FaColumns className="icon" />
+              <span className="label">Projects</span>
+            </NavItem>
+            <NavItem 
+              active={activeNav === 'documents'} 
+              onClick={() => setActiveNav('documents')}
+            >
+              <FaFileAlt className="icon" />
+              <span className="label">Documents</span>
+            </NavItem>
+            <NavItem 
+              active={activeNav === 'messages'} 
+              onClick={() => setActiveNav('messages')}
+            >
+              <FaComments className="icon" />
+              <span className="label">Messages</span>
             </NavItem>
             <NavItem 
               active={activeNav === 'invoicing'} 

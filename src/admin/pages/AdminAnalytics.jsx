@@ -13,6 +13,14 @@ import {
 } from "react-icons/fa";
 import { HiOutlineDotsVertical, HiTrendingDown, HiTrendingUp } from "react-icons/hi";
 import DateRangePicker from "../components/DateRangePicker";
+import AdvancedAnalytics from "../components/AdvancedAnalytics";
+import { 
+  EnhancedAreaChart, 
+  EnhancedDonutChart, 
+  EnhancedBarChart, 
+  EnhancedLineChart,
+  EnhancedRadialChart 
+} from "../components/EnhancedCharts";
 
 const AnalyticsContainer = styled.div`
   padding: 2rem;
@@ -194,6 +202,7 @@ const AdminAnalytics = () => {
     endDate: ''
   });
   const [viewType, setViewType] = useState('overview');
+  const [analyticsMode, setAnalyticsMode] = useState('advanced'); // Default to advanced view
 
   // Advanced analytics data
   const userAcquisitionData = [
@@ -274,17 +283,52 @@ const AdminAnalytics = () => {
     }
   ];
 
+  // If advanced mode is selected, show the new advanced analytics
+  if (analyticsMode === 'advanced') {
+    return <AdvancedAnalytics />;
+  }
+
   return (
     <AnalyticsContainer>
       <PageHeader>
         <div className="title-section">
-          <h1>Advanced Analytics</h1>
+          <h1>Analytics Dashboard</h1>
           <p>Detailed insights into user behavior, conversion metrics, and business performance</p>
         </div>
-        <DateRangePicker 
-          dateRange={dateRange}
-          onDateRangeChange={setDateRange}
-        />
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button 
+              onClick={() => setAnalyticsMode('basic')}
+              style={{
+                padding: '0.5rem 1rem',
+                background: analyticsMode === 'basic' ? 'rgba(251, 182, 4, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                border: analyticsMode === 'basic' ? '1px solid rgba(251, 182, 4, 0.3)' : '1px solid rgba(255, 255, 255, 0.05)',
+                borderRadius: '8px',
+                color: analyticsMode === 'basic' ? '#fbb604' : '#888888',
+                cursor: 'pointer'
+              }}
+            >
+              Basic
+            </button>
+            <button 
+              onClick={() => setAnalyticsMode('advanced')}
+              style={{
+                padding: '0.5rem 1rem',
+                background: analyticsMode === 'advanced' ? 'rgba(251, 182, 4, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                border: analyticsMode === 'advanced' ? '1px solid rgba(251, 182, 4, 0.3)' : '1px solid rgba(255, 255, 255, 0.05)',
+                borderRadius: '8px',
+                color: analyticsMode === 'advanced' ? '#fbb604' : '#888888',
+                cursor: 'pointer'
+              }}
+            >
+              Advanced
+            </button>
+          </div>
+          <DateRangePicker 
+            dateRange={dateRange}
+            onDateRangeChange={setDateRange}
+          />
+        </div>
       </PageHeader>
 
       {/* Key Metrics */}
@@ -327,45 +371,15 @@ const AdminAnalytics = () => {
               <button><FaDownload /></button>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={350}>
-            <AreaChart data={userAcquisitionData}>
-              <defs>
-                <linearGradient id="organicGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.6}/>
-                  <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="paidGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#fbb604" stopOpacity={0.6}/>
-                  <stop offset="95%" stopColor="#fbb604" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="referralGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#1e88e5" stopOpacity={0.6}/>
-                  <stop offset="95%" stopColor="#1e88e5" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="socialGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8e24aa" stopOpacity={0.6}/>
-                  <stop offset="95%" stopColor="#8e24aa" stopOpacity={0.1}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="2 4" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="month" stroke="#a0a0a0" fontSize={12} />
-              <YAxis stroke="#a0a0a0" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ 
-                  background: 'rgba(8, 8, 8, 0.98)', 
-                  border: '1px solid rgba(255,255,255,0.15)', 
-                  borderRadius: '12px',
-                  color: '#ffffff'
-                }}
-                itemStyle={{ color: '#ffffff' }}
-              />
-              <Legend />
-              <Area type="monotone" dataKey="organic" stackId="1" stroke="#10b981" fill="url(#organicGradient)" />
-              <Area type="monotone" dataKey="paid" stackId="1" stroke="#fbb604" fill="url(#paidGradient)" />
-              <Area type="monotone" dataKey="referral" stackId="1" stroke="#1e88e5" fill="url(#referralGradient)" />
-              <Area type="monotone" dataKey="social" stackId="1" stroke="#8e24aa" fill="url(#socialGradient)" />
-            </AreaChart>
-          </ResponsiveContainer>
+          <EnhancedAreaChart 
+            data={userAcquisitionData.map(item => ({
+              month: item.month,
+              revenue: item.organic + item.paid,
+              profit: item.referral + item.social
+            }))}
+            height={350}
+            colors={['#10b981', '#fbb604']}
+          />
         </ChartCard>
 
         {/* Revenue Breakdown */}
@@ -378,53 +392,11 @@ const AdminAnalytics = () => {
               <button><FaDownload /></button>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={350}>
-            <PieChart>
-              <defs>
-                {revenueBySourceData.map((entry, index) => (
-                  <React.Fragment key={index}>
-                    <linearGradient id={`revenueGradient-${index}`} x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor={entry.color} stopOpacity={1}/>
-                      <stop offset="100%" stopColor={entry.color} stopOpacity={0.7}/>
-                    </linearGradient>
-                  </React.Fragment>
-                ))}
-              </defs>
-              <Pie
-                data={revenueBySourceData}
-                cx="50%"
-                cy="50%"
-                innerRadius={80}
-                outerRadius={140}
-                paddingAngle={4}
-                dataKey="value"
-              >
-                {revenueBySourceData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
-                    fill={`url(#revenueGradient-${index})`}
-                    stroke="rgba(255,255,255,0.1)"
-                    strokeWidth={2}
-                  />
-                ))}
-              </Pie>
-              <Tooltip 
-                contentStyle={{ 
-                  background: 'rgba(8, 8, 8, 0.98)', 
-                  border: '1px solid rgba(255,255,255,0.15)', 
-                  borderRadius: '12px',
-                  color: '#ffffff'
-                }}
-                formatter={(value) => [`$${value.toLocaleString()}`, 'Revenue']}
-                itemStyle={{ color: '#ffffff' }}
-              />
-              <Legend 
-                verticalAlign="bottom" 
-                height={50}
-                formatter={(value) => <span style={{color: '#cccccc', fontSize: '13px'}}>{value}</span>}
-              />
-            </PieChart>
-          </ResponsiveContainer>
+          <EnhancedDonutChart 
+            data={revenueBySourceData}
+            height={350}
+            colors={['#fbb604', '#10b981', '#1e88e5']}
+          />
         </ChartCard>
 
         {/* Conversion Funnel */}
@@ -437,27 +409,14 @@ const AdminAnalytics = () => {
               <button><FaDownload /></button>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={conversionFunnelData} layout="horizontal">
-              <CartesianGrid strokeDasharray="2 4" stroke="rgba(255,255,255,0.06)" />
-              <XAxis type="number" stroke="#a0a0a0" fontSize={12} />
-              <YAxis dataKey="stage" type="category" stroke="#a0a0a0" fontSize={12} width={100} />
-              <Tooltip 
-                contentStyle={{ 
-                  background: 'rgba(8, 8, 8, 0.98)', 
-                  border: '1px solid rgba(255,255,255,0.15)', 
-                  borderRadius: '12px',
-                  color: '#ffffff'
-                }}
-                formatter={(value, name) => [
-                  name === 'users' ? `${value.toLocaleString()} users` : `${value}%`,
-                  name === 'users' ? 'Count' : 'Conversion'
-                ]}
-                itemStyle={{ color: '#ffffff' }}
-              />
-              <Bar dataKey="users" fill="#fbb604" radius={[0, 4, 4, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
+          <EnhancedBarChart 
+            data={conversionFunnelData.map(item => ({
+              label: item.stage,
+              revenue: item.users
+            }))}
+            height={350}
+            colors={['#fbb604']}
+          />
         </ChartCard>
 
         {/* User Behavior */}
@@ -470,26 +429,14 @@ const AdminAnalytics = () => {
               <button><FaDownload /></button>
             </div>
           </div>
-          <ResponsiveContainer width="100%" height={350}>
-            <ComposedChart data={userBehaviorData}>
-              <CartesianGrid strokeDasharray="2 4" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="hour" stroke="#a0a0a0" fontSize={12} />
-              <YAxis yAxisId="left" stroke="#a0a0a0" fontSize={12} />
-              <YAxis yAxisId="right" orientation="right" stroke="#a0a0a0" fontSize={12} />
-              <Tooltip 
-                contentStyle={{ 
-                  background: 'rgba(8, 8, 8, 0.98)', 
-                  border: '1px solid rgba(255,255,255,0.15)', 
-                  borderRadius: '12px',
-                  color: '#ffffff'
-                }}
-                itemStyle={{ color: '#ffffff' }}
-              />
-              <Legend />
-              <Bar yAxisId="left" dataKey="sessions" fill="#1e88e5" name="Sessions" radius={[2, 2, 0, 0]} />
-              <Line yAxisId="right" type="monotone" dataKey="avgDuration" stroke="#10b981" strokeWidth={3} name="Avg Duration (min)" />
-            </ComposedChart>
-          </ResponsiveContainer>
+          <EnhancedLineChart 
+            data={userBehaviorData.map(item => ({
+              label: item.hour,
+              revenue: item.sessions
+            }))}
+            height={350}
+            colors={['#1e88e5']}
+          />
         </ChartCard>
       </ChartSection>
     </AnalyticsContainer>
