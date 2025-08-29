@@ -28,6 +28,10 @@ import ExplorePage from "./pages/ExplorePage";
 import DashboardPage from "./pages/DashboardPage";
 import HomePage from "./pages/HomePage";
 
+// Support Pages
+import SupportLogin from "./pages/support/SupportLogin";
+import SupportDashboard from "./pages/support/SupportDashboard";
+
 // Create a context for the current path
 export const ChoreoPathContext = createContext("/");
 
@@ -115,6 +119,10 @@ const ChoreoAppContent = () => {
               <Route path="/onboarding" element={<OnboardingPage />} />
               <Route path="/explore" element={<ExplorePage />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+
+              {/* Support Routes */}
+              <Route path="/support/login" element={<SupportLogin />} />
+              <Route path="/support/dashboard" element={<SupportDashboard />} />
 
               {/* Catch all route - redirect to home */}
               <Route path="*" element={<HomePage />} />

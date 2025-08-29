@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { Link } from "react-router-dom";
 import {
   FaEnvelope,
@@ -6,134 +6,76 @@ import {
   FaInstagram,
   FaLinkedin,
   FaHeart,
+  FaArrowRight
 } from "react-icons/fa";
+import { HiSparkles } from "react-icons/hi";
 import logoSvg from "../assets/logo.svg";
 
-// Advanced animations
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
-`;
-
-const pulse = keyframes`
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-`;
-
 const FooterContainer = styled.footer`
-  background: linear-gradient(135deg, #fafbfc 0%, #ffffff 50%, #f8fafc 100%);
-  border-top: 1px solid rgba(255, 107, 53, 0.08);
-  color: #64748b;
-  padding: 6rem 0 0;
+  background: white;
+  border-top: 1px solid rgba(230, 230, 230, 0.5);
+  color: #475569;
+  padding: 5rem 0 0;
   margin-top: auto;
   position: relative;
-  overflow: hidden;
-
-  /* Advanced background pattern */
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(
-        circle at 20% 80%,
-        rgba(255, 107, 53, 0.03) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 80% 20%,
-        rgba(142, 36, 170, 0.03) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 40% 40%,
-        rgba(30, 136, 229, 0.02) 0%,
-        transparent 50%
-      );
-    pointer-events: none;
-  }
-
-  /* Floating orbs */
-  &::after {
-    content: "";
-    position: absolute;
-    top: -100px;
-    right: -100px;
-    width: 300px;
-    height: 300px;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 107, 53, 0.02) 0%,
-      transparent 70%
-    );
-    border-radius: 50%;
-    filter: blur(80px);
-    animation: ${float} 20s ease-in-out infinite;
-  }
 `;
 
 const FooterContent = styled.div`
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 3rem;
-  position: relative;
-  z-index: 2;
 
   @media (max-width: 768px) {
-    padding: 0 2rem;
+    padding: 0 1.5rem;
   }
 `;
 
 const FooterMain = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1.5fr;
   gap: 4rem;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 
-  @media (max-width: 1200px) {
-    grid-template-columns: 2fr 1fr 1fr;
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr 1fr;
     gap: 3rem;
   }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 3rem;
-    text-align: center;
   }
 `;
 
-const LogoSection = styled.div`
+const BrandSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 
   .logo {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
     font-family: "Poppins", sans-serif;
-    font-size: 1.6rem;
-    font-weight: 900;
-    color: #0f172a;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1a1a2e;
     text-decoration: none;
-    letter-spacing: -0.04em;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: fit-content;
+    transition: all 0.3s ease;
 
     img {
-      width: 42px;
-      height: 42px;
-      filter: drop-shadow(0 4px 12px rgba(255, 107, 53, 0.15));
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 36px;
+      height: 36px;
+      filter: drop-shadow(0 2px 8px rgba(255, 107, 53, 0.15));
+      transition: all 0.3s ease;
     }
 
     &:hover {
-      transform: translateY(-2px);
-
+      transform: translateY(-1px);
+      
       img {
-        transform: rotate(5deg) scale(1.05);
-        filter: drop-shadow(0 8px 24px rgba(255, 107, 53, 0.25));
+        transform: rotate(10deg) scale(1.1);
       }
     }
   }
@@ -141,99 +83,109 @@ const LogoSection = styled.div`
   .tagline {
     font-family: "Figtree", sans-serif;
     color: #64748b;
-    font-size: 1.1rem;
-    max-width: 360px;
-    line-height: 1.7;
-    font-weight: 400;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    max-width: 320px;
   }
 
-  .trust-badges {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+  .newsletter {
+    margin-top: 0.5rem;
+  }
+`;
 
-    .badge {
-      padding: 0.5rem 1rem;
-      background: rgba(255, 107, 53, 0.08);
-      border: 1px solid rgba(255, 107, 53, 0.1);
-      border-radius: 20px;
-      font-family: "Poppins", sans-serif;
-      font-size: 0.85rem;
-      color: #ff6b35;
-      font-weight: 600;
-      transition: all 0.3s ease;
+const NewsletterForm = styled.form`
+  display: flex;
+  gap: 0.5rem;
+  max-width: 320px;
+`;
 
-      &:hover {
-        background: rgba(255, 107, 53, 0.12);
-        transform: translateY(-1px);
-      }
-    }
+const NewsletterInput = styled.input`
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1.5px solid rgba(230, 230, 230, 0.8);
+  border-radius: 10px;
+  background: rgba(248, 250, 252, 0.5);
+  color: #1a1a2e;
+  font-family: "Figtree", sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: rgba(255, 107, 53, 0.4);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+  }
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+`;
+
+const NewsletterButton = styled.button`
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff4757 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
   }
 `;
 
 const FooterSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 
   .section-title {
     font-family: "Poppins", sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #1e293b;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     margin-bottom: 0.5rem;
-    position: relative;
-
-    &::after {
-      content: "";
-      position: absolute;
-      bottom: -8px;
-      left: 0;
-      width: 24px;
-      height: 3px;
-      background: linear-gradient(135deg, #ff6b35 0%, #e55722 100%);
-      border-radius: 2px;
-    }
-
-    @media (max-width: 768px) {
-      &::after {
-        left: 50%;
-        transform: translateX(-50%);
-      }
-    }
   }
 `;
 
 const FooterLink = styled(Link)`
-  color: #64748b;
+  color: #475569;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  transition: all 0.3s ease;
   padding: 0.25rem 0;
   display: inline-block;
+  width: fit-content;
+  position: relative;
 
   &:hover {
     color: #ff6b35;
-    transform: translateX(4px);
+    transform: translateX(2px);
   }
 
-  &::before {
-    content: "";
-    position: absolute;
-    left: -8px;
-    top: 50%;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(135deg, #ff6b35 0%, #e55722 100%);
-    border-radius: 1px;
-    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateY(-50%);
-  }
-
-  &:hover::before {
-    width: 4px;
+  &.new {
+    &::after {
+      content: "NEW";
+      position: absolute;
+      top: -2px;
+      right: -35px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+    }
   }
 `;
 
@@ -242,11 +194,11 @@ const FooterBottom = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 2rem 0;
-  border-top: 1px solid rgba(255, 107, 53, 0.08);
+  border-top: 1px solid rgba(230, 230, 230, 0.5);
 
   @media (max-width: 768px) {
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
     text-align: center;
   }
 `;
@@ -254,152 +206,217 @@ const FooterBottom = styled.div`
 const Copyright = styled.p`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   color: #94a3b8;
   font-family: "Figtree", sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 
   .heart {
     color: #ff6b35;
-    animation: ${pulse} 2s ease-in-out infinite;
+    font-size: 0.85rem;
+  }
+
+  a {
+    color: #475569;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #ff6b35;
+    }
   }
 `;
 
 const SocialLinks = styled.div`
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
 `;
 
 const SocialLink = styled.a`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(100, 116, 139, 0.08);
+  background: rgba(248, 250, 252, 0.8);
+  border: 1px solid rgba(230, 230, 230, 0.5);
   color: #64748b;
   text-decoration: none;
-  font-size: 1.2rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(100, 116, 139, 0.1);
-  position: relative;
-  overflow: hidden;
-
-  /* Hover gradient backgrounds */
-  &.email:hover {
-    background: linear-gradient(135deg, #ea4335 0%, #fbbc05 100%);
-    color: white;
-    border-color: transparent;
-  }
-
-  &.twitter:hover {
-    background: linear-gradient(135deg, #1da1f2 0%, #0d8bd9 100%);
-    color: white;
-    border-color: transparent;
-  }
-
-  &.instagram:hover {
-    background: linear-gradient(135deg, #f56040 0%, #833ab4 50%, #c13584 100%);
-    color: white;
-    border-color: transparent;
-  }
-
-  &.linkedin:hover {
-    background: linear-gradient(135deg, #0077b5 0%, #00a0dc 100%);
-    color: white;
-    border-color: transparent;
-  }
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    color: #ff6b35;
+    border-color: rgba(255, 107, 53, 0.3);
+    background: rgba(255, 107, 53, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
+  }
+`;
+
+const PromoSection = styled.div`
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.05) 0%, rgba(255, 71, 87, 0.05) 100%);
+  border: 1px solid rgba(255, 107, 53, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    text-align: center;
   }
 
-  /* Ripple effect */
-  &::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transition: all 0.4s ease;
-    transform: translate(-50%, -50%);
+  .promo-content {
+    flex: 1;
+
+    h3 {
+      font-family: "Poppins", sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      @media (max-width: 768px) {
+        justify-content: center;
+      }
+    }
+
+    p {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
   }
 
-  &:active::before {
-    width: 100%;
-    height: 100%;
+  .promo-action {
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      background: linear-gradient(135deg, #ff6b35 0%, #ff4757 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-family: "Poppins", sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(255, 107, 53, 0.25);
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 107, 53, 0.35);
+      }
+    }
   }
 `;
 
 const ChoreoFooter = () => {
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    // Handle newsletter submission
+  };
+
   return (
     <FooterContainer>
       <FooterContent>
+        <PromoSection>
+          <div className="promo-content">
+            <h3>
+              <HiSparkles style={{ color: '#ff6b35' }} />
+              Ready to transform your chores?
+            </h3>
+            <p>Join thousands of families already saving time and earning money.</p>
+          </div>
+          <div className="promo-action">
+            <Link to="/join">
+              Get Started Free
+              <FaArrowRight />
+            </Link>
+          </div>
+        </PromoSection>
+
         <FooterMain>
-          <LogoSection>
+          <BrandSection>
             <Link to="/" className="logo">
               <img src={logoSvg} alt="Choreo Logo" />
               Choreo
             </Link>
             <p className="tagline">
-              The free marketplace connecting families with local helpers for
-              household chores. Safe, simple, and trusted by thousands.
+              The smart way to handle household chores. Connect with trusted local helpers and transform your daily tasks.
             </p>
-            <div className="trust-badges">
-              <span className="badge">Free Forever</span>
-              <span className="badge">Verified Helpers</span>
-              <span className="badge">Secure Payments</span>
+            <div className="newsletter">
+              <p style={{ fontSize: '0.9rem', marginBottom: '0.75rem', color: '#64748b' }}>
+                Stay updated with our latest features
+              </p>
+              <NewsletterForm onSubmit={handleNewsletterSubmit}>
+                <NewsletterInput 
+                  type="email" 
+                  placeholder="Your email"
+                  required
+                />
+                <NewsletterButton type="submit">
+                  <FaArrowRight />
+                </NewsletterButton>
+              </NewsletterForm>
             </div>
-          </LogoSection>
+          </BrandSection>
 
           <FooterSection>
-            <h3 className="section-title">Platform</h3>
+            <h3 className="section-title">Product</h3>
+            <FooterLink to="/features">Features</FooterLink>
             <FooterLink to="/marketplace">Marketplace</FooterLink>
             <FooterLink to="/how-it-works">How it Works</FooterLink>
             <FooterLink to="/pricing">Pricing</FooterLink>
-            <FooterLink to="/safety">Safety Center</FooterLink>
+            <FooterLink to="/mobile" className="new">Mobile App</FooterLink>
           </FooterSection>
 
           <FooterSection>
-            <h3 className="section-title">Support</h3>
+            <h3 className="section-title">Company</h3>
+            <FooterLink to="/about">About Us</FooterLink>
+            <FooterLink to="/careers">Careers</FooterLink>
+            <FooterLink to="/blog">Blog</FooterLink>
+            <FooterLink to="/press">Press Kit</FooterLink>
+            <FooterLink to="/contact">Contact</FooterLink>
+          </FooterSection>
+
+          <FooterSection>
+            <h3 className="section-title">Resources</h3>
             <FooterLink to="/help">Help Center</FooterLink>
-            <FooterLink to="/contact">Contact Us</FooterLink>
+            <FooterLink to="/safety">Safety Guidelines</FooterLink>
             <FooterLink to="/community">Community</FooterLink>
-            <FooterLink to="/status">Service Status</FooterLink>
-          </FooterSection>
-
-          <FooterSection>
-            <h3 className="section-title">Legal</h3>
-            <FooterLink to="/terms">Terms of Service</FooterLink>
-            <FooterLink to="/privacy">Privacy Policy</FooterLink>
-            <FooterLink to="/cookies">Cookie Policy</FooterLink>
-            <FooterLink to="/guidelines">Guidelines</FooterLink>
+            <FooterLink to="/api">API Docs</FooterLink>
+            <FooterLink to="/terms">Terms & Privacy</FooterLink>
           </FooterSection>
         </FooterMain>
 
         <FooterBottom>
           <Copyright>
-            © {new Date().getFullYear()} Choreo by Revolvo Tech. Made with
-            <FaHeart className="heart" />
-            for families everywhere.
+            © {new Date().getFullYear()} Choreo by{" "}
+            <a href="https://revolvo.tech" target="_blank" rel="noopener noreferrer">
+              Revolvo Tech
+            </a>
+            . Built with <FaHeart className="heart" /> in NYC.
           </Copyright>
 
           <SocialLinks>
             <SocialLink
               href="mailto:hello@choreo.app"
-              className="email"
               title="Email us"
             >
               <FaEnvelope />
             </SocialLink>
             <SocialLink
               href="https://twitter.com/choreoapp"
-              className="twitter"
               title="Follow on Twitter"
               target="_blank"
               rel="noopener noreferrer"
@@ -408,7 +425,6 @@ const ChoreoFooter = () => {
             </SocialLink>
             <SocialLink
               href="https://instagram.com/choreoapp"
-              className="instagram"
               title="Follow on Instagram"
               target="_blank"
               rel="noopener noreferrer"
@@ -417,7 +433,6 @@ const ChoreoFooter = () => {
             </SocialLink>
             <SocialLink
               href="https://linkedin.com/company/choreoapp"
-              className="linkedin"
               title="Connect on LinkedIn"
               target="_blank"
               rel="noopener noreferrer"

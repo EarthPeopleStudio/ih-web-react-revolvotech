@@ -39,6 +39,9 @@ import { useMobile } from "./hooks/useMobile";
 // Choreo App Import
 import ChoreoApp from "./choreo/ChoreoApp";
 
+// Admin App Import
+import AdminApp from "./admin/AdminApp";
+
 // Subdomain Detection
 import { SubdomainDetection } from "./utils/subdomainDetection";
 
@@ -441,33 +444,7 @@ const AppRouter = () => {
       return <ChoreoApp />;
 
     case "admin":
-      // Future admin app would go here
-      return (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100vh",
-            background: "var(--dark-bg)",
-            color: "var(--text-primary)",
-          }}
-        >
-          <div style={{ textAlign: "center" }}>
-            <h1>Admin Portal</h1>
-            <p>Coming Soon</p>
-            <p
-              style={{
-                marginTop: "2rem",
-                fontSize: "0.9rem",
-                color: "var(--text-secondary)",
-              }}
-            >
-              Access admin.revolvo.tech for the admin dashboard
-            </p>
-          </div>
-        </div>
-      );
+      return <AdminApp />;
 
     default:
       // Main Revolvo website

@@ -789,6 +789,12 @@ const Projects = () => {
           >
             Content
           </Tab>
+          <Tab
+            active={activeTab === "XR"}
+            onClick={() => handleTabClick("XR")}
+          >
+            XR
+          </Tab>
         </TabsContainer>
 
         <ProjectsGrid>
