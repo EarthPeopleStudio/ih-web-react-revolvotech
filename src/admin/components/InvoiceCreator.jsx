@@ -546,8 +546,8 @@ const InvoicePreview = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
     border-bottom: 3px solid #fbb604;
     position: relative;
 
@@ -866,11 +866,13 @@ const InvoicePreview = styled.div`
     }
 
     .summary {
-      min-width: 300px;
+      min-width: 225px;
+      max-width: 275px;
       .summary-row {
         display: flex;
         justify-content: space-between;
-        padding: 0.5rem 0;
+        align-items: flex-start;
+        padding: 0.75rem 0;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         
         &.total {
@@ -885,10 +887,20 @@ const InvoicePreview = styled.div`
         
         .label {
           color: ${props => props.$isDarkTheme ? '#aaa' : '#444'};
+          flex: 1;
+          word-break: break-word;
+          overflow-wrap: break-word;
+          hyphens: auto;
+          line-height: 1.3;
+          margin-right: 1rem;
+          max-width: 65%;
         }
         .value {
           color: ${props => props.$isDarkTheme ? '#fff' : '#333'};
           font-weight: 600;
+          flex-shrink: 0;
+          text-align: right;
+          white-space: nowrap;
         }
       }
     }
@@ -929,7 +941,7 @@ const InvoicePreview = styled.div`
   }
 
   .footer {
-    padding-top: 2rem;
+    padding-top: 1.5rem;
     border-top: 1px solid ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'};
     display: grid;
     grid-template-columns: 1fr auto;
@@ -2188,7 +2200,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
 
             {/* Thank You Note */}
             {invoiceData.thankYouNote && (
-              <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'linear-gradient(135deg, rgba(251, 182, 4, 0.1) 0%, rgba(249, 155, 4, 0.05) 100%)', borderRadius: '12px', border: '1px solid rgba(251, 182, 4, 0.2)', textAlign: 'center' }}>
+              <div style={{ marginTop: '2rem', marginBottom: '1.5rem', padding: '1.5rem', background: 'linear-gradient(135deg, rgba(251, 182, 4, 0.1) 0%, rgba(249, 155, 4, 0.05) 100%)', borderRadius: '12px', border: '1px solid rgba(251, 182, 4, 0.2)', textAlign: 'center' }}>
                 <div style={{ color: '#fbb604', fontWeight: '600', fontSize: '1rem', lineHeight: '1.6' }}>{invoiceData.thankYouNote}</div>
               </div>
             )}
