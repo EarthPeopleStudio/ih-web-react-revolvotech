@@ -6,7 +6,8 @@ import {
   FaUser, FaBuilding, FaEnvelope, FaPhone, FaCalendarAlt,
   FaClock, FaDollarSign, FaGlobe, FaPaperPlane, FaEraser,
   FaSun, FaMoon, FaLinkedin, FaQrcode, FaBriefcase, FaIdCard,
-  FaMapMarkerAlt, FaFileSignature, FaCalculator, FaMoneyBillWave
+  FaMapMarkerAlt, FaFileSignature, FaCalculator, FaMoneyBillWave,
+  FaUsers, FaChartLine, FaFileAlt
 } from "react-icons/fa";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -31,8 +32,8 @@ const PrintStyles = styled.div`
       border-radius: 0 !important;
     }
 
-    /* Only show the salary slip */
-    .printable-slip {
+    /* Only show the payroll report */
+    .printable-report {
       visibility: visible !important;
       position: absolute !important;
       top: 0 !important;
@@ -50,7 +51,7 @@ const PrintStyles = styled.div`
         font-family: 'Arial', sans-serif !important;
       }
       
-      .slip-header {
+      .report-header {
         margin-bottom: 15px !important;
       }
       
@@ -223,52 +224,16 @@ const FormGroup = styled.div`
       padding: 0.5rem;
     }
   }
-
-  .number-input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    
-    input[type="number"] {
-      padding-right: 3rem;
-    }
-    
-    .number-controls {
-      position: absolute;
-      right: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      
-      button {
-        background: rgba(251, 182, 4, 0.1);
-        border: 1px solid rgba(251, 182, 4, 0.3);
-        border-radius: 4px;
-        color: #fbb604;
-        width: 20px;
-        height: 16px;
-        font-size: 0.7rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        &:hover {
-          background: rgba(251, 182, 4, 0.2);
-        }
-      }
-    }
-  }
 `;
 
-const ItemGrid = styled.div`
+const EmployeeGrid = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr auto;
+  grid-template-columns: 2fr 1fr 1fr auto;
   gap: 1rem;
   align-items: end;
 `;
 
-const ItemSection = styled.div`
+const EmployeeSection = styled.div`
   background: rgba(0, 0, 0, 0.2);
   padding: 1.5rem;
   border-radius: 12px;
@@ -291,7 +256,7 @@ const ItemSection = styled.div`
   }
 `;
 
-const AddItemBtn = styled.button`
+const AddEmployeeBtn = styled.button`
   width: 100%;
   padding: 1rem;
   background: rgba(251, 182, 4, 0.1);
@@ -415,15 +380,15 @@ const TopButton = styled.button`
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
   &.clear {
-    background: rgba(255, 165, 0, 0.1);
-    border-color: rgba(255, 165, 0, 0.3);
-    color: #ffa500;
+    background: rgba(251, 182, 4, 0.1);
+    border-color: rgba(251, 182, 4, 0.3);
+    color: #fbb604;
     
     &:hover {
-      background: rgba(255, 165, 0, 0.2);
-      border-color: rgba(255, 165, 0, 0.5);
+      background: rgba(251, 182, 4, 0.2);
+      border-color: rgba(251, 182, 4, 0.5);
       transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(255, 165, 0, 0.2);
+      box-shadow: 0 6px 20px rgba(251, 182, 4, 0.2);
     }
   }
 
@@ -454,7 +419,7 @@ const TopButton = styled.button`
   }
 `;
 
-const SlipPreview = styled.div`
+const ReportPreview = styled.div`
   background: ${props => props.$isDarkTheme ? '#1a1a1a' : 'white'};
   color: ${props => props.$isDarkTheme ? 'white' : '#333'};
   border-radius: 12px;
@@ -466,7 +431,7 @@ const SlipPreview = styled.div`
   position: relative;
   font-family: 'Arial', sans-serif;
 
-  .slip-header {
+  .report-header {
     background: ${props => props.$isDarkTheme 
       ? 'linear-gradient(135deg, #333 0%, #1a1a1a 100%)' 
       : 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)'};
@@ -507,7 +472,7 @@ const SlipPreview = styled.div`
       }
     }
 
-    .slip-title {
+    .report-title {
       position: absolute;
       top: 2rem;
       right: 2rem;
@@ -529,10 +494,10 @@ const SlipPreview = styled.div`
     }
   }
 
-  .slip-content {
+  .report-content {
     padding: 2rem;
     
-    .employee-section {
+    .report-summary {
       background: ${props => props.$isDarkTheme 
         ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)' 
         : 'linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%)'};
@@ -553,96 +518,13 @@ const SlipPreview = styled.div`
         border-radius: 12px 12px 0 0;
       }
       
-      .employee-info {
+      .summary-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
+        gap: 1.5rem;
         
-        .info-item {
-          .label {
-            font-size: 0.75rem;
-            color: #fbb604;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.25rem;
-          }
-          
-          .value {
-            font-size: 0.9rem;
-            color: ${props => props.$isDarkTheme ? 'white' : '#333'};
-            font-weight: 500;
-          }
-        }
-      }
-    }
-    
-    .salary-breakdown {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 2rem;
-      margin-bottom: 2rem;
-      
-      .earnings, .deductions, .summary {
-        background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
-        border-radius: 8px;
-        padding: 1.5rem;
-        border: 1px solid rgba(251, 182, 4, 0.1);
-        
-        .section-title {
-          color: #fbb604;
-          font-weight: 700;
-          margin-bottom: 1rem;
-          font-size: 1rem;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
+        .summary-item {
           text-align: center;
-          padding-bottom: 0.5rem;
-          border-bottom: 1px solid rgba(251, 182, 4, 0.2);
-        }
-        
-        .item {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 0.75rem;
-          font-size: 0.85rem;
-          
-          .item-title {
-            color: ${props => props.$isDarkTheme ? '#ccc' : '#555'};
-          }
-          
-          .item-amount {
-            font-weight: 600;
-            color: ${props => props.$isDarkTheme ? 'white' : '#333'};
-          }
-        }
-        
-        .total {
-          border-top: 2px solid #fbb604;
-          padding-top: 0.75rem;
-          margin-top: 0.75rem;
-          font-weight: 700;
-          font-size: 0.9rem;
-          
-          .item-title {
-            color: #fbb604 !important;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-          
-          .item-amount {
-            color: #fbb604 !important;
-          }
-        }
-      }
-      
-      .summary {
-        .net-pay {
-          background: linear-gradient(135deg, rgba(251, 182, 4, 0.1) 0%, rgba(249, 168, 37, 0.1) 100%);
-          padding: 1rem;
-          border-radius: 8px;
-          text-align: center;
-          margin-top: 1rem;
           
           .label {
             font-size: 0.75rem;
@@ -653,17 +535,65 @@ const SlipPreview = styled.div`
             margin-bottom: 0.5rem;
           }
           
-          .amount {
+          .value {
             font-size: 1.5rem;
             font-weight: 800;
-            color: #fbb604;
+            color: ${props => props.$isDarkTheme ? 'white' : '#333'};
           }
+        }
+      }
+    }
+    
+    .employees-table {
+      background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(251, 182, 4, 0.1);
+      margin-bottom: 2rem;
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        
+        th {
+          background: ${props => props.$isDarkTheme ? 'rgba(251, 182, 4, 0.1)' : 'rgba(251, 182, 4, 0.15)'};
+          color: #fbb604;
+          padding: 1rem 0.75rem;
+          text-align: left;
+          font-weight: 700;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          border-bottom: 2px solid rgba(251, 182, 4, 0.3);
+        }
+        
+        td {
+          padding: 0.875rem 0.75rem;
+          font-size: 0.85rem;
+          color: ${props => props.$isDarkTheme ? '#ddd' : '#555'};
+          border-bottom: 1px solid rgba(251, 182, 4, 0.1);
+        }
+        
+        tbody tr {
+          &:nth-child(even) {
+            background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.02)'};
+          }
+          
+          &:hover {
+            background: ${props => props.$isDarkTheme ? 'rgba(251, 182, 4, 0.1)' : 'rgba(251, 182, 4, 0.05)'} !important;
+          }
+        }
+        
+        .amount {
+          font-weight: 600;
+          color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+          text-align: right;
         }
       }
     }
   }
 
-  .slip-footer {
+  .report-footer {
     background: ${props => props.$isDarkTheme ? '#0f0f0f' : '#f8f9fa'};
     padding: 1.5rem 2rem;
     border-top: 1px solid rgba(251, 182, 4, 0.2);
@@ -693,19 +623,19 @@ const SlipPreview = styled.div`
   }
 `;
 
-const SalarySlipGenerator = ({ onClose }) => {
+const PayrollReportGenerator = ({ onClose }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [qrCodeUrl, setQrCodeUrl] = useState(null);
   const previewRef = useRef(null);
 
   // Initialize form data with session storage
-  const [slipData, setSlipData] = useState(() => {
-    const savedData = sessionStorage.getItem('salarySlipData');
+  const [reportData, setReportData] = useState(() => {
+    const savedData = sessionStorage.getItem('payrollReportData');
     if (savedData) {
       try {
         return JSON.parse(savedData);
       } catch (error) {
-        console.error('Error parsing saved salary slip data:', error);
+        console.error('Error parsing saved payroll report data:', error);
       }
     }
     
@@ -718,53 +648,32 @@ const SalarySlipGenerator = ({ onClose }) => {
       email: "job@revolvo.tech",
       website: "www.revolvo.tech",
       
-      // Slip Details
-      referenceNumber: `SAL${Date.now().toString().slice(-6)}`,
-      payPeriod: new Date().toISOString().slice(0, 7), // YYYY-MM format
-      payDate: new Date().toISOString().split('T')[0],
+      // Report Details
+      referenceNumber: `PAY${Date.now().toString().slice(-6)}`,
+      reportPeriod: new Date().toISOString().slice(0, 7), // YYYY-MM format
+      reportDate: new Date().toISOString().split('T')[0],
       
-      // Employee Information
-      employeeName: "",
-      employeeId: "",
-      designation: "",
-      department: "",
-      dateOfJoining: "",
-      bankAccount: "",
-      
-      // Salary Structure
-      earnings: [
+      // Employees
+      employees: [
         {
           id: Date.now() + 1,
-          title: 'Basic Salary',
-          amount: 50000
+          name: 'John Doe',
+          employeeId: 'EMP001',
+          position: 'Software Engineer',
+          basicSalary: 50000,
+          allowances: 15000,
+          deductions: 8000,
+          netPay: 57000
         },
         {
           id: Date.now() + 2,
-          title: 'House Rent Allowance',
-          amount: 15000
-        },
-        {
-          id: Date.now() + 3,
-          title: 'Transport Allowance',
-          amount: 5000
-        }
-      ],
-      
-      deductions: [
-        {
-          id: Date.now() + 4,
-          title: 'Provident Fund',
-          amount: 2000
-        },
-        {
-          id: Date.now() + 5,
-          title: 'Income Tax',
-          amount: 8000
-        },
-        {
-          id: Date.now() + 6,
-          title: 'WHT (Withholding Tax)',
-          amount: 1500
+          name: 'Jane Smith',
+          employeeId: 'EMP002',
+          position: 'Product Manager',
+          basicSalary: 60000,
+          allowances: 18000,
+          deductions: 10000,
+          netPay: 68000
         }
       ]
     };
@@ -773,11 +682,11 @@ const SalarySlipGenerator = ({ onClose }) => {
   // Save to sessionStorage whenever data changes
   useEffect(() => {
     try {
-      sessionStorage.setItem('salarySlipData', JSON.stringify(slipData));
+      sessionStorage.setItem('payrollReportData', JSON.stringify(reportData));
     } catch (error) {
-      console.error('Error saving salary slip data:', error);
+      console.error('Error saving payroll report data:', error);
     }
-  }, [slipData]);
+  }, [reportData]);
 
   // Generate QR code on component mount
   useEffect(() => {
@@ -801,62 +710,49 @@ const SalarySlipGenerator = ({ onClose }) => {
   }, [isDarkTheme]);
 
   const updateField = (field, value) => {
-    setSlipData(prev => ({ ...prev, [field]: value }));
+    setReportData(prev => ({ ...prev, [field]: value }));
   };
 
-  const addEarning = () => {
-    const newEarning = {
+  const addEmployee = () => {
+    const newEmployee = {
       id: Date.now(),
-      title: '',
-      amount: 0
+      name: '',
+      employeeId: '',
+      position: '',
+      basicSalary: 0,
+      allowances: 0,
+      deductions: 0,
+      netPay: 0
     };
-    setSlipData(prev => ({
+    setReportData(prev => ({
       ...prev,
-      earnings: [...prev.earnings, newEarning]
+      employees: [...prev.employees, newEmployee]
     }));
   };
 
-  const updateEarning = (id, field, value) => {
-    setSlipData(prev => ({
+  const updateEmployee = (id, field, value) => {
+    setReportData(prev => ({
       ...prev,
-      earnings: prev.earnings.map(earning => 
-        earning.id === id ? { ...earning, [field]: field === 'amount' ? Number(value) || 0 : value } : earning
-      )
+      employees: prev.employees.map(employee => {
+        if (employee.id === id) {
+          const updatedEmployee = { ...employee, [field]: field.includes('Salary') || field.includes('allowances') || field.includes('deductions') ? Number(value) || 0 : value };
+          
+          // Auto-calculate net pay
+          if (field === 'basicSalary' || field === 'allowances' || field === 'deductions') {
+            updatedEmployee.netPay = (updatedEmployee.basicSalary || 0) + (updatedEmployee.allowances || 0) - (updatedEmployee.deductions || 0);
+          }
+          
+          return updatedEmployee;
+        }
+        return employee;
+      })
     }));
   };
 
-  const removeEarning = (id) => {
-    setSlipData(prev => ({
+  const removeEmployee = (id) => {
+    setReportData(prev => ({
       ...prev,
-      earnings: prev.earnings.filter(earning => earning.id !== id)
-    }));
-  };
-
-  const addDeduction = () => {
-    const newDeduction = {
-      id: Date.now(),
-      title: '',
-      amount: 0
-    };
-    setSlipData(prev => ({
-      ...prev,
-      deductions: [...prev.deductions, newDeduction]
-    }));
-  };
-
-  const updateDeduction = (id, field, value) => {
-    setSlipData(prev => ({
-      ...prev,
-      deductions: prev.deductions.map(deduction => 
-        deduction.id === id ? { ...deduction, [field]: field === 'amount' ? Number(value) || 0 : value } : deduction
-      )
-    }));
-  };
-
-  const removeDeduction = (id) => {
-    setSlipData(prev => ({
-      ...prev,
-      deductions: prev.deductions.filter(deduction => deduction.id !== id)
+      employees: prev.employees.filter(employee => employee.id !== id)
     }));
   };
 
@@ -868,15 +764,16 @@ const SalarySlipGenerator = ({ onClose }) => {
   };
 
   const calculateTotals = () => {
-    const totalEarnings = slipData.earnings.reduce((sum, item) => sum + (item.amount || 0), 0);
-    const totalDeductions = slipData.deductions.reduce((sum, item) => sum + (item.amount || 0), 0);
-    const netPay = totalEarnings - totalDeductions;
+    const totalBasic = reportData.employees.reduce((sum, emp) => sum + (emp.basicSalary || 0), 0);
+    const totalAllowances = reportData.employees.reduce((sum, emp) => sum + (emp.allowances || 0), 0);
+    const totalDeductions = reportData.employees.reduce((sum, emp) => sum + (emp.deductions || 0), 0);
+    const totalNetPay = reportData.employees.reduce((sum, emp) => sum + (emp.netPay || 0), 0);
     
-    return { totalEarnings, totalDeductions, netPay };
+    return { totalBasic, totalAllowances, totalDeductions, totalNetPay };
   };
 
   const clearForm = () => {
-    sessionStorage.removeItem('salarySlipData');
+    sessionStorage.removeItem('payrollReportData');
     window.location.reload();
   };
 
@@ -901,17 +798,17 @@ const SalarySlipGenerator = ({ onClose }) => {
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`salary-slip-${slipData.referenceNumber}.pdf`);
+      pdf.save(`payroll-report-${reportData.referenceNumber}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
     }
   };
 
-  const printSlip = () => {
+  const printReport = () => {
     window.print();
   };
 
-  const { totalEarnings, totalDeductions, netPay } = calculateTotals();
+  const { totalBasic, totalAllowances, totalDeductions, totalNetPay } = calculateTotals();
 
   return (
     <PrintStyles>
@@ -929,8 +826,8 @@ const SalarySlipGenerator = ({ onClose }) => {
           {/* Form Section */}
           <FormSection>
             <h2>
-              <FaCalculator />
-              Salary Slip Generator
+              <FaUsers />
+              Payroll Report Generator
             </h2>
 
             {/* Company Information */}
@@ -946,7 +843,7 @@ const SalarySlipGenerator = ({ onClose }) => {
               </label>
               <input
                 type="text"
-                value={slipData.companyName}
+                value={reportData.companyName}
                 onChange={(e) => updateField('companyName', e.target.value)}
                 placeholder="Revolvo Tech"
               />
@@ -956,7 +853,7 @@ const SalarySlipGenerator = ({ onClose }) => {
               <label>Tagline</label>
               <input
                 type="text"
-                value={slipData.tagline}
+                value={reportData.tagline}
                 onChange={(e) => updateField('tagline', e.target.value)}
                 placeholder="Innovation in Motion"
               />
@@ -968,7 +865,7 @@ const SalarySlipGenerator = ({ onClose }) => {
                 Address
               </label>
               <textarea
-                value={slipData.address}
+                value={reportData.address}
                 onChange={(e) => updateField('address', e.target.value)}
                 placeholder="Company address"
                 rows="2"
@@ -982,7 +879,7 @@ const SalarySlipGenerator = ({ onClose }) => {
               </label>
               <input
                 type="text"
-                value={slipData.phone}
+                value={reportData.phone}
                 onChange={(e) => updateField('phone', e.target.value)}
                 placeholder="+358 41 7408087"
               />
@@ -995,186 +892,143 @@ const SalarySlipGenerator = ({ onClose }) => {
               </label>
               <input
                 type="email"
-                value={slipData.email}
+                value={reportData.email}
                 onChange={(e) => updateField('email', e.target.value)}
                 placeholder="job@revolvo.tech"
               />
             </FormGroup>
 
-            {/* Employee Information */}
+            {/* Report Information */}
             <SectionTitle>
-              <FaUser className="icon" />
-              Employee Information
+              <FaFileAlt className="icon" />
+              Report Information
             </SectionTitle>
 
             <FormGroup>
               <label>
-                <FaUser className="icon" />
-                Employee Name
-              </label>
-              <input
-                type="text"
-                value={slipData.employeeName}
-                onChange={(e) => updateField('employeeName', e.target.value)}
-                placeholder="John Doe"
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>
-                <FaIdCard className="icon" />
-                Employee ID
-              </label>
-              <input
-                type="text"
-                value={slipData.employeeId}
-                onChange={(e) => updateField('employeeId', e.target.value)}
-                placeholder="EMP001"
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>
-                <FaBriefcase className="icon" />
-                Designation
-              </label>
-              <input
-                type="text"
-                value={slipData.designation}
-                onChange={(e) => updateField('designation', e.target.value)}
-                placeholder="Software Engineer"
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>Department</label>
-              <input
-                type="text"
-                value={slipData.department}
-                onChange={(e) => updateField('department', e.target.value)}
-                placeholder="Engineering"
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>
                 <FaCalendarAlt className="icon" />
-                Pay Period
+                Report Period
               </label>
               <input
                 type="month"
-                value={slipData.payPeriod}
-                onChange={(e) => updateField('payPeriod', e.target.value)}
+                value={reportData.reportPeriod}
+                onChange={(e) => updateField('reportPeriod', e.target.value)}
               />
             </FormGroup>
 
             <FormGroup>
               <label>
                 <FaCalendarAlt className="icon" />
-                Pay Date
+                Report Date
               </label>
               <input
                 type="date"
-                value={slipData.payDate}
-                onChange={(e) => updateField('payDate', e.target.value)}
+                value={reportData.reportDate}
+                onChange={(e) => updateField('reportDate', e.target.value)}
               />
             </FormGroup>
 
-            {/* Earnings Section */}
+            {/* Employees Section */}
             <SectionTitle>
-              <FaMoneyBillWave className="icon" />
-              Earnings
+              <FaUsers className="icon" />
+              Employees
             </SectionTitle>
 
-            {slipData.earnings.map((earning) => (
-              <ItemSection key={earning.id}>
+            {reportData.employees.map((employee) => (
+              <EmployeeSection key={employee.id}>
                 <FormGroup>
-                  <label>Earning Title</label>
+                  <label>Employee Name</label>
                   <input
                     type="text"
-                    value={earning.title}
-                    onChange={(e) => updateEarning(earning.id, 'title', e.target.value)}
-                    placeholder="Basic Salary"
+                    value={employee.name}
+                    onChange={(e) => updateEmployee(employee.id, 'name', e.target.value)}
+                    placeholder="John Doe"
                   />
                 </FormGroup>
-                <ItemGrid>
+                
+                <EmployeeGrid>
                   <FormGroup>
-                    <label>Amount (EUR)</label>
+                    <label>Employee ID</label>
+                    <input
+                      type="text"
+                      value={employee.employeeId}
+                      onChange={(e) => updateEmployee(employee.id, 'employeeId', e.target.value)}
+                      placeholder="EMP001"
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Position</label>
+                    <input
+                      type="text"
+                      value={employee.position}
+                      onChange={(e) => updateEmployee(employee.id, 'position', e.target.value)}
+                      placeholder="Software Engineer"
+                    />
+                  </FormGroup>
+                  <div></div>
+                  <button
+                    className="remove-btn"
+                    onClick={() => removeEmployee(employee.id)}
+                  >
+                    <FaTrash />
+                  </button>
+                </EmployeeGrid>
+
+                <EmployeeGrid>
+                  <FormGroup>
+                    <label>Basic Salary (EUR)</label>
                     <input
                       type="number"
-                      value={earning.amount}
-                      onChange={(e) => updateEarning(earning.id, 'amount', e.target.value)}
+                      value={employee.basicSalary}
+                      onChange={(e) => updateEmployee(employee.id, 'basicSalary', e.target.value)}
+                      placeholder="0"
+                      min="0"
+                      step="0.01"
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Allowances (EUR)</label>
+                    <input
+                      type="number"
+                      value={employee.allowances}
+                      onChange={(e) => updateEmployee(employee.id, 'allowances', e.target.value)}
+                      placeholder="0"
+                      min="0"
+                      step="0.01"
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Deductions (EUR)</label>
+                    <input
+                      type="number"
+                      value={employee.deductions}
+                      onChange={(e) => updateEmployee(employee.id, 'deductions', e.target.value)}
                       placeholder="0"
                       min="0"
                       step="0.01"
                     />
                   </FormGroup>
                   <div></div>
-                  <button
-                    className="remove-btn"
-                    onClick={() => removeEarning(earning.id)}
-                  >
-                    <FaTrash />
-                  </button>
-                </ItemGrid>
-              </ItemSection>
+                </EmployeeGrid>
+                
+                <div style={{ textAlign: 'center', padding: '1rem', background: 'rgba(251, 182, 4, 0.1)', borderRadius: '8px', marginTop: '1rem' }}>
+                  <span style={{ color: '#fbb604', fontWeight: '600', fontSize: '0.9rem' }}>
+                    Net Pay: {formatCurrency(employee.netPay || 0)}
+                  </span>
+                </div>
+              </EmployeeSection>
             ))}
 
-            <AddItemBtn onClick={addEarning}>
+            <AddEmployeeBtn onClick={addEmployee}>
               <FaPlus />
-              Add Earning
-            </AddItemBtn>
-
-            {/* Deductions Section */}
-            <SectionTitle>
-              <FaDollarSign className="icon" />
-              Deductions
-            </SectionTitle>
-
-            {slipData.deductions.map((deduction) => (
-              <ItemSection key={deduction.id}>
-                <FormGroup>
-                  <label>Deduction Title</label>
-                  <input
-                    type="text"
-                    value={deduction.title}
-                    onChange={(e) => updateDeduction(deduction.id, 'title', e.target.value)}
-                    placeholder="Provident Fund"
-                  />
-                </FormGroup>
-                <ItemGrid>
-                  <FormGroup>
-                    <label>Amount (EUR)</label>
-                    <input
-                      type="number"
-                      value={deduction.amount}
-                      onChange={(e) => updateDeduction(deduction.id, 'amount', e.target.value)}
-                      placeholder="0"
-                      min="0"
-                      step="0.01"
-                    />
-                  </FormGroup>
-                  <div></div>
-                  <button
-                    className="remove-btn"
-                    onClick={() => removeDeduction(deduction.id)}
-                  >
-                    <FaTrash />
-                  </button>
-                </ItemGrid>
-              </ItemSection>
-            ))}
-
-            <AddItemBtn onClick={addDeduction}>
-              <FaPlus />
-              Add Deduction
-            </AddItemBtn>
+              Add Employee
+            </AddEmployeeBtn>
 
             {/* Action Buttons */}
             <ActionButtons>
-              <button className="secondary" onClick={printSlip}>
+              <button className="secondary" onClick={printReport}>
                 <FaPrint />
-                Print Slip
+                Print Report
               </button>
               <button className="primary" onClick={downloadPDF}>
                 <FaDownload />
@@ -1197,121 +1051,92 @@ const SalarySlipGenerator = ({ onClose }) => {
               </TopButton>
             </TopButtons>
             
-            <SlipPreview ref={previewRef} className="printable-slip" $isDarkTheme={isDarkTheme}>
-              <div className="slip-header">
+            <ReportPreview ref={previewRef} className="printable-report" $isDarkTheme={isDarkTheme}>
+              <div className="report-header">
                 <div className="company-section">
                   <div className="logo">
                     <img src={isDarkTheme ? RevolvoLogo : RevolvoLogoDark} alt="Company Logo" />
                   </div>
                   <div className="company-details">
-                    <div className="company-name">{slipData.companyName || 'REVOLVO TECH'}</div>
-                    <div className="tagline">{slipData.tagline || 'Innovation in Motion'}</div>
+                    <div className="company-name">{reportData.companyName || 'REVOLVO TECH'}</div>
+                    <div className="tagline">{reportData.tagline || 'Innovation in Motion'}</div>
                   </div>
                 </div>
                 
-                <div className="slip-title">
-                  <div className="title">Salary Slip</div>
-                  <div className="reference">#{slipData.referenceNumber}</div>
+                <div className="report-title">
+                  <div className="title">Payroll Report</div>
+                  <div className="reference">#{reportData.referenceNumber}</div>
                 </div>
               </div>
 
-              <div className="slip-content">
-                {/* Employee Information */}
-                <div className="employee-section">
-                  <div className="employee-info">
-                    <div className="info-item">
-                      <div className="label">Employee Name</div>
-                      <div className="value">{slipData.employeeName || '[Employee Name]'}</div>
+              <div className="report-content">
+                {/* Report Summary */}
+                <div className="report-summary">
+                  <div className="summary-grid">
+                    <div className="summary-item">
+                      <div className="label">Report Period</div>
+                      <div className="value">{reportData.reportPeriod ? new Date(reportData.reportPeriod + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : '[Period]'}</div>
                     </div>
-                    <div className="info-item">
-                      <div className="label">Employee ID</div>
-                      <div className="value">{slipData.employeeId || '[ID]'}</div>
+                    <div className="summary-item">
+                      <div className="label">Total Employees</div>
+                      <div className="value">{reportData.employees.length}</div>
                     </div>
-                    <div className="info-item">
-                      <div className="label">Designation</div>
-                      <div className="value">{slipData.designation || '[Designation]'}</div>
+                    <div className="summary-item">
+                      <div className="label">Total Basic Salary</div>
+                      <div className="value">{formatCurrency(totalBasic)}</div>
                     </div>
-                    <div className="info-item">
-                      <div className="label">Department</div>
-                      <div className="value">{slipData.department || '[Department]'}</div>
-                    </div>
-                    <div className="info-item">
-                      <div className="label">Pay Period</div>
-                      <div className="value">{slipData.payPeriod ? new Date(slipData.payPeriod + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : '[Pay Period]'}</div>
-                    </div>
-                    <div className="info-item">
-                      <div className="label">Pay Date</div>
-                      <div className="value">{slipData.payDate ? new Date(slipData.payDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '[Pay Date]'}</div>
+                    <div className="summary-item">
+                      <div className="label">Total Net Payroll</div>
+                      <div className="value">{formatCurrency(totalNetPay)}</div>
                     </div>
                   </div>
                 </div>
 
-                {/* Salary Breakdown */}
-                <div className="salary-breakdown">
-                  {/* Earnings */}
-                  <div className="earnings">
-                    <div className="section-title">Earnings</div>
-                    {slipData.earnings.map((earning) => (
-                      <div key={earning.id} className="item">
-                        <span className="item-title">{earning.title || 'Untitled'}</span>
-                        <span className="item-amount">{formatCurrency(earning.amount || 0)}</span>
-                      </div>
-                    ))}
-                    <div className="item total">
-                      <span className="item-title">Total Earnings</span>
-                      <span className="item-amount">{formatCurrency(totalEarnings)}</span>
-                    </div>
-                  </div>
-
-                  {/* Deductions */}
-                  <div className="deductions">
-                    <div className="section-title">Deductions</div>
-                    {slipData.deductions.map((deduction) => (
-                      <div key={deduction.id} className="item">
-                        <span className="item-title">{deduction.title || 'Untitled'}</span>
-                        <span className="item-amount">{formatCurrency(deduction.amount || 0)}</span>
-                      </div>
-                    ))}
-                    <div className="item total">
-                      <span className="item-title">Total Deductions</span>
-                      <span className="item-amount">{formatCurrency(totalDeductions)}</span>
-                    </div>
-                  </div>
-
-                  {/* Summary */}
-                  <div className="summary">
-                    <div className="section-title">Summary</div>
-                    <div className="item">
-                      <span className="item-title">Gross Pay</span>
-                      <span className="item-amount">{formatCurrency(totalEarnings)}</span>
-                    </div>
-                    <div className="item">
-                      <span className="item-title">Total Deductions</span>
-                      <span className="item-amount">{formatCurrency(totalDeductions)}</span>
-                    </div>
-                    
-                    <div className="net-pay">
-                      <div className="label">Net Pay</div>
-                      <div className="amount">{formatCurrency(netPay)}</div>
-                    </div>
-                  </div>
+                {/* Employees Table */}
+                <div className="employees-table">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Employee</th>
+                        <th>ID</th>
+                        <th>Position</th>
+                        <th>Basic Salary</th>
+                        <th>Allowances</th>
+                        <th>Deductions</th>
+                        <th>Net Pay</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {reportData.employees.map((employee) => (
+                        <tr key={employee.id}>
+                          <td>{employee.name || '[Name]'}</td>
+                          <td>{employee.employeeId || '[ID]'}</td>
+                          <td>{employee.position || '[Position]'}</td>
+                          <td className="amount">{formatCurrency(employee.basicSalary || 0)}</td>
+                          <td className="amount">{formatCurrency(employee.allowances || 0)}</td>
+                          <td className="amount">{formatCurrency(employee.deductions || 0)}</td>
+                          <td className="amount">{formatCurrency(employee.netPay || 0)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="slip-footer">
+              <div className="report-footer">
                 <div className="contact-grid">
                   <div className="contact-item">
                     <FaEnvelope />
-                    <span className="contact-text">{slipData.email}</span>
+                    <span className="contact-text">{reportData.email}</span>
                   </div>
                   <div className="contact-item">
                     <FaPhone />
-                    <span className="contact-text">{slipData.phone}</span>
+                    <span className="contact-text">{reportData.phone}</span>
                   </div>
                   <div className="contact-item">
                     <FaGlobe />
-                    <span className="contact-text">{slipData.website}</span>
+                    <span className="contact-text">{reportData.website}</span>
                   </div>
                   <div className="contact-item">
                     <FaLinkedin />
@@ -1319,7 +1144,7 @@ const SalarySlipGenerator = ({ onClose }) => {
                   </div>
                 </div>
               </div>
-            </SlipPreview>
+            </ReportPreview>
           </PreviewSection>
         </CreatorContainer>
       </CreatorOverlay>
@@ -1327,4 +1152,4 @@ const SalarySlipGenerator = ({ onClose }) => {
   );
 };
 
-export default SalarySlipGenerator;
+export default PayrollReportGenerator;

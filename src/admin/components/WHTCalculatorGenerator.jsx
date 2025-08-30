@@ -6,7 +6,8 @@ import {
   FaUser, FaBuilding, FaEnvelope, FaPhone, FaCalendarAlt,
   FaClock, FaDollarSign, FaGlobe, FaPaperPlane, FaEraser,
   FaSun, FaMoon, FaLinkedin, FaQrcode, FaBriefcase, FaIdCard,
-  FaMapMarkerAlt, FaFileSignature, FaCalculator, FaMoneyBillWave
+  FaMapMarkerAlt, FaFileSignature, FaCalculator, FaMoneyBillWave,
+  FaPercent, FaReceipt, FaFileInvoiceDollar
 } from "react-icons/fa";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -31,8 +32,8 @@ const PrintStyles = styled.div`
       border-radius: 0 !important;
     }
 
-    /* Only show the salary slip */
-    .printable-slip {
+    /* Only show the WHT certificate */
+    .printable-certificate {
       visibility: visible !important;
       position: absolute !important;
       top: 0 !important;
@@ -50,7 +51,7 @@ const PrintStyles = styled.div`
         font-family: 'Arial', sans-serif !important;
       }
       
-      .slip-header {
+      .certificate-header {
         margin-bottom: 15px !important;
       }
       
@@ -223,96 +224,60 @@ const FormGroup = styled.div`
       padding: 0.5rem;
     }
   }
-
-  .number-input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    
-    input[type="number"] {
-      padding-right: 3rem;
-    }
-    
-    .number-controls {
-      position: absolute;
-      right: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      
-      button {
-        background: rgba(251, 182, 4, 0.1);
-        border: 1px solid rgba(251, 182, 4, 0.3);
-        border-radius: 4px;
-        color: #fbb604;
-        width: 20px;
-        height: 16px;
-        font-size: 0.7rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        &:hover {
-          background: rgba(251, 182, 4, 0.2);
-        }
-      }
-    }
-  }
 `;
 
-const ItemGrid = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr auto;
-  gap: 1rem;
-  align-items: end;
-`;
-
-const ItemSection = styled.div`
+const CalculationPanel = styled.div`
   background: rgba(0, 0, 0, 0.2);
   padding: 1.5rem;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   
-  .remove-btn {
-    background: rgba(255, 77, 87, 0.1);
-    color: #ff4d57;
-    border: 1px solid rgba(255, 77, 87, 0.2);
-    border-radius: 8px;
-    padding: 0.75rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  .calc-header {
+    color: #fbb604;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+  }
+  
+  .calc-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
     
-    &:hover {
-      background: rgba(255, 77, 87, 0.2);
-      transform: scale(1.05);
+    .label {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .value {
+      font-weight: 600;
+      color: white;
     }
   }
-`;
-
-const AddItemBtn = styled.button`
-  width: 100%;
-  padding: 1rem;
-  background: rgba(251, 182, 4, 0.1);
-  border: 2px dashed rgba(251, 182, 4, 0.3);
-  border-radius: 12px;
-  color: #fbb604;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.5px;
   
-  &:hover {
-    background: rgba(251, 182, 4, 0.2);
-    border-color: rgba(251, 182, 4, 0.5);
-    transform: translateY(-2px);
+  .calc-total {
+    border-top: 2px solid #fbb604;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+    font-weight: 700;
+    font-size: 1rem;
+    
+    .label {
+      color: #fbb604 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .value {
+      color: #fbb604 !important;
+      font-size: 1.2rem;
+    }
   }
 `;
 
@@ -415,15 +380,15 @@ const TopButton = styled.button`
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 
   &.clear {
-    background: rgba(255, 165, 0, 0.1);
-    border-color: rgba(255, 165, 0, 0.3);
-    color: #ffa500;
+    background: rgba(251, 182, 4, 0.1);
+    border-color: rgba(251, 182, 4, 0.3);
+    color: #fbb604;
     
     &:hover {
-      background: rgba(255, 165, 0, 0.2);
-      border-color: rgba(255, 165, 0, 0.5);
+      background: rgba(251, 182, 4, 0.2);
+      border-color: rgba(251, 182, 4, 0.5);
       transform: scale(1.05);
-      box-shadow: 0 6px 20px rgba(255, 165, 0, 0.2);
+      box-shadow: 0 6px 20px rgba(251, 182, 4, 0.2);
     }
   }
 
@@ -454,7 +419,7 @@ const TopButton = styled.button`
   }
 `;
 
-const SlipPreview = styled.div`
+const CertificatePreview = styled.div`
   background: ${props => props.$isDarkTheme ? '#1a1a1a' : 'white'};
   color: ${props => props.$isDarkTheme ? 'white' : '#333'};
   border-radius: 12px;
@@ -466,7 +431,7 @@ const SlipPreview = styled.div`
   position: relative;
   font-family: 'Arial', sans-serif;
 
-  .slip-header {
+  .certificate-header {
     background: ${props => props.$isDarkTheme 
       ? 'linear-gradient(135deg, #333 0%, #1a1a1a 100%)' 
       : 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)'};
@@ -507,14 +472,14 @@ const SlipPreview = styled.div`
       }
     }
 
-    .slip-title {
+    .certificate-title {
       position: absolute;
       top: 2rem;
       right: 2rem;
       text-align: right;
       
       .title {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 700;
         color: #fbb604;
         text-transform: uppercase;
@@ -529,10 +494,10 @@ const SlipPreview = styled.div`
     }
   }
 
-  .slip-content {
+  .certificate-content {
     padding: 2rem;
     
-    .employee-section {
+    .payee-section {
       background: ${props => props.$isDarkTheme 
         ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)' 
         : 'linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%)'};
@@ -553,9 +518,18 @@ const SlipPreview = styled.div`
         border-radius: 12px 12px 0 0;
       }
       
-      .employee-info {
+      .section-title {
+        color: #fbb604;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .payee-info {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
         
         .info-item {
@@ -569,7 +543,7 @@ const SlipPreview = styled.div`
           }
           
           .value {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: ${props => props.$isDarkTheme ? 'white' : '#333'};
             font-weight: 500;
           }
@@ -577,135 +551,168 @@ const SlipPreview = styled.div`
       }
     }
     
-    .salary-breakdown {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 2rem;
+    .calculation-section {
+      background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
+      border-radius: 12px;
+      border: 1px solid rgba(251, 182, 4, 0.1);
+      padding: 2rem;
       margin-bottom: 2rem;
       
-      .earnings, .deductions, .summary {
-        background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
-        border-radius: 8px;
-        padding: 1.5rem;
-        border: 1px solid rgba(251, 182, 4, 0.1);
+      .calc-title {
+        color: #fbb604;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-align: center;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(251, 182, 4, 0.2);
+      }
+      
+      .calc-breakdown {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        margin-bottom: 2rem;
         
-        .section-title {
-          color: #fbb604;
-          font-weight: 700;
-          margin-bottom: 1rem;
-          font-size: 1rem;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          text-align: center;
-          padding-bottom: 0.5rem;
-          border-bottom: 1px solid rgba(251, 182, 4, 0.2);
-        }
-        
-        .item {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 0.75rem;
-          font-size: 0.85rem;
-          
-          .item-title {
-            color: ${props => props.$isDarkTheme ? '#ccc' : '#555'};
-          }
-          
-          .item-amount {
+        .calc-column {
+          .column-title {
+            color: #fbb604;
             font-weight: 600;
-            color: ${props => props.$isDarkTheme ? 'white' : '#333'};
-          }
-        }
-        
-        .total {
-          border-top: 2px solid #fbb604;
-          padding-top: 0.75rem;
-          margin-top: 0.75rem;
-          font-weight: 700;
-          font-size: 0.9rem;
-          
-          .item-title {
-            color: #fbb604 !important;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
           }
           
-          .item-amount {
-            color: #fbb604 !important;
+          .calc-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            
+            .item-label {
+              color: ${props => props.$isDarkTheme ? '#ccc' : '#555'};
+            }
+            
+            .item-value {
+              font-weight: 600;
+              color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+            }
           }
         }
       }
       
-      .summary {
-        .net-pay {
-          background: linear-gradient(135deg, rgba(251, 182, 4, 0.1) 0%, rgba(249, 168, 37, 0.1) 100%);
-          padding: 1rem;
-          border-radius: 8px;
-          text-align: center;
-          margin-top: 1rem;
-          
-          .label {
-            font-size: 0.75rem;
-            color: #fbb604;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5rem;
-          }
-          
-          .amount {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #fbb604;
-          }
+      .wht-summary {
+        background: linear-gradient(135deg, rgba(251, 182, 4, 0.1) 0%, rgba(249, 168, 37, 0.1) 100%);
+        padding: 1.5rem;
+        border-radius: 8px;
+        text-align: center;
+        
+        .summary-label {
+          font-size: 0.85rem;
+          color: #fbb604;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-bottom: 0.5rem;
+        }
+        
+        .summary-amount {
+          font-size: 2rem;
+          font-weight: 800;
+          color: #fbb604;
+          margin-bottom: 0.25rem;
+        }
+        
+        .summary-rate {
+          font-size: 0.9rem;
+          color: ${props => props.$isDarkTheme ? '#aaa' : '#666'};
         }
       }
     }
+    
+    .certificate-statement {
+      background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid #fbb604;
+      margin-bottom: 2rem;
+      font-style: italic;
+      line-height: 1.6;
+      color: ${props => props.$isDarkTheme ? '#ddd' : '#555'};
+    }
   }
 
-  .slip-footer {
+  .certificate-footer {
     background: ${props => props.$isDarkTheme ? '#0f0f0f' : '#f8f9fa'};
     padding: 1.5rem 2rem;
     border-top: 1px solid rgba(251, 182, 4, 0.2);
     
-    .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
       
-      .contact-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.75rem;
-        color: ${props => props.$isDarkTheme ? '#aaa' : '#666'};
+      .contact-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
         
-        svg {
-          color: #fbb604;
-          font-size: 0.9rem;
+        .contact-item {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.75rem;
+          color: ${props => props.$isDarkTheme ? '#aaa' : '#666'};
+          
+          svg {
+            color: #fbb604;
+            font-size: 0.9rem;
+          }
+          
+          .contact-text {
+            color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+          }
+        }
+      }
+      
+      .signature-section {
+        text-align: right;
+        
+        .signature-line {
+          border-bottom: 2px solid #fbb604;
+          width: 200px;
+          margin: 2rem 0 0.5rem 0;
+          margin-left: auto;
         }
         
-        .contact-text {
-          color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+        .signature-label {
+          font-size: 0.75rem;
+          color: #fbb604;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
       }
     }
   }
 `;
 
-const SalarySlipGenerator = ({ onClose }) => {
+const WHTCalculatorGenerator = ({ onClose }) => {
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [qrCodeUrl, setQrCodeUrl] = useState(null);
   const previewRef = useRef(null);
 
   // Initialize form data with session storage
-  const [slipData, setSlipData] = useState(() => {
-    const savedData = sessionStorage.getItem('salarySlipData');
+  const [whtData, setWhtData] = useState(() => {
+    const savedData = sessionStorage.getItem('whtCalculatorData');
     if (savedData) {
       try {
         return JSON.parse(savedData);
       } catch (error) {
-        console.error('Error parsing saved salary slip data:', error);
+        console.error('Error parsing saved WHT calculator data:', error);
       }
     }
     
@@ -718,66 +725,33 @@ const SalarySlipGenerator = ({ onClose }) => {
       email: "job@revolvo.tech",
       website: "www.revolvo.tech",
       
-      // Slip Details
-      referenceNumber: `SAL${Date.now().toString().slice(-6)}`,
-      payPeriod: new Date().toISOString().slice(0, 7), // YYYY-MM format
-      payDate: new Date().toISOString().split('T')[0],
+      // Certificate Details
+      referenceNumber: `WHT${Date.now().toString().slice(-6)}`,
+      certificateDate: new Date().toISOString().split('T')[0],
+      taxYear: new Date().getFullYear(),
       
-      // Employee Information
-      employeeName: "",
-      employeeId: "",
-      designation: "",
-      department: "",
-      dateOfJoining: "",
-      bankAccount: "",
+      // Payee Information
+      payeeName: "",
+      payeeAddress: "",
+      payeeId: "",
+      payeeType: "individual", // individual, company
       
-      // Salary Structure
-      earnings: [
-        {
-          id: Date.now() + 1,
-          title: 'Basic Salary',
-          amount: 50000
-        },
-        {
-          id: Date.now() + 2,
-          title: 'House Rent Allowance',
-          amount: 15000
-        },
-        {
-          id: Date.now() + 3,
-          title: 'Transport Allowance',
-          amount: 5000
-        }
-      ],
-      
-      deductions: [
-        {
-          id: Date.now() + 4,
-          title: 'Provident Fund',
-          amount: 2000
-        },
-        {
-          id: Date.now() + 5,
-          title: 'Income Tax',
-          amount: 8000
-        },
-        {
-          id: Date.now() + 6,
-          title: 'WHT (Withholding Tax)',
-          amount: 1500
-        }
-      ]
+      // Payment Details
+      serviceDescription: "",
+      grossAmount: 0,
+      whtRate: 10, // Default 10% WHT rate
+      currency: "EUR"
     };
   });
 
   // Save to sessionStorage whenever data changes
   useEffect(() => {
     try {
-      sessionStorage.setItem('salarySlipData', JSON.stringify(slipData));
+      sessionStorage.setItem('whtCalculatorData', JSON.stringify(whtData));
     } catch (error) {
-      console.error('Error saving salary slip data:', error);
+      console.error('Error saving WHT calculator data:', error);
     }
-  }, [slipData]);
+  }, [whtData]);
 
   // Generate QR code on component mount
   useEffect(() => {
@@ -801,82 +775,33 @@ const SalarySlipGenerator = ({ onClose }) => {
   }, [isDarkTheme]);
 
   const updateField = (field, value) => {
-    setSlipData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const addEarning = () => {
-    const newEarning = {
-      id: Date.now(),
-      title: '',
-      amount: 0
-    };
-    setSlipData(prev => ({
-      ...prev,
-      earnings: [...prev.earnings, newEarning]
-    }));
-  };
-
-  const updateEarning = (id, field, value) => {
-    setSlipData(prev => ({
-      ...prev,
-      earnings: prev.earnings.map(earning => 
-        earning.id === id ? { ...earning, [field]: field === 'amount' ? Number(value) || 0 : value } : earning
-      )
-    }));
-  };
-
-  const removeEarning = (id) => {
-    setSlipData(prev => ({
-      ...prev,
-      earnings: prev.earnings.filter(earning => earning.id !== id)
-    }));
-  };
-
-  const addDeduction = () => {
-    const newDeduction = {
-      id: Date.now(),
-      title: '',
-      amount: 0
-    };
-    setSlipData(prev => ({
-      ...prev,
-      deductions: [...prev.deductions, newDeduction]
-    }));
-  };
-
-  const updateDeduction = (id, field, value) => {
-    setSlipData(prev => ({
-      ...prev,
-      deductions: prev.deductions.map(deduction => 
-        deduction.id === id ? { ...deduction, [field]: field === 'amount' ? Number(value) || 0 : value } : deduction
-      )
-    }));
-  };
-
-  const removeDeduction = (id) => {
-    setSlipData(prev => ({
-      ...prev,
-      deductions: prev.deductions.filter(deduction => deduction.id !== id)
-    }));
+    setWhtData(prev => ({ ...prev, [field]: value }));
   };
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('fi-FI', {
       style: 'currency',
-      currency: 'EUR'
+      currency: whtData.currency
     }).format(amount);
   };
 
-  const calculateTotals = () => {
-    const totalEarnings = slipData.earnings.reduce((sum, item) => sum + (item.amount || 0), 0);
-    const totalDeductions = slipData.deductions.reduce((sum, item) => sum + (item.amount || 0), 0);
-    const netPay = totalEarnings - totalDeductions;
+  const calculateWHT = () => {
+    const grossAmount = parseFloat(whtData.grossAmount) || 0;
+    const whtRate = parseFloat(whtData.whtRate) || 0;
     
-    return { totalEarnings, totalDeductions, netPay };
+    const whtAmount = (grossAmount * whtRate) / 100;
+    const netAmount = grossAmount - whtAmount;
+    
+    return {
+      grossAmount,
+      whtRate,
+      whtAmount,
+      netAmount
+    };
   };
 
   const clearForm = () => {
-    sessionStorage.removeItem('salarySlipData');
+    sessionStorage.removeItem('whtCalculatorData');
     window.location.reload();
   };
 
@@ -901,17 +826,17 @@ const SalarySlipGenerator = ({ onClose }) => {
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`salary-slip-${slipData.referenceNumber}.pdf`);
+      pdf.save(`wht-certificate-${whtData.referenceNumber}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
     }
   };
 
-  const printSlip = () => {
+  const printCertificate = () => {
     window.print();
   };
 
-  const { totalEarnings, totalDeductions, netPay } = calculateTotals();
+  const { grossAmount, whtRate, whtAmount, netAmount } = calculateWHT();
 
   return (
     <PrintStyles>
@@ -929,8 +854,8 @@ const SalarySlipGenerator = ({ onClose }) => {
           {/* Form Section */}
           <FormSection>
             <h2>
-              <FaCalculator />
-              Salary Slip Generator
+              <FaPercent />
+              WHT Calculator & Certificate
             </h2>
 
             {/* Company Information */}
@@ -946,7 +871,7 @@ const SalarySlipGenerator = ({ onClose }) => {
               </label>
               <input
                 type="text"
-                value={slipData.companyName}
+                value={whtData.companyName}
                 onChange={(e) => updateField('companyName', e.target.value)}
                 placeholder="Revolvo Tech"
               />
@@ -956,7 +881,7 @@ const SalarySlipGenerator = ({ onClose }) => {
               <label>Tagline</label>
               <input
                 type="text"
-                value={slipData.tagline}
+                value={whtData.tagline}
                 onChange={(e) => updateField('tagline', e.target.value)}
                 placeholder="Innovation in Motion"
               />
@@ -968,7 +893,7 @@ const SalarySlipGenerator = ({ onClose }) => {
                 Address
               </label>
               <textarea
-                value={slipData.address}
+                value={whtData.address}
                 onChange={(e) => updateField('address', e.target.value)}
                 placeholder="Company address"
                 rows="2"
@@ -982,7 +907,7 @@ const SalarySlipGenerator = ({ onClose }) => {
               </label>
               <input
                 type="text"
-                value={slipData.phone}
+                value={whtData.phone}
                 onChange={(e) => updateField('phone', e.target.value)}
                 placeholder="+358 41 7408087"
               />
@@ -995,186 +920,184 @@ const SalarySlipGenerator = ({ onClose }) => {
               </label>
               <input
                 type="email"
-                value={slipData.email}
+                value={whtData.email}
                 onChange={(e) => updateField('email', e.target.value)}
                 placeholder="job@revolvo.tech"
               />
             </FormGroup>
 
-            {/* Employee Information */}
+            {/* Certificate Information */}
+            <SectionTitle>
+              <FaReceipt className="icon" />
+              Certificate Information
+            </SectionTitle>
+
+            <FormGroup>
+              <label>
+                <FaCalendarAlt className="icon" />
+                Certificate Date
+              </label>
+              <input
+                type="date"
+                value={whtData.certificateDate}
+                onChange={(e) => updateField('certificateDate', e.target.value)}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>Tax Year</label>
+              <input
+                type="number"
+                value={whtData.taxYear}
+                onChange={(e) => updateField('taxYear', parseInt(e.target.value))}
+                placeholder="2024"
+                min="2020"
+                max="2030"
+              />
+            </FormGroup>
+
+            {/* Payee Information */}
             <SectionTitle>
               <FaUser className="icon" />
-              Employee Information
+              Payee Information
             </SectionTitle>
 
             <FormGroup>
               <label>
                 <FaUser className="icon" />
-                Employee Name
+                Payee Name
               </label>
               <input
                 type="text"
-                value={slipData.employeeName}
-                onChange={(e) => updateField('employeeName', e.target.value)}
+                value={whtData.payeeName}
+                onChange={(e) => updateField('payeeName', e.target.value)}
                 placeholder="John Doe"
               />
             </FormGroup>
 
             <FormGroup>
               <label>
+                <FaMapMarkerAlt className="icon" />
+                Payee Address
+              </label>
+              <textarea
+                value={whtData.payeeAddress}
+                onChange={(e) => updateField('payeeAddress', e.target.value)}
+                placeholder="Payee address"
+                rows="2"
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <label>
                 <FaIdCard className="icon" />
-                Employee ID
+                Payee ID/Tax Number
               </label>
               <input
                 type="text"
-                value={slipData.employeeId}
-                onChange={(e) => updateField('employeeId', e.target.value)}
-                placeholder="EMP001"
+                value={whtData.payeeId}
+                onChange={(e) => updateField('payeeId', e.target.value)}
+                placeholder="ID or Tax Number"
               />
             </FormGroup>
 
             <FormGroup>
-              <label>
-                <FaBriefcase className="icon" />
-                Designation
-              </label>
-              <input
-                type="text"
-                value={slipData.designation}
-                onChange={(e) => updateField('designation', e.target.value)}
-                placeholder="Software Engineer"
-              />
+              <label>Payee Type</label>
+              <select
+                value={whtData.payeeType}
+                onChange={(e) => updateField('payeeType', e.target.value)}
+              >
+                <option value="individual">Individual</option>
+                <option value="company">Company</option>
+              </select>
             </FormGroup>
 
-            <FormGroup>
-              <label>Department</label>
-              <input
-                type="text"
-                value={slipData.department}
-                onChange={(e) => updateField('department', e.target.value)}
-                placeholder="Engineering"
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>
-                <FaCalendarAlt className="icon" />
-                Pay Period
-              </label>
-              <input
-                type="month"
-                value={slipData.payPeriod}
-                onChange={(e) => updateField('payPeriod', e.target.value)}
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <label>
-                <FaCalendarAlt className="icon" />
-                Pay Date
-              </label>
-              <input
-                type="date"
-                value={slipData.payDate}
-                onChange={(e) => updateField('payDate', e.target.value)}
-              />
-            </FormGroup>
-
-            {/* Earnings Section */}
+            {/* Payment Details */}
             <SectionTitle>
               <FaMoneyBillWave className="icon" />
-              Earnings
+              Payment Details
             </SectionTitle>
 
-            {slipData.earnings.map((earning) => (
-              <ItemSection key={earning.id}>
-                <FormGroup>
-                  <label>Earning Title</label>
-                  <input
-                    type="text"
-                    value={earning.title}
-                    onChange={(e) => updateEarning(earning.id, 'title', e.target.value)}
-                    placeholder="Basic Salary"
-                  />
-                </FormGroup>
-                <ItemGrid>
-                  <FormGroup>
-                    <label>Amount (EUR)</label>
-                    <input
-                      type="number"
-                      value={earning.amount}
-                      onChange={(e) => updateEarning(earning.id, 'amount', e.target.value)}
-                      placeholder="0"
-                      min="0"
-                      step="0.01"
-                    />
-                  </FormGroup>
-                  <div></div>
-                  <button
-                    className="remove-btn"
-                    onClick={() => removeEarning(earning.id)}
-                  >
-                    <FaTrash />
-                  </button>
-                </ItemGrid>
-              </ItemSection>
-            ))}
+            <FormGroup>
+              <label>Service Description</label>
+              <textarea
+                value={whtData.serviceDescription}
+                onChange={(e) => updateField('serviceDescription', e.target.value)}
+                placeholder="Description of services provided"
+                rows="2"
+              />
+            </FormGroup>
 
-            <AddItemBtn onClick={addEarning}>
-              <FaPlus />
-              Add Earning
-            </AddItemBtn>
+            <FormGroup>
+              <label>
+                <FaDollarSign className="icon" />
+                Gross Amount
+              </label>
+              <input
+                type="number"
+                value={whtData.grossAmount}
+                onChange={(e) => updateField('grossAmount', parseFloat(e.target.value) || 0)}
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+            </FormGroup>
 
-            {/* Deductions Section */}
-            <SectionTitle>
-              <FaDollarSign className="icon" />
-              Deductions
-            </SectionTitle>
+            <FormGroup>
+              <label>
+                <FaPercent className="icon" />
+                WHT Rate (%)
+              </label>
+              <input
+                type="number"
+                value={whtData.whtRate}
+                onChange={(e) => updateField('whtRate', parseFloat(e.target.value) || 0)}
+                placeholder="10"
+                min="0"
+                max="100"
+                step="0.1"
+              />
+            </FormGroup>
 
-            {slipData.deductions.map((deduction) => (
-              <ItemSection key={deduction.id}>
-                <FormGroup>
-                  <label>Deduction Title</label>
-                  <input
-                    type="text"
-                    value={deduction.title}
-                    onChange={(e) => updateDeduction(deduction.id, 'title', e.target.value)}
-                    placeholder="Provident Fund"
-                  />
-                </FormGroup>
-                <ItemGrid>
-                  <FormGroup>
-                    <label>Amount (EUR)</label>
-                    <input
-                      type="number"
-                      value={deduction.amount}
-                      onChange={(e) => updateDeduction(deduction.id, 'amount', e.target.value)}
-                      placeholder="0"
-                      min="0"
-                      step="0.01"
-                    />
-                  </FormGroup>
-                  <div></div>
-                  <button
-                    className="remove-btn"
-                    onClick={() => removeDeduction(deduction.id)}
-                  >
-                    <FaTrash />
-                  </button>
-                </ItemGrid>
-              </ItemSection>
-            ))}
+            <FormGroup>
+              <label>Currency</label>
+              <select
+                value={whtData.currency}
+                onChange={(e) => updateField('currency', e.target.value)}
+              >
+                <option value="EUR">EUR - Euro</option>
+                <option value="USD">USD - US Dollar</option>
+                <option value="GBP">GBP - British Pound</option>
+                <option value="PKR">PKR - Pakistani Rupee</option>
+              </select>
+            </FormGroup>
 
-            <AddItemBtn onClick={addDeduction}>
-              <FaPlus />
-              Add Deduction
-            </AddItemBtn>
+            {/* Live Calculation Panel */}
+            <CalculationPanel>
+              <div className="calc-header">WHT Calculation</div>
+              <div className="calc-row">
+                <span className="label">Gross Amount:</span>
+                <span className="value">{formatCurrency(grossAmount)}</span>
+              </div>
+              <div className="calc-row">
+                <span className="label">WHT Rate:</span>
+                <span className="value">{whtRate}%</span>
+              </div>
+              <div className="calc-row">
+                <span className="label">WHT Amount:</span>
+                <span className="value">{formatCurrency(whtAmount)}</span>
+              </div>
+              <div className="calc-row calc-total">
+                <span className="label">Net Amount:</span>
+                <span className="value">{formatCurrency(netAmount)}</span>
+              </div>
+            </CalculationPanel>
 
             {/* Action Buttons */}
             <ActionButtons>
-              <button className="secondary" onClick={printSlip}>
+              <button className="secondary" onClick={printCertificate}>
                 <FaPrint />
-                Print Slip
+                Print Certificate
               </button>
               <button className="primary" onClick={downloadPDF}>
                 <FaDownload />
@@ -1197,129 +1120,135 @@ const SalarySlipGenerator = ({ onClose }) => {
               </TopButton>
             </TopButtons>
             
-            <SlipPreview ref={previewRef} className="printable-slip" $isDarkTheme={isDarkTheme}>
-              <div className="slip-header">
+            <CertificatePreview ref={previewRef} className="printable-certificate" $isDarkTheme={isDarkTheme}>
+              <div className="certificate-header">
                 <div className="company-section">
                   <div className="logo">
                     <img src={isDarkTheme ? RevolvoLogo : RevolvoLogoDark} alt="Company Logo" />
                   </div>
                   <div className="company-details">
-                    <div className="company-name">{slipData.companyName || 'REVOLVO TECH'}</div>
-                    <div className="tagline">{slipData.tagline || 'Innovation in Motion'}</div>
+                    <div className="company-name">{whtData.companyName || 'REVOLVO TECH'}</div>
+                    <div className="tagline">{whtData.tagline || 'Innovation in Motion'}</div>
                   </div>
                 </div>
                 
-                <div className="slip-title">
-                  <div className="title">Salary Slip</div>
-                  <div className="reference">#{slipData.referenceNumber}</div>
+                <div className="certificate-title">
+                  <div className="title">WHT Certificate</div>
+                  <div className="reference">#{whtData.referenceNumber}</div>
                 </div>
               </div>
 
-              <div className="slip-content">
-                {/* Employee Information */}
-                <div className="employee-section">
-                  <div className="employee-info">
+              <div className="certificate-content">
+                {/* Payee Information */}
+                <div className="payee-section">
+                  <div className="section-title">Payee Information</div>
+                  <div className="payee-info">
                     <div className="info-item">
-                      <div className="label">Employee Name</div>
-                      <div className="value">{slipData.employeeName || '[Employee Name]'}</div>
+                      <div className="label">Name</div>
+                      <div className="value">{whtData.payeeName || '[Payee Name]'}</div>
                     </div>
                     <div className="info-item">
-                      <div className="label">Employee ID</div>
-                      <div className="value">{slipData.employeeId || '[ID]'}</div>
+                      <div className="label">Type</div>
+                      <div className="value">{whtData.payeeType === 'individual' ? 'Individual' : 'Company'}</div>
                     </div>
                     <div className="info-item">
-                      <div className="label">Designation</div>
-                      <div className="value">{slipData.designation || '[Designation]'}</div>
+                      <div className="label">ID/Tax Number</div>
+                      <div className="value">{whtData.payeeId || '[ID Number]'}</div>
                     </div>
                     <div className="info-item">
-                      <div className="label">Department</div>
-                      <div className="value">{slipData.department || '[Department]'}</div>
+                      <div className="label">Tax Year</div>
+                      <div className="value">{whtData.taxYear}</div>
                     </div>
                     <div className="info-item">
-                      <div className="label">Pay Period</div>
-                      <div className="value">{slipData.payPeriod ? new Date(slipData.payPeriod + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : '[Pay Period]'}</div>
+                      <div className="label">Address</div>
+                      <div className="value">{whtData.payeeAddress || '[Address]'}</div>
                     </div>
                     <div className="info-item">
-                      <div className="label">Pay Date</div>
-                      <div className="value">{slipData.payDate ? new Date(slipData.payDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '[Pay Date]'}</div>
+                      <div className="label">Certificate Date</div>
+                      <div className="value">{whtData.certificateDate ? new Date(whtData.certificateDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '[Date]'}</div>
                     </div>
                   </div>
                 </div>
 
-                {/* Salary Breakdown */}
-                <div className="salary-breakdown">
-                  {/* Earnings */}
-                  <div className="earnings">
-                    <div className="section-title">Earnings</div>
-                    {slipData.earnings.map((earning) => (
-                      <div key={earning.id} className="item">
-                        <span className="item-title">{earning.title || 'Untitled'}</span>
-                        <span className="item-amount">{formatCurrency(earning.amount || 0)}</span>
+                {/* Calculation Section */}
+                <div className="calculation-section">
+                  <div className="calc-title">Withholding Tax Calculation</div>
+                  
+                  <div className="calc-breakdown">
+                    <div className="calc-column">
+                      <div className="column-title">Service Details</div>
+                      <div className="calc-item">
+                        <span className="item-label">Service Description:</span>
+                        <span className="item-value">{whtData.serviceDescription || 'Professional Services'}</span>
                       </div>
-                    ))}
-                    <div className="item total">
-                      <span className="item-title">Total Earnings</span>
-                      <span className="item-amount">{formatCurrency(totalEarnings)}</span>
-                    </div>
-                  </div>
-
-                  {/* Deductions */}
-                  <div className="deductions">
-                    <div className="section-title">Deductions</div>
-                    {slipData.deductions.map((deduction) => (
-                      <div key={deduction.id} className="item">
-                        <span className="item-title">{deduction.title || 'Untitled'}</span>
-                        <span className="item-amount">{formatCurrency(deduction.amount || 0)}</span>
+                      <div className="calc-item">
+                        <span className="item-label">Currency:</span>
+                        <span className="item-value">{whtData.currency}</span>
                       </div>
-                    ))}
-                    <div className="item total">
-                      <span className="item-title">Total Deductions</span>
-                      <span className="item-amount">{formatCurrency(totalDeductions)}</span>
-                    </div>
-                  </div>
-
-                  {/* Summary */}
-                  <div className="summary">
-                    <div className="section-title">Summary</div>
-                    <div className="item">
-                      <span className="item-title">Gross Pay</span>
-                      <span className="item-amount">{formatCurrency(totalEarnings)}</span>
-                    </div>
-                    <div className="item">
-                      <span className="item-title">Total Deductions</span>
-                      <span className="item-amount">{formatCurrency(totalDeductions)}</span>
                     </div>
                     
-                    <div className="net-pay">
-                      <div className="label">Net Pay</div>
-                      <div className="amount">{formatCurrency(netPay)}</div>
+                    <div className="calc-column">
+                      <div className="column-title">Amount Breakdown</div>
+                      <div className="calc-item">
+                        <span className="item-label">Gross Amount:</span>
+                        <span className="item-value">{formatCurrency(grossAmount)}</span>
+                      </div>
+                      <div className="calc-item">
+                        <span className="item-label">WHT Rate:</span>
+                        <span className="item-value">{whtRate}%</span>
+                      </div>
+                      <div className="calc-item">
+                        <span className="item-label">Net Amount:</span>
+                        <span className="item-value">{formatCurrency(netAmount)}</span>
+                      </div>
                     </div>
                   </div>
+                  
+                  <div className="wht-summary">
+                    <div className="summary-label">Total WHT Deducted</div>
+                    <div className="summary-amount">{formatCurrency(whtAmount)}</div>
+                    <div className="summary-rate">At {whtRate}% rate</div>
+                  </div>
+                </div>
+
+                {/* Certificate Statement */}
+                <div className="certificate-statement">
+                  This is to certify that withholding tax in the amount of <strong>{formatCurrency(whtAmount)}</strong> has been 
+                  deducted from the gross payment of <strong>{formatCurrency(grossAmount)}</strong> made to the above-mentioned payee. 
+                  The net amount paid after deducting withholding tax is <strong>{formatCurrency(netAmount)}</strong>. This certificate 
+                  is issued for tax compliance and filing purposes.
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="slip-footer">
-                <div className="contact-grid">
-                  <div className="contact-item">
-                    <FaEnvelope />
-                    <span className="contact-text">{slipData.email}</span>
+              <div className="certificate-footer">
+                <div className="footer-content">
+                  <div className="contact-info">
+                    <div className="contact-item">
+                      <FaEnvelope />
+                      <span className="contact-text">{whtData.email}</span>
+                    </div>
+                    <div className="contact-item">
+                      <FaPhone />
+                      <span className="contact-text">{whtData.phone}</span>
+                    </div>
+                    <div className="contact-item">
+                      <FaGlobe />
+                      <span className="contact-text">{whtData.website}</span>
+                    </div>
+                    <div className="contact-item">
+                      <FaLinkedin />
+                      <span className="contact-text">/company/revolvotech</span>
+                    </div>
                   </div>
-                  <div className="contact-item">
-                    <FaPhone />
-                    <span className="contact-text">{slipData.phone}</span>
-                  </div>
-                  <div className="contact-item">
-                    <FaGlobe />
-                    <span className="contact-text">{slipData.website}</span>
-                  </div>
-                  <div className="contact-item">
-                    <FaLinkedin />
-                    <span className="contact-text">/company/revolvotech</span>
+                  
+                  <div className="signature-section">
+                    <div className="signature-line"></div>
+                    <div className="signature-label">Authorized Signature</div>
                   </div>
                 </div>
               </div>
-            </SlipPreview>
+            </CertificatePreview>
           </PreviewSection>
         </CreatorContainer>
       </CreatorOverlay>
@@ -1327,4 +1256,4 @@ const SalarySlipGenerator = ({ onClose }) => {
   );
 };
 
-export default SalarySlipGenerator;
+export default WHTCalculatorGenerator;

@@ -3,13 +3,20 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import {
   FaFileInvoiceDollar, FaFileContract, FaMoneyBillWave, 
-  FaUserTie, FaGavel, FaBuilding, FaPlus, FaEye, FaDownload
+  FaUserTie, FaGavel, FaBuilding, FaPlus, FaEye, FaDownload,
+  FaShieldAlt, FaHandshake
 } from "react-icons/fa";
 import InvoiceCreator from "../components/InvoiceCreator";
 import RecentDocuments from "../components/RecentDocuments";
 import LetterheadGenerator from "../components/LetterheadGenerator";
 import SalarySlipGenerator from "../components/SalarySlipGenerator";
 import JobOfferGenerator from "../components/JobOfferGenerator";
+import PayrollReportGenerator from "../components/PayrollReportGenerator";
+import WHTCalculatorGenerator from "../components/WHTCalculatorGenerator";
+import EmploymentContractGenerator from "../components/EmploymentContractGenerator";
+import BonusSlipGenerator from "../components/BonusSlipGenerator";
+import ExpenseReportGenerator from "../components/ExpenseReportGenerator";
+import NDAGenerator from "../components/NDAGenerator";
 
 // Document Type Cards inspired by modernize
 const DocumentsContainer = styled.div`
@@ -175,7 +182,7 @@ const documentTypes = [
     description: "Create NDAs, service agreements, terms of service, and other legal documentation.",
     icon: FaGavel,
     color: "#9C27B0",
-    available: false
+    available: true
   },
   {
     id: "financial",
@@ -205,7 +212,9 @@ const AdminDocuments = () => {
     } else if (documentType === "employment") {
       setActiveCreator("jobOffer"); // Open Job Offer Letter directly
     } else if (documentType === "financial") {
-      setActiveCreator("salarySlip"); // Open Salary Slip Builder directly
+      setSelectedDocumentType("financial"); // Show Financial Documents selection dialog
+    } else if (documentType === "legal") {
+      setSelectedDocumentType("legal"); // Show Legal Documents selection dialog
     } else if (documentType === "government") {
       setActiveCreator("letterhead");
     } else {
@@ -215,6 +224,16 @@ const AdminDocuments = () => {
   };
 
   const handleEmploymentDocumentSelect = (docType) => {
+    setActiveCreator(docType);
+    setSelectedDocumentType(null);
+  };
+
+  const handleFinancialDocumentSelect = (docType) => {
+    setActiveCreator(docType);
+    setSelectedDocumentType(null);
+  };
+
+  const handleLegalDocumentSelect = (docType) => {
     setActiveCreator(docType);
     setSelectedDocumentType(null);
   };
@@ -300,7 +319,59 @@ const AdminDocuments = () => {
             <div style={{ display: 'grid', gap: '1rem' }}>
               <ActionButton 
                 className="primary" 
-                onClick={() => handleEmploymentDocumentSelect('salary-slip')}
+                onClick={() => handleEmploymentDocumentSelect('jobOffer')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaUserTie style={{ marginRight: '1rem' }} />
+                Job Offer Letter
+              </ActionButton>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleEmploymentDocumentSelect('employmentContract')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaFileContract style={{ marginRight: '1rem' }} />
+                Employment Contract
+              </ActionButton>
+              <ActionButton 
+                className="secondary" 
+                onClick={() => setSelectedDocumentType(null)}
+                style={{ justifyContent: 'center', padding: '0.75rem' }}
+              >
+                Cancel
+              </ActionButton>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Financial Documents Selection Modal */}
+      {selectedDocumentType === "financial" && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: '#0f0f0f',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            borderRadius: '16px',
+            padding: '2rem',
+            maxWidth: '600px',
+            width: '90%'
+          }}>
+            <h3 style={{ color: 'white', marginBottom: '1.5rem' }}>Select Financial Document Type</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleFinancialDocumentSelect('salarySlip')}
                 style={{ justifyContent: 'flex-start', padding: '1rem' }}
               >
                 <FaMoneyBillWave style={{ marginRight: '1rem' }} />
@@ -308,16 +379,116 @@ const AdminDocuments = () => {
               </ActionButton>
               <ActionButton 
                 className="primary" 
-                onClick={() => handleEmploymentDocumentSelect('job-offer')}
+                onClick={() => handleFinancialDocumentSelect('payrollReport')}
                 style={{ justifyContent: 'flex-start', padding: '1rem' }}
               >
-                <FaUserTie style={{ marginRight: '1rem' }} />
-                Job Offer Letter
+                <FaFileInvoiceDollar style={{ marginRight: '1rem' }} />
+                Payroll Report
+              </ActionButton>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleFinancialDocumentSelect('bonusSlip')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaGavel style={{ marginRight: '1rem' }} />
+                Bonus Slip Generator
+              </ActionButton>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleFinancialDocumentSelect('expenseReport')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaBuilding style={{ marginRight: '1rem' }} />
+                Expense Report
+              </ActionButton>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleFinancialDocumentSelect('whtCalculator')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaGavel style={{ marginRight: '1rem' }} />
+                WHT Calculator
+              </ActionButton>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleFinancialDocumentSelect('taxStatement')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaFileContract style={{ marginRight: '1rem' }} />
+                Tax Statement
               </ActionButton>
               <ActionButton 
                 className="secondary" 
                 onClick={() => setSelectedDocumentType(null)}
-                style={{ justifyContent: 'center', padding: '0.75rem' }}
+                style={{ justifyContent: 'center', padding: '0.75rem', gridColumn: 'span 2' }}
+              >
+                Cancel
+              </ActionButton>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Legal Documents Selection Modal */}
+      {selectedDocumentType === "legal" && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: '#0f0f0f',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            borderRadius: '16px',
+            padding: '2rem',
+            maxWidth: '600px',
+            width: '90%'
+          }}>
+            <h3 style={{ color: 'white', marginBottom: '1.5rem' }}>Select Legal Document Type</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleLegalDocumentSelect('nda')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaShieldAlt style={{ marginRight: '1rem' }} />
+                NDA Generator
+              </ActionButton>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleLegalDocumentSelect('serviceAgreement')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaHandshake style={{ marginRight: '1rem' }} />
+                Service Agreement
+              </ActionButton>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleLegalDocumentSelect('privacyPolicy')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaFileContract style={{ marginRight: '1rem' }} />
+                Privacy Policy
+              </ActionButton>
+              <ActionButton 
+                className="primary" 
+                onClick={() => handleLegalDocumentSelect('termsOfService')}
+                style={{ justifyContent: 'flex-start', padding: '1rem' }}
+              >
+                <FaGavel style={{ marginRight: '1rem' }} />
+                Terms of Service
+              </ActionButton>
+              <ActionButton 
+                className="secondary" 
+                onClick={() => setSelectedDocumentType(null)}
+                style={{ justifyContent: 'center', padding: '0.75rem', gridColumn: 'span 2' }}
               >
                 Cancel
               </ActionButton>
@@ -344,6 +515,54 @@ const AdminDocuments = () => {
 
       {activeCreator === "jobOffer" && (
         <JobOfferGenerator onClose={() => setActiveCreator(null)} />
+      )}
+
+      {activeCreator === "payrollReport" && (
+        <PayrollReportGenerator isOpen={true} onClose={() => setActiveCreator(null)} />
+      )}
+
+      {activeCreator === "whtCalculator" && (
+        <WHTCalculatorGenerator isOpen={true} onClose={() => setActiveCreator(null)} />
+      )}
+
+      {activeCreator === "employmentContract" && (
+        <EmploymentContractGenerator isOpen={true} onClose={() => setActiveCreator(null)} />
+      )}
+
+      {activeCreator === "bonusSlip" && (
+        <BonusSlipGenerator isOpen={true} onClose={() => setActiveCreator(null)} />
+      )}
+
+      {activeCreator === "expenseReport" && (
+        <ExpenseReportGenerator isOpen={true} onClose={() => setActiveCreator(null)} />
+      )}
+
+      {activeCreator === "taxStatement" && (
+        <div style={{ color: 'white', padding: '2rem', textAlign: 'center' }}>
+          Tax Statement Generator - Coming Soon
+        </div>
+      )}
+
+      {activeCreator === "nda" && (
+        <NDAGenerator isOpen={true} onClose={() => setActiveCreator(null)} />
+      )}
+
+      {activeCreator === "serviceAgreement" && (
+        <div style={{ color: 'white', padding: '2rem', textAlign: 'center' }}>
+          Service Agreement Generator - Coming Soon
+        </div>
+      )}
+
+      {activeCreator === "privacyPolicy" && (
+        <div style={{ color: 'white', padding: '2rem', textAlign: 'center' }}>
+          Privacy Policy Generator - Coming Soon
+        </div>
+      )}
+
+      {activeCreator === "termsOfService" && (
+        <div style={{ color: 'white', padding: '2rem', textAlign: 'center' }}>
+          Terms of Service Generator - Coming Soon
+        </div>
       )}
     </DocumentsContainer>
   );
