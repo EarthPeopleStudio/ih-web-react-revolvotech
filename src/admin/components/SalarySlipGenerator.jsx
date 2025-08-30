@@ -1,107 +1,142 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { FaDownload, FaPrint, FaCalculator, FaDollarSign, FaUser, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaTimes, FaDownload, FaPrint, FaEye, FaPlus, FaTrash,
+  FaUser, FaBuilding, FaEnvelope, FaPhone, FaCalendarAlt,
+  FaClock, FaDollarSign, FaGlobe, FaPaperPlane, FaEraser,
+  FaSun, FaMoon, FaLinkedin, FaQrcode, FaBriefcase, FaIdCard,
+  FaMapMarkerAlt, FaFileSignature, FaCalculator, FaMoneyBillWave
+} from "react-icons/fa";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import QRCode from "qrcode";
+import RevolvoLogo from "../../assets/revolvo-logo.png";
+import RevolvoLogoDark from "../../assets/revolvo-logo-dark.png";
 
-const GeneratorContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  height: 100vh;
-  background: #0a0a0a;
-  
-  @media (max-width: 1200px) {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-`;
-
-const FormPanel = styled.div`
-  background: #0f0f0f;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 2rem;
-  overflow-y: auto;
-  max-height: 100vh;
-  
-  h2 {
-    color: white;
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    
-    .icon {
-      color: #fbb604;
-    }
-  }
-`;
-
-const PreviewPanel = styled.div`
-  background: #0f0f0f;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  
-  .preview-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    
-    h3 {
-      color: white;
-      font-size: 1.2rem;
-      font-weight: 600;
+// Professional styling matching other creators
+const PrintStyles = styled.div`
+  @media print {
+    @page {
+      size: A4;
+      margin: 0;
     }
     
-    .actions {
-      display: flex;
-      gap: 0.75rem;
+    /* Reset everything */
+    * {
+      visibility: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+    }
+
+    /* Only show the salary slip */
+    .printable-slip {
+      visibility: visible !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: white !important;
+      color: black !important;
+      font-size: 10px !important;
       
-      button {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1rem;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
-        color: #888888;
-        font-size: 0.85rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        
-        &:hover {
-          background: rgba(255, 255, 255, 0.05);
-          color: white;
-        }
-        
-        &.primary {
-          background: linear-gradient(135deg, #fbb604 0%, #f99b04 100%);
-          color: white;
-          
-          &:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 5px 15px rgba(251, 182, 4, 0.4);
-          }
-        }
+      * {
+        visibility: visible !important;
+        color: black !important;
+        background: white !important;
+        font-family: 'Arial', sans-serif !important;
+      }
+      
+      .slip-header {
+        margin-bottom: 15px !important;
+      }
+      
+      .company-logo img {
+        max-height: 40px !important;
       }
     }
   }
+`;
+
+const CreatorOverlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+`;
+
+const CreatorContainer = styled(motion.div)`
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 95vw;
+  max-height: 95vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 0;
+`;
+
+const FormSection = styled.div`
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 95vh;
   
-  .preview-content {
-    flex: 1;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #fbb604;
+    border-radius: 4px;
+    
+    &:hover {
+      background: #e6a503;
+    }
+  }
+
+  h2 {
+    color: #fbb604;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+`;
+
+const SectionTitle = styled.div`
+  color: #fbb604;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin: 2rem 0 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  
+  .icon {
+    font-size: 0.9rem;
   }
 `;
 
@@ -110,794 +145,1185 @@ const FormGroup = styled.div`
   
   label {
     display: block;
-    color: #888888;
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-  }
-  
-  input, select {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    color: white;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    
-    &:focus {
-      outline: none;
-      border-color: rgba(251, 182, 4, 0.5);
-      background: rgba(255, 255, 255, 0.05);
-    }
-    
-    &::placeholder {
-      color: #666666;
-    }
-  }
-`;
-
-const FormRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const SummaryCard = styled.div`
-  background: rgba(251, 182, 4, 0.1);
-  border: 1px solid rgba(251, 182, 4, 0.3);
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-  
-  h3 {
     color: #fbb604;
-    font-size: 1.1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-  }
-  
-  .summary-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
     
-    .label {
-      color: #cccccc;
+    .icon {
       font-size: 0.9rem;
     }
+  }
+  
+  input, textarea, select {
+    width: 100%;
+    padding: 0.875rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: white;
+    font-size: 0.875rem;
     
-    .value {
-      color: white;
-      font-weight: 600;
+    &:focus {
+      outline: none;
+      border-color: #fbb604;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    
+    /* Custom scrollbar styling */
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #fbb604;
+      border-radius: 4px;
       
-      &.total {
+      &:hover {
+        background: #e6a503;
+      }
+    }
+    
+    /* Firefox scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: #fbb604 rgba(0, 0, 0, 0.1);
+  }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23fbb604' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 3rem;
+    
+    option {
+      background: #1a1a1a;
+      color: white;
+      padding: 0.5rem;
+    }
+  }
+
+  .number-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    
+    input[type="number"] {
+      padding-right: 3rem;
+    }
+    
+    .number-controls {
+      position: absolute;
+      right: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      
+      button {
+        background: rgba(251, 182, 4, 0.1);
+        border: 1px solid rgba(251, 182, 4, 0.3);
+        border-radius: 4px;
         color: #fbb604;
-        font-size: 1.1rem;
+        width: 20px;
+        height: 16px;
+        font-size: 0.7rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        &:hover {
+          background: rgba(251, 182, 4, 0.2);
+        }
       }
     }
   }
 `;
 
-const SalarySlipPreview = styled.div`
-  width: 100%;
-  background: white;
-  padding: 2rem;
-  font-family: 'Arial', sans-serif;
-  color: #333;
-  min-height: 600px;
+const ItemGrid = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 1rem;
+  align-items: end;
+`;
+
+const ItemSection = styled.div`
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 1rem;
   
-  .slip-header {
-    text-align: center;
-    border-bottom: 2px solid #fbb604;
-    padding-bottom: 1.5rem;
-    margin-bottom: 2rem;
-    
-    .company-name {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: #333;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    
-    .document-title {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #fbb604;
-      margin-bottom: 1rem;
-    }
-    
-    .period-info {
-      font-size: 1rem;
-      color: #666;
-      font-weight: 500;
-    }
-  }
-  
-  .employee-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: #f8f9fa;
+  .remove-btn {
+    background: rgba(255, 77, 87, 0.1);
+    color: #ff4d57;
+    border: 1px solid rgba(255, 77, 87, 0.2);
     border-radius: 8px;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
     
-    .employee-info {
-      .section-title {
-        font-weight: 700;
-        color: #333;
-        margin-bottom: 1rem;
-        font-size: 1.1rem;
-        border-bottom: 1px solid #ddd;
-        padding-bottom: 0.5rem;
+    &:hover {
+      background: rgba(255, 77, 87, 0.2);
+      transform: scale(1.05);
+    }
+  }
+`;
+
+const AddItemBtn = styled.button`
+  width: 100%;
+  padding: 1rem;
+  background: rgba(251, 182, 4, 0.1);
+  border: 2px dashed rgba(251, 182, 4, 0.3);
+  border-radius: 12px;
+  color: #fbb604;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  
+  &:hover {
+    background: rgba(251, 182, 4, 0.2);
+    border-color: rgba(251, 182, 4, 0.5);
+    transform: translateY(-2px);
+  }
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  button {
+    flex: 1;
+    padding: 1rem;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    &.primary {
+      background: linear-gradient(135deg, #fbb604 0%, #f9a825 100%);
+      color: #0f0f0f;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(251, 182, 4, 0.3);
+      }
+    }
+
+    &.secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+  }
+`;
+
+const PreviewSection = styled.div`
+  background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 95vh;
+  position: relative;
+  
+  /* Custom scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #fbb604;
+    border-radius: 4px;
+    
+    &:hover {
+      background: #e6a503;
+    }
+  }
+`;
+
+const TopButtons = styled.div`
+  position: fixed;
+  top: 4rem;
+  right: 6rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 1001;
+`;
+
+const TopButton = styled.button`
+  width: 44px;
+  height: 44px;
+  border: 1px solid;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+  &.clear {
+    background: rgba(251, 182, 4, 0.1);
+    border-color: rgba(251, 182, 4, 0.3);
+    color: #fbb604;
+    
+    &:hover {
+      background: rgba(251, 182, 4, 0.2);
+      border-color: rgba(251, 182, 4, 0.5);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(251, 182, 4, 0.2);
+    }
+  }
+
+  &.theme {
+    background: rgba(251, 182, 4, 0.1);
+    border-color: rgba(251, 182, 4, 0.3);
+    color: #fbb604;
+    
+    &:hover {
+      background: rgba(251, 182, 4, 0.2);
+      border-color: rgba(251, 182, 4, 0.5);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(251, 182, 4, 0.2);
+    }
+  }
+
+  &.close {
+    background: rgba(255, 0, 0, 0.1);
+    border-color: rgba(255, 0, 0, 0.3);
+    color: #ff4757;
+    
+    &:hover {
+      background: rgba(255, 0, 0, 0.2);
+      border-color: rgba(255, 0, 0, 0.5);
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.2);
+    }
+  }
+`;
+
+const SlipPreview = styled.div`
+  background: ${props => props.$isDarkTheme ? '#1a1a1a' : 'white'};
+  color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  min-height: 11.7in;
+  width: 8.3in;
+  margin: 0 auto;
+  position: relative;
+  font-family: 'Arial', sans-serif;
+
+  .slip-header {
+    background: ${props => props.$isDarkTheme 
+      ? 'linear-gradient(135deg, #333 0%, #1a1a1a 100%)' 
+      : 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)'};
+    padding: 2rem;
+    border-bottom: 3px solid #fbb604;
+    position: relative;
+
+    .company-section {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      
+      .logo {
+        img {
+          height: 60px;
+          width: auto;
+        }
       }
       
-      .info-row {
-        display: flex;
-        margin-bottom: 0.75rem;
+      .company-details {
+        flex: 1;
         
-        .label {
-          font-weight: 600;
-          color: #555;
-          min-width: 120px;
+        .company-name {
+          font-size: 1.8rem;
+          font-weight: 800;
+          color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+          margin-bottom: 0.25rem;
+          letter-spacing: 2px;
         }
         
-        .value {
-          color: #333;
-          font-weight: 500;
+        .tagline {
+          color: #fbb604;
+          font-size: 0.9rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 1px;
         }
       }
     }
-  }
-  
-  .salary-breakdown {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    margin-bottom: 2rem;
-    
-    .earnings, .deductions {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
+
+    .slip-title {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      text-align: right;
       
-      .section-header {
-        background: #fbb604;
-        color: white;
-        padding: 1rem;
+      .title {
+        font-size: 1.5rem;
         font-weight: 700;
-        font-size: 1.1rem;
-        text-align: center;
+        color: #fbb604;
+        text-transform: uppercase;
+        letter-spacing: 1px;
       }
       
-      .section-content {
-        padding: 1rem;
+      .reference {
+        font-size: 0.75rem;
+        color: ${props => props.$isDarkTheme ? '#aaa' : '#666'};
+        margin-top: 0.25rem;
+      }
+    }
+  }
+
+  .slip-content {
+    padding: 2rem;
+    
+    .employee-section {
+      background: ${props => props.$isDarkTheme 
+        ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)' 
+        : 'linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%)'};
+      border-radius: 12px;
+      border: 1px solid rgba(251, 182, 4, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #fbb604 0%, #f9a825 100%);
+        border-radius: 12px 12px 0 0;
+      }
+      
+      .employee-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
         
-        .salary-item {
+        .info-item {
+          .label {
+            font-size: 0.75rem;
+            color: #fbb604;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+          }
+          
+          .value {
+            font-size: 0.9rem;
+            color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+            font-weight: 500;
+          }
+        }
+      }
+    }
+    
+    .salary-breakdown {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      
+      .earnings, .deductions, .summary {
+        background: ${props => props.$isDarkTheme ? 'rgba(255, 255, 255, 0.02)' : 'rgba(0, 0, 0, 0.02)'};
+        border-radius: 8px;
+        padding: 1.5rem;
+        border: 1px solid rgba(251, 182, 4, 0.1);
+        
+        .section-title {
+          color: #fbb604;
+          font-weight: 700;
+          margin-bottom: 1rem;
+          font-size: 1rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          text-align: center;
+          padding-bottom: 0.5rem;
+          border-bottom: 1px solid rgba(251, 182, 4, 0.2);
+        }
+        
+        .item {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          padding: 0.75rem 0;
-          border-bottom: 1px solid #eee;
+          margin-bottom: 0.75rem;
+          font-size: 0.85rem;
           
-          &:last-child {
-            border-bottom: none;
-            font-weight: 700;
-            background: #f8f9fa;
-            margin: 0 -1rem;
-            padding: 1rem;
+          .item-title {
+            color: ${props => props.$isDarkTheme ? '#ccc' : '#555'};
           }
           
-          .item-label {
-            color: #555;
-          }
-          
-          .item-value {
-            color: #333;
+          .item-amount {
             font-weight: 600;
-            
-            &.total {
-              color: #fbb604;
-              font-size: 1.1rem;
-            }
+            color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+          }
+        }
+        
+        .total {
+          border-top: 2px solid #fbb604;
+          padding-top: 0.75rem;
+          margin-top: 0.75rem;
+          font-weight: 700;
+          font-size: 0.9rem;
+          
+          .item-title {
+            color: #fbb604 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+          
+          .item-amount {
+            color: #fbb604 !important;
+          }
+        }
+      }
+      
+      .summary {
+        .net-pay {
+          background: linear-gradient(135deg, rgba(251, 182, 4, 0.1) 0%, rgba(249, 168, 37, 0.1) 100%);
+          padding: 1rem;
+          border-radius: 8px;
+          text-align: center;
+          margin-top: 1rem;
+          
+          .label {
+            font-size: 0.75rem;
+            color: #fbb604;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+          }
+          
+          .amount {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fbb604;
           }
         }
       }
     }
   }
-  
-  .net-salary {
-    background: #fbb604;
-    color: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 2rem;
-    
-    .net-label {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    
-    .net-amount {
-      font-size: 2rem;
-      font-weight: 800;
-    }
-    
-    .net-words {
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-      opacity: 0.9;
-    }
-  }
-  
+
   .slip-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid #eee;
+    background: ${props => props.$isDarkTheme ? '#0f0f0f' : '#f8f9fa'};
+    padding: 1.5rem 2rem;
+    border-top: 1px solid rgba(251, 182, 4, 0.2);
     
-    .signature-section {
-      text-align: center;
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
       
-      .signature-line {
-        width: 200px;
-        height: 60px;
-        border-bottom: 1px solid #333;
-        margin-bottom: 0.5rem;
-      }
-      
-      .signature-label {
-        font-size: 0.9rem;
-        color: #666;
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        color: ${props => props.$isDarkTheme ? '#aaa' : '#666'};
+        
+        svg {
+          color: #fbb604;
+          font-size: 0.9rem;
+        }
+        
+        .contact-text {
+          color: ${props => props.$isDarkTheme ? 'white' : '#333'};
+        }
       }
     }
-  }
-  
-  .generated-info {
-    text-align: center;
-    font-size: 0.8rem;
-    color: #999;
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
   }
 `;
 
-const SalarySlipGenerator = () => {
-  const previewRef = useRef();
-  const [formData, setFormData] = useState({
-    companyName: "Revolvo Tech",
-    employeeName: "",
-    employeeId: "",
-    designation: "",
-    department: "",
-    joiningDate: "",
-    payPeriod: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-    workingDays: 22,
-    presentDays: 22,
+const SalarySlipGenerator = ({ onClose }) => {
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
+  const [qrCodeUrl, setQrCodeUrl] = useState(null);
+  const previewRef = useRef(null);
+
+  // Initialize form data with session storage
+  const [slipData, setSlipData] = useState(() => {
+    const savedData = sessionStorage.getItem('salarySlipData');
+    if (savedData) {
+      try {
+        return JSON.parse(savedData);
+      } catch (error) {
+        console.error('Error parsing saved salary slip data:', error);
+      }
+    }
     
-    // Earnings
-    basicSalary: 0,
-    houseRentAllowance: 0,
-    transportAllowance: 0,
-    medicalAllowance: 0,
-    otherAllowances: 0,
-    overtime: 0,
-    bonus: 0,
-    
-    // Deductions
-    providentFund: 0,
-    tax: 0,
-    insurance: 0,
-    otherDeductions: 0,
-    leaves: 0,
-    lateDeduction: 0
+    return {
+      // Company Information
+      companyName: "Revolvo Tech",
+      tagline: "Innovation in Motion",
+      address: "Väinämöisenkatu 11, 33540 Tampere, Finland",
+      phone: "+358 41 7408087",
+      email: "job@revolvo.tech",
+      website: "www.revolvo.tech",
+      
+      // Slip Details
+      referenceNumber: `SAL${Date.now().toString().slice(-6)}`,
+      payPeriod: new Date().toISOString().slice(0, 7), // YYYY-MM format
+      payDate: new Date().toISOString().split('T')[0],
+      
+      // Employee Information
+      employeeName: "",
+      employeeId: "",
+      designation: "",
+      department: "",
+      dateOfJoining: "",
+      bankAccount: "",
+      
+      // Salary Structure
+      earnings: [
+        {
+          id: Date.now() + 1,
+          title: 'Basic Salary',
+          amount: 50000
+        },
+        {
+          id: Date.now() + 2,
+          title: 'House Rent Allowance',
+          amount: 15000
+        },
+        {
+          id: Date.now() + 3,
+          title: 'Transport Allowance',
+          amount: 5000
+        }
+      ],
+      
+      deductions: [
+        {
+          id: Date.now() + 4,
+          title: 'Provident Fund',
+          amount: 2000
+        },
+        {
+          id: Date.now() + 5,
+          title: 'Income Tax',
+          amount: 8000
+        },
+        {
+          id: Date.now() + 6,
+          title: 'WHT (Withholding Tax)',
+          amount: 1500
+        }
+      ]
+    };
   });
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+  // Save to sessionStorage whenever data changes
+  useEffect(() => {
+    try {
+      sessionStorage.setItem('salarySlipData', JSON.stringify(slipData));
+    } catch (error) {
+      console.error('Error saving salary slip data:', error);
+    }
+  }, [slipData]);
+
+  // Generate QR code on component mount
+  useEffect(() => {
+    const generateQRCode = async () => {
+      try {
+        const qrDataURL = await QRCode.toDataURL('https://revolvo.tech', {
+          width: 80,
+          margin: 1,
+          color: {
+            dark: isDarkTheme ? '#fbb604' : '#333333',
+            light: isDarkTheme ? '#1a1a1a' : '#ffffff'
+          }
+        });
+        setQrCodeUrl(qrDataURL);
+      } catch (error) {
+        console.error('Error generating QR code:', error);
+      }
+    };
+
+    generateQRCode();
+  }, [isDarkTheme]);
+
+  const updateField = (field, value) => {
+    setSlipData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const addEarning = () => {
+    const newEarning = {
+      id: Date.now(),
+      title: '',
+      amount: 0
+    };
+    setSlipData(prev => ({
       ...prev,
-      [field]: field.includes('Salary') || field.includes('Allowance') || field.includes('overtime') || field.includes('bonus') || field.includes('Fund') || field.includes('tax') || field.includes('insurance') || field.includes('Deduction') || field.includes('leaves') || field.includes('Days') ? parseFloat(value) || 0 : value
+      earnings: [...prev.earnings, newEarning]
     }));
   };
 
-  // Calculate totals
-  const totalEarnings = formData.basicSalary + formData.houseRentAllowance + formData.transportAllowance + formData.medicalAllowance + formData.otherAllowances + formData.overtime + formData.bonus;
-  
-  const totalDeductions = formData.providentFund + formData.tax + formData.insurance + formData.otherDeductions + formData.leaves + formData.lateDeduction;
-  
-  const netSalary = totalEarnings - totalDeductions;
-
-  const numberToWords = (num) => {
-    if (num === 0) return "Zero";
-    
-    const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
-    const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-    const teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
-    
-    const convertHundreds = (num) => {
-      let result = "";
-      if (num > 99) {
-        result += ones[Math.floor(num / 100)] + " Hundred ";
-        num %= 100;
-      }
-      if (num > 19) {
-        result += tens[Math.floor(num / 10)] + " ";
-        num %= 10;
-      } else if (num > 9) {
-        result += teens[num - 10] + " ";
-        return result;
-      }
-      if (num > 0) {
-        result += ones[num] + " ";
-      }
-      return result;
-    };
-
-    const convertThousands = (num) => {
-      if (num >= 1000000) {
-        return convertHundreds(Math.floor(num / 1000000)) + "Million " + convertThousands(num % 1000000);
-      }
-      if (num >= 1000) {
-        return convertHundreds(Math.floor(num / 1000)) + "Thousand " + convertHundreds(num % 1000);
-      }
-      return convertHundreds(num);
-    };
-
-    return convertThousands(Math.floor(num)) + "Only";
+  const updateEarning = (id, field, value) => {
+    setSlipData(prev => ({
+      ...prev,
+      earnings: prev.earnings.map(earning => 
+        earning.id === id ? { ...earning, [field]: field === 'amount' ? Number(value) || 0 : value } : earning
+      )
+    }));
   };
 
-  const handleDownloadPDF = async () => {
+  const removeEarning = (id) => {
+    setSlipData(prev => ({
+      ...prev,
+      earnings: prev.earnings.filter(earning => earning.id !== id)
+    }));
+  };
+
+  const addDeduction = () => {
+    const newDeduction = {
+      id: Date.now(),
+      title: '',
+      amount: 0
+    };
+    setSlipData(prev => ({
+      ...prev,
+      deductions: [...prev.deductions, newDeduction]
+    }));
+  };
+
+  const updateDeduction = (id, field, value) => {
+    setSlipData(prev => ({
+      ...prev,
+      deductions: prev.deductions.map(deduction => 
+        deduction.id === id ? { ...deduction, [field]: field === 'amount' ? Number(value) || 0 : value } : deduction
+      )
+    }));
+  };
+
+  const removeDeduction = (id) => {
+    setSlipData(prev => ({
+      ...prev,
+      deductions: prev.deductions.filter(deduction => deduction.id !== id)
+    }));
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('fi-FI', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(amount);
+  };
+
+  const calculateTotals = () => {
+    const totalEarnings = slipData.earnings.reduce((sum, item) => sum + (item.amount || 0), 0);
+    const totalDeductions = slipData.deductions.reduce((sum, item) => sum + (item.amount || 0), 0);
+    const netPay = totalEarnings - totalDeductions;
+    
+    return { totalEarnings, totalDeductions, netPay };
+  };
+
+  const clearForm = () => {
+    sessionStorage.removeItem('salarySlipData');
+    window.location.reload();
+  };
+
+  const toggleTheme = () => {
+    setIsDarkTheme(!isDarkTheme);
+  };
+
+  const downloadPDF = async () => {
     if (!previewRef.current) return;
 
     try {
       const canvas = await html2canvas(previewRef.current, {
         scale: 2,
-        backgroundColor: '#ffffff',
         useCORS: true,
-        allowTaint: true
+        allowTaint: true,
+        backgroundColor: isDarkTheme ? '#1a1a1a' : '#ffffff'
       });
 
-      const imgWidth = 210;
-      const pageHeight = 295;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
       const pdf = new jsPDF('p', 'mm', 'a4');
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
+      const imgData = canvas.toDataURL('image/png');
+      const pdfWidth = 210;
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      pdf.save(`${formData.employeeName}_Salary_Slip_${formData.payPeriod.replace(' ', '_')}.pdf`);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`salary-slip-${slipData.referenceNumber}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Error generating PDF. Please try again.');
     }
   };
 
-  const handlePrint = () => {
-    if (previewRef.current) {
-      const printContent = previewRef.current.innerHTML;
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>Print Salary Slip</title>
-            <style>
-              body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-              @media print { body { margin: 0; } }
-            </style>
-          </head>
-          <body>${printContent}</body>
-        </html>
-      `);
-      printWindow.document.close();
-      printWindow.print();
-    }
+  const printSlip = () => {
+    window.print();
   };
+
+  const { totalEarnings, totalDeductions, netPay } = calculateTotals();
 
   return (
-    <GeneratorContainer>
-      <FormPanel>
-        <h2>
-          <FaDollarSign className="icon" />
-          Salary Slip Generator
-        </h2>
-        
-        <FormGroup>
-          <label>Company Name</label>
-          <input
-            type="text"
-            value={formData.companyName}
-            onChange={(e) => handleInputChange('companyName', e.target.value)}
-            placeholder="Company Name"
-          />
-        </FormGroup>
+    <PrintStyles>
+      <CreatorOverlay
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <CreatorContainer
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.8, opacity: 0 }}
+          transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        >
+          {/* Form Section */}
+          <FormSection>
+            <h2>
+              <FaCalculator />
+              Salary Slip Generator
+            </h2>
 
-        <h3 style={{ color: '#fbb604', marginBottom: '1rem', marginTop: '2rem' }}>Employee Information</h3>
-        
-        <FormRow>
-          <FormGroup>
-            <label>Employee Name</label>
-            <input
-              type="text"
-              value={formData.employeeName}
-              onChange={(e) => handleInputChange('employeeName', e.target.value)}
-              placeholder="Full Name"
-            />
-          </FormGroup>
-          <FormGroup>
-            <label>Employee ID</label>
-            <input
-              type="text"
-              value={formData.employeeId}
-              onChange={(e) => handleInputChange('employeeId', e.target.value)}
-              placeholder="EMP001"
-            />
-          </FormGroup>
-        </FormRow>
+            {/* Company Information */}
+            <SectionTitle>
+              <FaBuilding className="icon" />
+              Company Information
+            </SectionTitle>
 
-        <FormRow>
-          <FormGroup>
-            <label>Designation</label>
-            <input
-              type="text"
-              value={formData.designation}
-              onChange={(e) => handleInputChange('designation', e.target.value)}
-              placeholder="Software Engineer"
-            />
-          </FormGroup>
-          <FormGroup>
-            <label>Department</label>
-            <input
-              type="text"
-              value={formData.department}
-              onChange={(e) => handleInputChange('department', e.target.value)}
-              placeholder="Engineering"
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <label>
+                <FaBuilding className="icon" />
+                Company Name
+              </label>
+              <input
+                type="text"
+                value={slipData.companyName}
+                onChange={(e) => updateField('companyName', e.target.value)}
+                placeholder="Revolvo Tech"
+              />
+            </FormGroup>
 
-        <FormRow>
-          <FormGroup>
-            <label>Pay Period</label>
-            <input
-              type="text"
-              value={formData.payPeriod}
-              onChange={(e) => handleInputChange('payPeriod', e.target.value)}
-              placeholder="January 2024"
-            />
-          </FormGroup>
-          <FormGroup>
-            <label>Joining Date</label>
-            <input
-              type="date"
-              value={formData.joiningDate}
-              onChange={(e) => handleInputChange('joiningDate', e.target.value)}
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <label>Tagline</label>
+              <input
+                type="text"
+                value={slipData.tagline}
+                onChange={(e) => updateField('tagline', e.target.value)}
+                placeholder="Innovation in Motion"
+              />
+            </FormGroup>
 
-        <h3 style={{ color: '#fbb604', marginBottom: '1rem', marginTop: '2rem' }}>Earnings</h3>
-        
-        <FormRow>
-          <FormGroup>
-            <label>Basic Salary ($)</label>
-            <input
-              type="number"
-              value={formData.basicSalary}
-              onChange={(e) => handleInputChange('basicSalary', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-          <FormGroup>
-            <label>House Rent Allowance ($)</label>
-            <input
-              type="number"
-              value={formData.houseRentAllowance}
-              onChange={(e) => handleInputChange('houseRentAllowance', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <label>
+                <FaMapMarkerAlt className="icon" />
+                Address
+              </label>
+              <textarea
+                value={slipData.address}
+                onChange={(e) => updateField('address', e.target.value)}
+                placeholder="Company address"
+                rows="2"
+              />
+            </FormGroup>
 
-        <FormRow>
-          <FormGroup>
-            <label>Transport Allowance ($)</label>
-            <input
-              type="number"
-              value={formData.transportAllowance}
-              onChange={(e) => handleInputChange('transportAllowance', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-          <FormGroup>
-            <label>Medical Allowance ($)</label>
-            <input
-              type="number"
-              value={formData.medicalAllowance}
-              onChange={(e) => handleInputChange('medicalAllowance', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <label>
+                <FaPhone className="icon" />
+                Phone
+              </label>
+              <input
+                type="text"
+                value={slipData.phone}
+                onChange={(e) => updateField('phone', e.target.value)}
+                placeholder="+358 41 7408087"
+              />
+            </FormGroup>
 
-        <FormRow>
-          <FormGroup>
-            <label>Other Allowances ($)</label>
-            <input
-              type="number"
-              value={formData.otherAllowances}
-              onChange={(e) => handleInputChange('otherAllowances', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-          <FormGroup>
-            <label>Overtime ($)</label>
-            <input
-              type="number"
-              value={formData.overtime}
-              onChange={(e) => handleInputChange('overtime', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <label>
+                <FaEnvelope className="icon" />
+                Email
+              </label>
+              <input
+                type="email"
+                value={slipData.email}
+                onChange={(e) => updateField('email', e.target.value)}
+                placeholder="job@revolvo.tech"
+              />
+            </FormGroup>
 
-        <FormGroup>
-          <label>Bonus ($)</label>
-          <input
-            type="number"
-            value={formData.bonus}
-            onChange={(e) => handleInputChange('bonus', e.target.value)}
-            placeholder="0"
-          />
-        </FormGroup>
+            {/* Employee Information */}
+            <SectionTitle>
+              <FaUser className="icon" />
+              Employee Information
+            </SectionTitle>
 
-        <h3 style={{ color: '#ef4444', marginBottom: '1rem', marginTop: '2rem' }}>Deductions</h3>
-        
-        <FormRow>
-          <FormGroup>
-            <label>Provident Fund ($)</label>
-            <input
-              type="number"
-              value={formData.providentFund}
-              onChange={(e) => handleInputChange('providentFund', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-          <FormGroup>
-            <label>Tax ($)</label>
-            <input
-              type="number"
-              value={formData.tax}
-              onChange={(e) => handleInputChange('tax', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <label>
+                <FaUser className="icon" />
+                Employee Name
+              </label>
+              <input
+                type="text"
+                value={slipData.employeeName}
+                onChange={(e) => updateField('employeeName', e.target.value)}
+                placeholder="John Doe"
+              />
+            </FormGroup>
 
-        <FormRow>
-          <FormGroup>
-            <label>Insurance ($)</label>
-            <input
-              type="number"
-              value={formData.insurance}
-              onChange={(e) => handleInputChange('insurance', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-          <FormGroup>
-            <label>Leave Deduction ($)</label>
-            <input
-              type="number"
-              value={formData.leaves}
-              onChange={(e) => handleInputChange('leaves', e.target.value)}
-              placeholder="0"
-            />
-          </FormGroup>
-        </FormRow>
+            <FormGroup>
+              <label>
+                <FaIdCard className="icon" />
+                Employee ID
+              </label>
+              <input
+                type="text"
+                value={slipData.employeeId}
+                onChange={(e) => updateField('employeeId', e.target.value)}
+                placeholder="EMP001"
+              />
+            </FormGroup>
 
-        <FormGroup>
-          <label>Other Deductions ($)</label>
-          <input
-            type="number"
-            value={formData.otherDeductions}
-            onChange={(e) => handleInputChange('otherDeductions', e.target.value)}
-            placeholder="0"
-          />
-        </FormGroup>
+            <FormGroup>
+              <label>
+                <FaBriefcase className="icon" />
+                Designation
+              </label>
+              <input
+                type="text"
+                value={slipData.designation}
+                onChange={(e) => updateField('designation', e.target.value)}
+                placeholder="Software Engineer"
+              />
+            </FormGroup>
 
-        <SummaryCard>
-          <h3>
-            <FaCalculator />
-            Salary Summary
-          </h3>
-          <div className="summary-row">
-            <span className="label">Total Earnings:</span>
-            <span className="value">${totalEarnings.toFixed(2)}</span>
-          </div>
-          <div className="summary-row">
-            <span className="label">Total Deductions:</span>
-            <span className="value">${totalDeductions.toFixed(2)}</span>
-          </div>
-          <div className="summary-row">
-            <span className="label">Net Salary:</span>
-            <span className="value total">${netSalary.toFixed(2)}</span>
-          </div>
-        </SummaryCard>
-      </FormPanel>
+            <FormGroup>
+              <label>Department</label>
+              <input
+                type="text"
+                value={slipData.department}
+                onChange={(e) => updateField('department', e.target.value)}
+                placeholder="Engineering"
+              />
+            </FormGroup>
 
-      <PreviewPanel>
-        <div className="preview-header">
-          <h3>Salary Slip Preview</h3>
-          <div className="actions">
-            <button onClick={handlePrint}>
-              <FaPrint />
-              Print
-            </button>
-            <button className="primary" onClick={handleDownloadPDF}>
-              <FaDownload />
-              Download PDF
-            </button>
-          </div>
-        </div>
-        
-        <div className="preview-content">
-          <SalarySlipPreview ref={previewRef}>
-            <div className="slip-header">
-              <div className="company-name">{formData.companyName}</div>
-              <div className="document-title">SALARY SLIP</div>
-              <div className="period-info">For the month of {formData.payPeriod}</div>
-            </div>
+            <FormGroup>
+              <label>
+                <FaCalendarAlt className="icon" />
+                Pay Period
+              </label>
+              <input
+                type="month"
+                value={slipData.payPeriod}
+                onChange={(e) => updateField('payPeriod', e.target.value)}
+              />
+            </FormGroup>
 
-            <div className="employee-section">
-              <div className="employee-info">
-                <div className="section-title">Employee Information</div>
-                <div className="info-row">
-                  <span className="label">Name:</span>
-                  <span className="value">{formData.employeeName || 'N/A'}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Employee ID:</span>
-                  <span className="value">{formData.employeeId || 'N/A'}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Designation:</span>
-                  <span className="value">{formData.designation || 'N/A'}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Department:</span>
-                  <span className="value">{formData.department || 'N/A'}</span>
-                </div>
-              </div>
-              <div className="employee-info">
-                <div className="section-title">Attendance Information</div>
-                <div className="info-row">
-                  <span className="label">Working Days:</span>
-                  <span className="value">{formData.workingDays}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Present Days:</span>
-                  <span className="value">{formData.presentDays}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Joining Date:</span>
-                  <span className="value">{formData.joiningDate ? new Date(formData.joiningDate).toLocaleDateString() : 'N/A'}</span>
-                </div>
-                <div className="info-row">
-                  <span className="label">Pay Period:</span>
-                  <span className="value">{formData.payPeriod}</span>
-                </div>
-              </div>
-            </div>
+            <FormGroup>
+              <label>
+                <FaCalendarAlt className="icon" />
+                Pay Date
+              </label>
+              <input
+                type="date"
+                value={slipData.payDate}
+                onChange={(e) => updateField('payDate', e.target.value)}
+              />
+            </FormGroup>
 
-            <div className="salary-breakdown">
-              <div className="earnings">
-                <div className="section-header">EARNINGS</div>
-                <div className="section-content">
-                  <div className="salary-item">
-                    <span className="item-label">Basic Salary</span>
-                    <span className="item-value">${formData.basicSalary.toFixed(2)}</span>
+            {/* Earnings Section */}
+            <SectionTitle>
+              <FaMoneyBillWave className="icon" />
+              Earnings
+            </SectionTitle>
+
+            {slipData.earnings.map((earning) => (
+              <ItemSection key={earning.id}>
+                <FormGroup>
+                  <label>Earning Title</label>
+                  <input
+                    type="text"
+                    value={earning.title}
+                    onChange={(e) => updateEarning(earning.id, 'title', e.target.value)}
+                    placeholder="Basic Salary"
+                  />
+                </FormGroup>
+                <ItemGrid>
+                  <FormGroup>
+                    <label>Amount (EUR)</label>
+                    <input
+                      type="number"
+                      value={earning.amount}
+                      onChange={(e) => updateEarning(earning.id, 'amount', e.target.value)}
+                      placeholder="0"
+                      min="0"
+                      step="0.01"
+                    />
+                  </FormGroup>
+                  <div></div>
+                  <button
+                    className="remove-btn"
+                    onClick={() => removeEarning(earning.id)}
+                  >
+                    <FaTrash />
+                  </button>
+                </ItemGrid>
+              </ItemSection>
+            ))}
+
+            <AddItemBtn onClick={addEarning}>
+              <FaPlus />
+              Add Earning
+            </AddItemBtn>
+
+            {/* Deductions Section */}
+            <SectionTitle>
+              <FaDollarSign className="icon" />
+              Deductions
+            </SectionTitle>
+
+            {slipData.deductions.map((deduction) => (
+              <ItemSection key={deduction.id}>
+                <FormGroup>
+                  <label>Deduction Title</label>
+                  <input
+                    type="text"
+                    value={deduction.title}
+                    onChange={(e) => updateDeduction(deduction.id, 'title', e.target.value)}
+                    placeholder="Provident Fund"
+                  />
+                </FormGroup>
+                <ItemGrid>
+                  <FormGroup>
+                    <label>Amount (EUR)</label>
+                    <input
+                      type="number"
+                      value={deduction.amount}
+                      onChange={(e) => updateDeduction(deduction.id, 'amount', e.target.value)}
+                      placeholder="0"
+                      min="0"
+                      step="0.01"
+                    />
+                  </FormGroup>
+                  <div></div>
+                  <button
+                    className="remove-btn"
+                    onClick={() => removeDeduction(deduction.id)}
+                  >
+                    <FaTrash />
+                  </button>
+                </ItemGrid>
+              </ItemSection>
+            ))}
+
+            <AddItemBtn onClick={addDeduction}>
+              <FaPlus />
+              Add Deduction
+            </AddItemBtn>
+
+            {/* Action Buttons */}
+            <ActionButtons>
+              <button className="secondary" onClick={printSlip}>
+                <FaPrint />
+                Print Slip
+              </button>
+              <button className="primary" onClick={downloadPDF}>
+                <FaDownload />
+                Download PDF
+              </button>
+            </ActionButtons>
+          </FormSection>
+
+          {/* Preview Section */}
+          <PreviewSection>
+            <TopButtons>
+              <TopButton className="clear" onClick={clearForm} title="Clear all fields">
+                <FaEraser />
+              </TopButton>
+              <TopButton className="theme" onClick={toggleTheme} title="Toggle theme">
+                {isDarkTheme ? <FaSun /> : <FaMoon />}
+              </TopButton>
+              <TopButton className="close" onClick={onClose} title="Close">
+                <FaTimes />
+              </TopButton>
+            </TopButtons>
+            
+            <SlipPreview ref={previewRef} className="printable-slip" $isDarkTheme={isDarkTheme}>
+              <div className="slip-header">
+                <div className="company-section">
+                  <div className="logo">
+                    <img src={isDarkTheme ? RevolvoLogo : RevolvoLogoDark} alt="Company Logo" />
                   </div>
-                  <div className="salary-item">
-                    <span className="item-label">House Rent Allowance</span>
-                    <span className="item-value">${formData.houseRentAllowance.toFixed(2)}</span>
+                  <div className="company-details">
+                    <div className="company-name">{slipData.companyName || 'REVOLVO TECH'}</div>
+                    <div className="tagline">{slipData.tagline || 'Innovation in Motion'}</div>
                   </div>
-                  <div className="salary-item">
-                    <span className="item-label">Transport Allowance</span>
-                    <span className="item-value">${formData.transportAllowance.toFixed(2)}</span>
-                  </div>
-                  <div className="salary-item">
-                    <span className="item-label">Medical Allowance</span>
-                    <span className="item-value">${formData.medicalAllowance.toFixed(2)}</span>
-                  </div>
-                  <div className="salary-item">
-                    <span className="item-label">Other Allowances</span>
-                    <span className="item-value">${formData.otherAllowances.toFixed(2)}</span>
-                  </div>
-                  <div className="salary-item">
-                    <span className="item-label">Overtime</span>
-                    <span className="item-value">${formData.overtime.toFixed(2)}</span>
-                  </div>
-                  <div className="salary-item">
-                    <span className="item-label">Bonus</span>
-                    <span className="item-value">${formData.bonus.toFixed(2)}</span>
-                  </div>
-                  <div className="salary-item">
-                    <span className="item-label">Total Earnings</span>
-                    <span className="item-value total">${totalEarnings.toFixed(2)}</span>
-                  </div>
+                </div>
+                
+                <div className="slip-title">
+                  <div className="title">Salary Slip</div>
+                  <div className="reference">#{slipData.referenceNumber}</div>
                 </div>
               </div>
 
-              <div className="deductions">
-                <div className="section-header">DEDUCTIONS</div>
-                <div className="section-content">
-                  <div className="salary-item">
-                    <span className="item-label">Provident Fund</span>
-                    <span className="item-value">${formData.providentFund.toFixed(2)}</span>
+              <div className="slip-content">
+                {/* Employee Information */}
+                <div className="employee-section">
+                  <div className="employee-info">
+                    <div className="info-item">
+                      <div className="label">Employee Name</div>
+                      <div className="value">{slipData.employeeName || '[Employee Name]'}</div>
+                    </div>
+                    <div className="info-item">
+                      <div className="label">Employee ID</div>
+                      <div className="value">{slipData.employeeId || '[ID]'}</div>
+                    </div>
+                    <div className="info-item">
+                      <div className="label">Designation</div>
+                      <div className="value">{slipData.designation || '[Designation]'}</div>
+                    </div>
+                    <div className="info-item">
+                      <div className="label">Department</div>
+                      <div className="value">{slipData.department || '[Department]'}</div>
+                    </div>
+                    <div className="info-item">
+                      <div className="label">Pay Period</div>
+                      <div className="value">{slipData.payPeriod ? new Date(slipData.payPeriod + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : '[Pay Period]'}</div>
+                    </div>
+                    <div className="info-item">
+                      <div className="label">Pay Date</div>
+                      <div className="value">{slipData.payDate ? new Date(slipData.payDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '[Pay Date]'}</div>
+                    </div>
                   </div>
-                  <div className="salary-item">
-                    <span className="item-label">Tax</span>
-                    <span className="item-value">${formData.tax.toFixed(2)}</span>
+                </div>
+
+                {/* Salary Breakdown */}
+                <div className="salary-breakdown">
+                  {/* Earnings */}
+                  <div className="earnings">
+                    <div className="section-title">Earnings</div>
+                    {slipData.earnings.map((earning) => (
+                      <div key={earning.id} className="item">
+                        <span className="item-title">{earning.title || 'Untitled'}</span>
+                        <span className="item-amount">{formatCurrency(earning.amount || 0)}</span>
+                      </div>
+                    ))}
+                    <div className="item total">
+                      <span className="item-title">Total Earnings</span>
+                      <span className="item-amount">{formatCurrency(totalEarnings)}</span>
+                    </div>
                   </div>
-                  <div className="salary-item">
-                    <span className="item-label">Insurance</span>
-                    <span className="item-value">${formData.insurance.toFixed(2)}</span>
+
+                  {/* Deductions */}
+                  <div className="deductions">
+                    <div className="section-title">Deductions</div>
+                    {slipData.deductions.map((deduction) => (
+                      <div key={deduction.id} className="item">
+                        <span className="item-title">{deduction.title || 'Untitled'}</span>
+                        <span className="item-amount">{formatCurrency(deduction.amount || 0)}</span>
+                      </div>
+                    ))}
+                    <div className="item total">
+                      <span className="item-title">Total Deductions</span>
+                      <span className="item-amount">{formatCurrency(totalDeductions)}</span>
+                    </div>
                   </div>
-                  <div className="salary-item">
-                    <span className="item-label">Leave Deduction</span>
-                    <span className="item-value">${formData.leaves.toFixed(2)}</span>
-                  </div>
-                  <div className="salary-item">
-                    <span className="item-label">Other Deductions</span>
-                    <span className="item-value">${formData.otherDeductions.toFixed(2)}</span>
-                  </div>
-                  <div className="salary-item">
-                    <span className="item-label">Total Deductions</span>
-                    <span className="item-value total">${totalDeductions.toFixed(2)}</span>
+
+                  {/* Summary */}
+                  <div className="summary">
+                    <div className="section-title">Summary</div>
+                    <div className="item">
+                      <span className="item-title">Gross Pay</span>
+                      <span className="item-amount">{formatCurrency(totalEarnings)}</span>
+                    </div>
+                    <div className="item">
+                      <span className="item-title">Total Deductions</span>
+                      <span className="item-amount">{formatCurrency(totalDeductions)}</span>
+                    </div>
+                    
+                    <div className="net-pay">
+                      <div className="label">Net Pay</div>
+                      <div className="amount">{formatCurrency(netPay)}</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="net-salary">
-              <div className="net-label">NET SALARY</div>
-              <div className="net-amount">${netSalary.toFixed(2)}</div>
-              <div className="net-words">{numberToWords(netSalary)}</div>
-            </div>
-
-            <div className="slip-footer">
-              <div className="signature-section">
-                <div className="signature-line"></div>
-                <div className="signature-label">Employee Signature</div>
+              {/* Footer */}
+              <div className="slip-footer">
+                <div className="contact-grid">
+                  <div className="contact-item">
+                    <FaEnvelope />
+                    <span className="contact-text">{slipData.email}</span>
+                  </div>
+                  <div className="contact-item">
+                    <FaPhone />
+                    <span className="contact-text">{slipData.phone}</span>
+                  </div>
+                  <div className="contact-item">
+                    <FaGlobe />
+                    <span className="contact-text">{slipData.website}</span>
+                  </div>
+                  <div className="contact-item">
+                    <FaLinkedin />
+                    <span className="contact-text">/company/revolvotech</span>
+                  </div>
+                </div>
               </div>
-              <div className="signature-section">
-                <div className="signature-line"></div>
-                <div className="signature-label">HR Signature</div>
-              </div>
-            </div>
-
-            <div className="generated-info">
-              This is a system-generated salary slip. Generated on {new Date().toLocaleDateString()}
-            </div>
-          </SalarySlipPreview>
-        </div>
-      </PreviewPanel>
-    </GeneratorContainer>
+            </SlipPreview>
+          </PreviewSection>
+        </CreatorContainer>
+      </CreatorOverlay>
+    </PrintStyles>
   );
 };
 

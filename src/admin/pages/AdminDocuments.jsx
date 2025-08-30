@@ -179,11 +179,11 @@ const documentTypes = [
   },
   {
     id: "financial",
-    title: "Financial Documents",
-    description: "Generate expense reports, payment receipts, financial statements, and budget reports.",
+    title: "Financial Documents", 
+    description: "Generate payroll slips, salary statements, WHT calculations, bonus payments, and financial reports.",
     icon: FaMoneyBillWave,
     color: "#FF5722",
-    available: false
+    available: true
   },
   {
     id: "government",
@@ -203,7 +203,9 @@ const AdminDocuments = () => {
     if (documentType === "invoices") {
       setActiveCreator("invoice");
     } else if (documentType === "employment") {
-      setSelectedDocumentType("employment");
+      setActiveCreator("jobOffer"); // Open Job Offer Letter directly
+    } else if (documentType === "financial") {
+      setActiveCreator("salarySlip"); // Open Salary Slip Builder directly
     } else if (documentType === "government") {
       setActiveCreator("letterhead");
     } else {
@@ -333,114 +335,15 @@ const AdminDocuments = () => {
       )}
 
       {activeCreator === "letterhead" && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.95)',
-          zIndex: 1000,
-          overflow: 'auto'
-        }}>
-          <div style={{
-            position: 'relative',
-            minHeight: '100vh'
-          }}>
-            <button
-              onClick={() => setActiveCreator(null)}
-              style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                color: 'white',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                zIndex: 1001
-              }}
-            >
-              ✕ Close
-            </button>
-            <LetterheadGenerator />
-          </div>
-        </div>
+        <LetterheadGenerator onClose={() => setActiveCreator(null)} />
       )}
 
-      {activeCreator === "salary-slip" && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.95)',
-          zIndex: 1000,
-          overflow: 'auto'
-        }}>
-          <div style={{
-            position: 'relative',
-            minHeight: '100vh'
-          }}>
-            <button
-              onClick={() => setActiveCreator(null)}
-              style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                color: 'white',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                zIndex: 1001
-              }}
-            >
-              ✕ Close
-            </button>
-            <SalarySlipGenerator />
-          </div>
-        </div>
+      {activeCreator === "salarySlip" && (
+        <SalarySlipGenerator onClose={() => setActiveCreator(null)} />
       )}
 
-      {activeCreator === "job-offer" && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.95)',
-          zIndex: 1000,
-          overflow: 'auto'
-        }}>
-          <div style={{
-            position: 'relative',
-            minHeight: '100vh'
-          }}>
-            <button
-              onClick={() => setActiveCreator(null)}
-              style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '8px',
-                color: 'white',
-                padding: '0.5rem 1rem',
-                cursor: 'pointer',
-                zIndex: 1001
-              }}
-            >
-              ✕ Close
-            </button>
-            <JobOfferGenerator />
-          </div>
-        </div>
+      {activeCreator === "jobOffer" && (
+        <JobOfferGenerator onClose={() => setActiveCreator(null)} />
       )}
     </DocumentsContainer>
   );

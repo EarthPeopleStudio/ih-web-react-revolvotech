@@ -891,6 +891,7 @@ const InvoicePreview = styled.div`
           font-size: 1.2rem;
           font-weight: 700;
           color: #fbb604;
+          align-items: center;
         }
         
         .label {
@@ -1762,7 +1763,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                       type="number"
                       step="0.01"
                       value={item.hours}
-                      onChange={(e) => updateItem(item.id, 'hours', e.target.value === '' ? 0 : Number(e.target.value))}
+                      onChange={(e) => updateItem(item.id, 'hours', e.target.value === '' ? 0 : Math.round(parseFloat(e.target.value) * 100) / 100)}
                       placeholder="40"
                     />
                     <div className="number-controls">
@@ -1781,7 +1782,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                       type="number"
                       step="0.01"
                       value={item.rate}
-                      onChange={(e) => updateItem(item.id, 'rate', e.target.value === '' ? 0 : Number(e.target.value))}
+                      onChange={(e) => updateItem(item.id, 'rate', e.target.value === '' ? 0 : Math.round(parseFloat(e.target.value) * 100) / 100)}
                       placeholder="100"
                     />
                     <div className="number-controls">
@@ -1840,7 +1841,7 @@ const InvoiceCreator = ({ isOpen, onClose }) => {
                       type="number"
                       step="0.01"
                       value={item.amount}
-                      onChange={(e) => updateAdditionalItem(item.id, 'amount', e.target.value === '' ? 0 : Number(e.target.value))}
+                      onChange={(e) => updateAdditionalItem(item.id, 'amount', e.target.value === '' ? 0 : Math.round(parseFloat(e.target.value) * 100) / 100)}
                       placeholder="0.00"
                     />
                     <div className="number-controls">
